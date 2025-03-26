@@ -1,0 +1,37 @@
+{
+  "compilerOptions": {
+    "module": "commonjs",
+    "declaration": true,
+    "removeComments": true,
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "allowSyntheticDefaultImports": true,
+    "target": "ES2023",
+    "sourceMap": true,
+    "outDir": "./dist",
+    "baseUrl": "./",
+    "incremental": true,
+    "skipLibCheck": true,
+    "strictNullChecks": true,
+    "forceConsistentCasingInFileNames": true,
+    "noImplicitAny": false,
+    "strictBindCallApply": false,
+    "noFallthroughCasesInSwitch": false,
+    "paths": {
+      "@access-control": ["apps/access-control/src"],
+      "@access-control/*": ["apps/access-control/src/*"],
+
+      "@admin": ["apps/admin/src"],
+      "@admin/*": ["apps/admin/src/*"],
+
+      "@landing": ["apps/landing/src"],
+      "@landing/*": ["apps/landing/src/*"],
+
+      "@quotation": ["apps/quotation/src"],
+      "@quotation/*": ["apps/quotation/src/*"],
+
+      "common": ["libs/common/src"],
+      "common/*": ["libs/common/src/*"]
+    }
+  }
+}
