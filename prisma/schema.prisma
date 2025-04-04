@@ -1,0 +1,358 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum TypeParameter {
+  STRING  @map("String")
+  NUMBER  @map("Number")
+  DATE    @map("Date")
+  BOOLEAN @map("Boolean")
+  OBJECT  @map("Object")
+  ARRAY   @map("Array")
+}
+
+model Parameter {
+  id          Int           @id @default(autoincrement())
+  idParameter String        @unique
+  name        String
+  value       String
+  group       String
+  type        TypeParameter
+}
+model CodeError {
+  id           Int    @id @default(autoincrement())
+  code         String
+  internalCode String
+  message      String
+  type         String
+  language     String @default("en")
+}
+
+model Error {
+  id           Int      @id @default(autoincrement())
+  createdAt    DateTime @default(now())
+  responseBody String   @db.Text
+  error        String   @db.Text
+  url          String
+  body         String   @db.Text
+  params       String   @db.Text
+  headers      String   @db.Text
+  type         String
+  requestUser  String?
+  stack        String?   @db.Text
+}
+
+model Log {
+  id           Int      @id @default(autoincrement())
+  createdAt    DateTime @default(now())
+  categoryName String
+  data         String   @db.Text
+  url          String   @db.Text
+  method       String
+  code         Int?
+  error        String   @db.Text
+  level        String
+}
+// Access Control con prefijo AC
+model ACUser {
+  id                      Int                         @id @default(autoincrement())
+  email                   String?                     @unique
+  UID                     String                      @default(uuid())
+  firstName               String?
+  lastName                String?
+  fullName                String?
+  picture                 String?
+  twofa_auth_url          String?
+  twofa_base32            String?
+  twofa_enabled           Boolean?
+  twofa_verified          Boolean?
+  Token                   ACToken[]
+  LoginType               ACLoginType[]
+  UserProfileApplications ACUserProfileApplications[]
+}
+
+model ACLoginType {
+  id       Int       @id @default(autoincrement())
+  type     TypeToken
+  username String    @unique
+  password String?   @db.VarChar(100)
+  User     ACUser?   @relation(fields: [userId], references: [id])
+  userId   Int
+}
+
+model ACToken {
+  id           Int       @id @default(autoincrement())
+  type         TypeToken
+  token        String    @db.VarChar(1000)
+  accessToken  String?   @db.VarChar(1000)
+  refreshToken String?   @db.VarChar(1000)
+  openId       String?
+  User         ACUser?   @relation(fields: [userId], references: [id])
+  userId       Int
+}
+
+enum TypeToken {
+  local     @map("Type de Local")
+  google    @map("Type de Google")
+  github    @map("Type de Github")
+  microsoft @map("Type de Microsoft")
+  facebook  @map("Type de Facebook")
+  instagram @map("Type de Instagram")
+}
+
+model ACCompanies {
+  id                    Int                       @id @default(autoincrement())
+  name                  String
+  rut                   String
+  CompaniesParent       ACCompanies?              @relation("CompaniesChildren", fields: [CompaniesParentId], references: [id])
+  CompaniesParentId     Int?
+  Companies             ACCompanies[]             @relation("CompaniesChildren")
+  ApplicationsCompanies ACApplicationsCompanies[]
+}
+
+model ACApplications {
+  id                    Int                       @id @default(autoincrement())
+  name                  String
+  description           String?
+  url                   String?
+  Profiles              ACProfiles[]
+  ApplicationsCompanies ACApplicationsCompanies[]
+}
+
+model ACProfiles {
+  id                      Int                         @id @default(autoincrement())
+  name                    String
+  details                 String?
+  Applications            ACApplications              @relation(fields: [applicationsId], references: [id])
+  applicationsId          Int
+  UserProfileApplications ACUserProfileApplications[]
+  RolsProfiles            ACRolsProfiles[]
+}
+
+model ACRolsProfiles {
+  id        Int        @id @default(autoincrement())
+  Profiles  ACProfiles @relation(fields: [profileId], references: [id])
+  profileId Int
+  Rols      ACRols     @relation(fields: [rolsId], references: [id])
+  rolsId    Int
+}
+
+model ACRols {
+  id           Int              @id @default(autoincrement())
+  name         String
+  details      String?
+  RolsProfiles ACRolsProfiles[]
+}
+
+model ACUserProfileApplications {
+  id        Int        @id @default(autoincrement())
+  Users     ACUser     @relation(fields: [usersId], references: [id])
+  usersId   Int
+  Profiles  ACProfiles @relation(fields: [profileId], references: [id])
+  profileId Int
+}
+
+model ACApplicationsCompanies {
+  id             Int            @id @default(autoincrement())
+  Companies      ACCompanies    @relation(fields: [companiesId], references: [id])
+  companiesId    Int
+  Applications   ACApplications @relation(fields: [applicationsId], references: [id])
+  applicationsId Int
+}
+
+// portal de pago
+
+enum TypeTypeOfCurrency {
+  CLP @map("Peso Chileno")
+  CLF @map("UF")
+  USD @map("Dólar")
+}
+
+enum TypePaymentType {
+  TRANSFER  @map("Transferencia")
+  TRANSBANK @map("Transbank")
+}
+
+model DebtsToPay {
+  id          Int         @id @default(autoincrement())
+  userId      String
+  payId       String      @unique
+  description String
+  DuesofPay   DuesOfPay[]
+}
+
+model DuesOfPay {
+  id             Int                @id @default(autoincrement())
+  expirationDate DateTime
+  description    String
+  amount         Float
+  TypeOfCurrency TypeTypeOfCurrency
+  paid           Boolean            @default(false)
+  DebtsToPay     DebtsToPay         @relation(fields: [debtsToPayId], references: [id])
+  debtsToPayId   Int
+  paymentType    TypePaymentType?
+}
+
+// Portal My Acceso
+
+model MAAccess {
+  id           Int      @id @default(autoincrement())
+  createdAt    DateTime @default(now())
+  userId       String
+  key          String   @unique
+  startDate    DateTime
+  endDate      DateTime
+  amountPeople Int
+  persons      String[] @default([])
+}
+
+// Portal cl-external-sources-ms
+model ESSource {
+  id         Int          @id @default(autoincrement())
+  createdAt  DateTime     @default(now())
+  validDays  Int
+  name       String       @unique
+  script     String       @db.Text
+  modules    String[]     @default([])
+  filter     String[]     @default([])
+  ESDocument ESDocument[]
+}
+
+model ESDocument {
+  id             Int      @id @default(autoincrement())
+  expirationDate DateTime
+  params         Json
+  data           Json
+  ESSource       ESSource @relation(fields: [eSSourceId], references: [id])
+  eSSourceId     Int
+}
+
+// Base de datos para Quotation con prefijo Q
+model QUsers {
+  id        Int         @id @default(autoincrement())
+  UID       String
+  createdAt DateTime    @default(now())
+  business  QBusiness[]
+}
+
+model QBusiness {
+  id               Int        @id @default(autoincrement())
+  name             String
+  business_name    String
+  rut              String     @unique
+  users            QUsers?    @relation(fields: [users_id], references: [id])
+  users_id         Int
+  clients          QClients[]
+  address          String
+  emails           String?
+  emailAdditionals String?
+}
+
+model QClients {
+  id               Int          @id @default(autoincrement())
+  name             String
+  rut              String       @unique
+  address          String
+  business         QBusiness?   @relation(fields: [business_id], references: [id])
+  business_id      Int
+  quotation        QQuotation[]
+  emails           String?
+  emailAdditionals String?
+}
+
+model QQuotation {
+  id             Int               @id @default(autoincrement())
+  folio          String
+  title          String
+  detail         String
+  dateQuote      String
+  clients        QClients?         @relation(fields: [clients_id], references: [id])
+  clients_id     Int
+  ItemsQuotation QItemsQuotation[]
+  file           QFile?            @relation(fields: [file_id], references: [id])
+  file_id        Int?
+  status         QStatus?          @relation(fields: [status_id], references: [id])
+  status_id      Int
+}
+
+model QItemsQuotation {
+  id           Int         @id @default(autoincrement())
+  cant         Int
+  quotation    QQuotation? @relation(fields: [quotation_id], references: [id])
+  quotation_id Int?
+  prodServ     QProdServ?  @relation(fields: [prodServ_id], references: [id])
+  prodServ_id  Int?
+}
+
+model QProdServ {
+  id             Int               @id @default(autoincrement())
+  detail         String
+  price          Int
+  type           String
+  itemsQuotation QItemsQuotation[]
+}
+
+model QFile {
+  id          Int          @id @default(autoincrement())
+  url         String
+  typeFile    QTypeFile?   @relation(fields: [typeFile_id], references: [id])
+  typeFile_id Int
+  quotation   QQuotation[]
+}
+
+model QTypeFile {
+  id        Int     @id @default(autoincrement())
+  name      String
+  mime      String
+  extension String
+  file      QFile[]
+}
+
+model QStatus {
+  id        Int          @id @default(autoincrement())
+  name      String
+  key       String
+  type      String
+  quotation QQuotation[]
+}
+
+// base de datos para Google con prefijo G 
+model GOauth2Setting {
+  id          Int     @id @default(autoincrement())
+  identifier  String
+  credentials String  @db.VarChar(1000)
+  token       String? @db.VarChar(500)
+  scopes      String
+}
+
+model GEmailTemplate {
+  id              Int                @id @default(autoincrement())
+  templateId      String
+  template        String
+  subject         String
+  templateContact GtemplateContact[]
+}
+
+model GContacts {
+  id              Int                @id @default(autoincrement())
+  name            String
+  email           String
+  mobilePhone     String?
+  templateContact GtemplateContact[]
+}
+
+model GtemplateContact {
+  id               Int             @id @default(autoincrement())
+  emailTemplate    GEmailTemplate? @relation(fields: [emailTemplate_id], references: [id])
+  emailTemplate_id Int
+  Contacts         GContacts?      @relation(fields: [contacts_id], references: [id])
+  contacts_id      Int
+}

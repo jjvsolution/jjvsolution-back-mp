@@ -1,0 +1,42 @@
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+# ------------------------------------------------------
+
+type DataObjectType {
+  message: String
+  type: String
+  monitoringCode: String
+  closable: Boolean
+  duration: Boolean
+}
+
+type QUsersAllObjectType {
+  UID: String!
+  createdAt: DateTime
+  id: Float!
+}
+
+"""
+A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
+"""
+scalar DateTime
+
+input QUsersAllInputType {
+  UID: String!
+  createdAt: DateTime
+  id: Float!
+}
+
+type Query {
+  QUser: [QUsersAllObjectType!]!
+  QUserById(id: Float!): QUsersAllObjectType
+}
+
+type Mutation {
+  QUserCreate(data: QUsersInputType!): QUsersAllObjectType
+}
+
+input QUsersInputType {
+  UID: String!
+  createdAt: DateTime
+}

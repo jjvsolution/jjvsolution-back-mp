@@ -1,0 +1,18 @@
+export default () => ({
+  URL: process.env.URL || 'http://localhost',
+  PORT: process.env.PORT ? parseInt(process.env.PORT, 10) : 3001,
+  PORT_DEBTS: process.env.PORT_DEBTS? parseInt(process.env.PORT_DEBTS, 10) : 3000,
+  PORT_MY_ACCESS: process.env.PORT_MY_ACCESS? parseInt(process.env.PORT_MY_ACCESS, 10) : 3002,
+  GLOBAL_PREFIX: process.env.GLOBAL_PREFIX || 'api',
+  GLOBAL_PREFIX_DEBTS: process.env.GLOBAL_PREFIX_DEBTS || 'api',
+  PATH_SWAGGER: process.env.PATH_SWAGGER || 'docu',
+  VERSION: process.env.VERSION || '1',
+  VERSION_DEBTS: process.env.VERSION || '1',
+  ENVIRONMENT: process.env.ENVIRONMENT,
+  HOST_LOGSTASH: process.env.HOST_LOGSTASH,
+  JWT_SECRET: process.env.JWT_SECRET,
+  JWT_EXPIRES_IN: process.env.JWT_EXPIRES_IN || '15m',
+  GOOGLE_CLIENT_ID: process.env.GOOGLE_CLIENT_ID,
+  GOOGLE_CLIENT_SECRET: process.env.GOOGLE_CLIENT_SECRET,
+  CALLBACK_URL: process.env.CALLBACK_URL,
+});

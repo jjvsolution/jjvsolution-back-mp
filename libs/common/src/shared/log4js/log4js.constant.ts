@@ -1,0 +1,12 @@
+export const LOG4JS_PROVIDER = 'LOG4JS_PROVIDER';
+export const LOG4JS_CONFIG = 'LOG4JS_CONFIG';
+export const LOG4JS_REQUEST_LOGGER = 'LOG4JS_REQUEST_LOGGER';
+export const LOG4JS_RESPONSE_LOGGER = 'LOG4JS_RESPONSE_LOGGER';
+export const LOG4JS_ERROR_LOGGER = 'LOG4JS_ERROR_LOGGER';
+export const LOG4JS_ERROR_EMAIL_LOGGER = 'LOG4JS_ERROR_EMAIL_LOGGER';
+export const LOG4JS_LOGGER = 'LOG4JS_LOGGER';
+export const LOG4JS_EMAIL_LOGGER = 'LOG4JS_EMAIL_LOGGER';
+
+export const X_REQUEST_ID = 'x-request-id';
+export const X_AMAZON_API_GATEWAY_API_ID = 'x-amzn-apigateway-api-id';
+export const X_AMAZON_API_GATEWAY_STAGE = 'x-amzn-apigateway-stage';
