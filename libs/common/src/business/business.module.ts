@@ -1,6 +1,6 @@
 import { Module, Provider } from '@nestjs/common';
 import { JwtModule, JwtService } from '@nestjs/jwt';
-import { PrismaModule } from '@prisma';
+import { PrismaModule } from '@database/prisma';
 import { AuthService } from '@services';
 import { ConfigService } from '@nestjs/config';
 import { PassportModule } from '@nestjs/passport';

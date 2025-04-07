@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { Prisma } from '@prisma/prisma';
+import { Prisma } from '@database/prisma';
 
 @Injectable()
 export class CodeErrorRepository {

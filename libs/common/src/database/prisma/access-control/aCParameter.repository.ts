@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { Prisma } from '@prisma';
+import { Prisma } from '@database/prisma';
 import { $Enums } from '@prisma/client';
 
 @Injectable()

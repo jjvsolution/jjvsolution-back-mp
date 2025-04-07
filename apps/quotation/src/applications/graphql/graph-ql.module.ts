@@ -1,6 +1,6 @@
 import { ClassSerializerInterceptor, Module, Provider } from '@nestjs/common';
-import { QuotationPrismaModule } from '@prisma';
-import { CodeErrorRepository } from '@prisma/codeError.repository';
+import { QuotationPrismaModule } from '@database/prisma';
+import { CodeErrorRepository } from '@database/prisma/codeError.repository';
 import { QuotationBusinessModule } from '@business';
 import { JwtModule, JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
@@ -11,14 +11,34 @@ import { APP_INTERCEPTOR, Reflector } from '@nestjs/core';
 import { CoreClassSerializerInterceptor } from '@config/cross/interceptors';
 import { LoggingPlugin } from '@shared/graphQLPlugins/logging.plugin';
 import { JwtStrategy } from 'common/config/cross/strategies';
-import { QUserResolver } from './qUser.resolver';
+import {
+  QBusinessResolver,
+  QClientsResolver,
+  QFileResolver,
+  QItemsQuotationResolver,
+  QProdServResolver,
+  QQuotationResolver,
+  QStatusResolver,
+  QTypeFileResolver,
+  QUserResolver,
+} from '.';
 import { GraphQLFormattedError } from 'graphql';
 import GraphQLJSON from 'graphql-type-json';
 import { join } from 'path';
 import { ApolloServerPluginLandingPageLocalDefault } from '@apollo/server/plugin/landingPage/default';
 import { ConfigurationsInterface } from 'common/interfaces';
 
-const resolver: Provider[] = [QUserResolver];
+const resolver: Provider[] = [
+  QBusinessResolver,
+  QClientsResolver,
+  QFileResolver,
+  QItemsQuotationResolver,
+  QProdServResolver,
+  QQuotationResolver,
+  QStatusResolver,
+  QTypeFileResolver,
+  QUserResolver,
+];
 
 @Module({
   imports: [
@@ -38,7 +58,10 @@ const resolver: Provider[] = [QUserResolver];
             : [];
         return {
           /* resolvers: { JSON: GraphQLJSON }, */
-          autoSchemaFile: join(process.cwd(), 'apps/quotation/src/applications/graphql/schema.gql'),
+          autoSchemaFile: join(
+            process.cwd(),
+            'apps/quotation/src/applications/graphql/schema.gql',
+          ),
           playground: false,
           subscriptions: {
             'graphql-ws': true,

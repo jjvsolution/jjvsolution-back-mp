@@ -8,7 +8,7 @@ import {
   Injectable,
   PlainLiteralObject,
 } from '@nestjs/common';
-import { CodeErrorRepository } from '@prisma';
+import { CodeErrorRepository } from '@database/prisma';
 import { ClassTransformOptions, plainToClass } from 'class-transformer';
 import { catchError, Observable } from 'rxjs';
 import { /* ApiOrquestadoraError, */ ExceptionTemplateError } from '..';

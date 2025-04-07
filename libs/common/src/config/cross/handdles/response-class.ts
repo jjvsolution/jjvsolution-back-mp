@@ -31,13 +31,12 @@ export abstract class ResponseClass {
     /* data.message = data.message || MESSAGE_DEFAULT[HttpStatus.OK]; */
     return { code: HttpStatus.OK, payload, data };
   }
-  protected create<T>(
+  /* protected create<T>(
     payload: T,
     data: DataInterface[] = [],
   ): ResponseInterface<T> {
-    /* data.message = data.message || MESSAGE_DEFAULT[HttpStatus.CREATED]; */
     return { code: HttpStatus.CREATED, payload, data };
-  }
+  } */
 
   protected accepted<T>(
     payload: T,

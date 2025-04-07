@@ -236,6 +236,11 @@ model ESDocument {
 }
 
 // Base de datos para Quotation con prefijo Q
+enum TypeTypeProdServ {
+  PRODUCT @map("Producto")
+  SERVICE @map("Servicio")
+}
+
 model QUsers {
   id        Int         @id @default(autoincrement())
   UID       String
@@ -246,10 +251,10 @@ model QUsers {
 model QBusiness {
   id               Int        @id @default(autoincrement())
   name             String
-  business_name    String
+  businessName    String
   rut              String     @unique
-  users            QUsers?    @relation(fields: [users_id], references: [id])
-  users_id         Int
+  users            QUsers?    @relation(fields: [usersId], references: [id])
+  usersId         Int
   clients          QClients[]
   address          String
   emails           String?
@@ -261,8 +266,8 @@ model QClients {
   name             String
   rut              String       @unique
   address          String
-  business         QBusiness?   @relation(fields: [business_id], references: [id])
-  business_id      Int
+  business         QBusiness?   @relation(fields: [businessId], references: [id])
+  businessId      Int
   quotation        QQuotation[]
   emails           String?
   emailAdditionals String?
@@ -274,37 +279,37 @@ model QQuotation {
   title          String
   detail         String
   dateQuote      String
-  clients        QClients?         @relation(fields: [clients_id], references: [id])
-  clients_id     Int
+  clients        QClients?         @relation(fields: [clientsId], references: [id])
+  clientsId     Int
   ItemsQuotation QItemsQuotation[]
-  file           QFile?            @relation(fields: [file_id], references: [id])
-  file_id        Int?
-  status         QStatus?          @relation(fields: [status_id], references: [id])
-  status_id      Int
+  file           QFile?            @relation(fields: [fileId], references: [id])
+  fileId        Int?
+  status         QStatus?          @relation(fields: [statusId], references: [id])
+  statusId      Int
 }
 
 model QItemsQuotation {
   id           Int         @id @default(autoincrement())
   cant         Int
-  quotation    QQuotation? @relation(fields: [quotation_id], references: [id])
-  quotation_id Int?
-  prodServ     QProdServ?  @relation(fields: [prodServ_id], references: [id])
-  prodServ_id  Int?
+  quotation    QQuotation? @relation(fields: [quotationId], references: [id])
+  quotationId Int?
+  prodServ     QProdServ?  @relation(fields: [prodServId], references: [id])
+  prodServId  Int?
 }
 
 model QProdServ {
   id             Int               @id @default(autoincrement())
   detail         String
   price          Int
-  type           String
+  type           TypeTypeProdServ
   itemsQuotation QItemsQuotation[]
 }
 
 model QFile {
   id          Int          @id @default(autoincrement())
   url         String
-  typeFile    QTypeFile?   @relation(fields: [typeFile_id], references: [id])
-  typeFile_id Int
+  typeFile    QTypeFile?   @relation(fields: [typeFileId], references: [id])
+  typeFileId Int
   quotation   QQuotation[]
 }
 
@@ -351,8 +356,8 @@ model GContacts {
 
 model GtemplateContact {
   id               Int             @id @default(autoincrement())
-  emailTemplate    GEmailTemplate? @relation(fields: [emailTemplate_id], references: [id])
-  emailTemplate_id Int
-  Contacts         GContacts?      @relation(fields: [contacts_id], references: [id])
-  contacts_id      Int
+  emailTemplate    GEmailTemplate? @relation(fields: [emailTemplateId], references: [id])
+  emailTemplateId Int
+  Contacts         GContacts?      @relation(fields: [contactsId], references: [id])
+  contactsId      Int
 }

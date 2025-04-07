@@ -4,10 +4,11 @@ import { AuthService } from '@services';
 import { ConfigService } from '@nestjs/config';
 import { ConfigurationsInterface } from '@interfaces';
 import { PassportModule } from '@nestjs/passport';
-import { QuotationPrismaModule } from '@prisma';
+import { QuotationPrismaModule } from '@database/prisma';
 import { jwtFactory } from 'common/config';
+import { QQuotationBusiness } from './qQuitation.business';
 
-const businessExport: Provider[] = [AuthService];
+const businessExport: Provider[] = [AuthService, QQuotationBusiness];
 
 @Module({
   imports: [

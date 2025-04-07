@@ -10,10 +10,9 @@ type DataObjectType {
   duration: Boolean
 }
 
-type QUsersAllObjectType {
+type QUsersObjectType {
   UID: String!
   createdAt: DateTime
-  id: Float!
 }
 
 """
@@ -21,22 +20,268 @@ A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date
 """
 scalar DateTime
 
-input QUsersAllInputType {
+type QUsersAllObjectType {
   UID: String!
   createdAt: DateTime
   id: Float!
+  business: [QBusinessAllObjectType!]
 }
 
-type Query {
-  QUser: [QUsersAllObjectType!]!
-  QUserById(id: Float!): QUsersAllObjectType
+type QStatusAllObjectType {
+  name: String!
+  key: String!
+  type: String!
+  id: Float!
+  quotation: QQuotationAllObjectType
 }
 
-type Mutation {
-  QUserCreate(data: QUsersInputType!): QUsersAllObjectType
+type QProdServAllObjectType {
+  detail: String!
+  price: Float!
+  type: String!
+  id: Float!
+  itemsQuotation: [QItemsQuotationAllObjectType!]
+}
+
+type QItemsQuotationAllObjectType {
+  cant: Float!
+  prodServId: Float
+  quotationId: Float
+  id: Float!
+  prodServ: QProdServAllObjectType
+  quotation: QQuotationAllObjectType
+}
+
+type QQuotationAllObjectType {
+  folio: String!
+  title: String!
+  detail: String!
+  dateQuote: String!
+  clientsId: Float!
+  statusId: Float!
+  id: Float!
+  clients: QClientsAllObjectType
+  status: QStatusAllObjectType
+  ItemsQuotation: QItemsQuotationAllObjectType
+}
+
+type QClientsAllObjectType {
+  name: String!
+  rut: String!
+  address: String!
+  emails: String
+  emailAdditionals: String
+  businessId: Float
+  id: Float!
+  business: QBusinessAllObjectType
+  quotation: QQuotationAllObjectType
+}
+
+type QBusinessAllObjectType {
+  name: String!
+  businessName: String!
+  rut: String!
+  address: String!
+  emails: String
+  emailAdditionals: String
+  usersId: Float
+  id: Float!
+  users: QUsersObjectType
+  clients: [QClientsAllObjectType!]
+}
+
+type QTypeFileAllObjectType {
+  name: String!
+  mime: String!
+  extension: String!
+  id: Float!
+  typeFile: [QTypeFileAllObjectType!]
+}
+
+type QFileAllObjectType {
+  url: String!
+  typeFileId: Float!
+  id: Float!
+  typeFile: QTypeFileAllObjectType
+  quotation: QQuotationAllObjectType
 }
 
 input QUsersInputType {
   UID: String!
   createdAt: DateTime
+}
+
+input QUsersAllInputType {
+  UID: String!
+  createdAt: DateTime
+  id: Float!
+  business: [QBusinessAllInputType!]
+}
+
+input QStatusAllInputType {
+  name: String!
+  key: String!
+  type: String!
+  id: Float!
+  quotation: QQuotationAllInputType
+}
+
+input QProdServAllInputType {
+  detail: String!
+  price: Float!
+  type: String!
+  id: Float!
+  itemsQuotation: [QItemsQuotationAllInputType!]
+}
+
+input QItemsQuotationAllInputType {
+  cant: Float!
+  prodServId: Float
+  quotationId: Float
+  id: Float!
+  prodServ: QProdServAllInputType
+  quotation: QQuotationAllInputType
+}
+
+input QQuotationAllInputType {
+  folio: String!
+  title: String!
+  detail: String!
+  dateQuote: String!
+  clientsId: Float!
+  statusId: Float!
+  id: Float!
+  clients: QClientsAllInputType
+  status: QStatusAllInputType
+  ItemsQuotation: QItemsQuotationAllInputType
+}
+
+input QClientsAllInputType {
+  name: String!
+  rut: String!
+  address: String!
+  emails: String
+  emailAdditionals: String
+  businessId: Float
+  id: Float!
+  business: QBusinessAllInputType
+  quotation: QQuotationAllInputType
+}
+
+input QBusinessAllInputType {
+  name: String!
+  businessName: String!
+  rut: String!
+  address: String!
+  emails: String
+  emailAdditionals: String
+  usersId: Float
+  id: Float!
+  users: QUsersInputType
+  clients: [QClientsAllInputType!]
+}
+
+input QTypeFileAllInputType {
+  name: String!
+  mime: String!
+  extension: String!
+  id: Float!
+  typeFile: [QTypeFileAllInputType!]
+}
+
+input QFileAllInputType {
+  url: String!
+  typeFileId: Float!
+  id: Float!
+  typeFile: QTypeFileAllInputType
+  quotation: QQuotationAllInputType
+}
+
+type Query {
+  QBusiness: [QBusinessAllObjectType!]!
+  QBusinessById(id: Float!): QBusinessAllObjectType
+  QClients: [QClientsAllObjectType!]!
+  QClientsById(id: Float!): QClientsAllObjectType
+  QUser: [QUsersAllObjectType!]!
+  QUserById(id: Float!): QUsersAllObjectType
+  QItemsQuotation: [QItemsQuotationAllObjectType!]!
+  QItemsQuotationById(id: Float!): QItemsQuotationAllObjectType
+  QProdServ: [QProdServAllObjectType!]!
+  QProdServById(id: Float!): QProdServAllObjectType
+  QQuotation: [QQuotationAllObjectType!]!
+  QQuotationById(id: Float!): QQuotationAllObjectType
+  QStatus: [QStatusAllObjectType!]!
+  QStatusById(id: Float!): QStatusAllObjectType
+}
+
+type Mutation {
+  QBusinessCreate(data: QBusinessInputType!): QBusinessAllObjectType
+  QBusinessUpdate(id: Float!, data: QBusinessInputType!): QBusinessAllObjectType
+  QClientsCreate(data: QClientsInputType!): QClientsAllObjectType
+  QClientsUpdate(id: Float!, data: QClientsInputType!): QClientsAllObjectType
+  QUserCreate(data: QUsersInputType!): QUsersAllObjectType
+  QUserUpdate(id: Float!, data: QUsersInputType!): QUsersAllObjectType
+  QItemsQuotationCreate(data: QItemsQuotationInputType!): QItemsQuotationAllObjectType
+  QItemsQuotationUpdate(id: Float!, data: QItemsQuotationInputType!): QItemsQuotationAllObjectType
+  QProdServCreate(data: QProdServInputType!): QProdServAllObjectType
+  QProdServUpdate(id: Float!, data: QProdServInputType!): QProdServAllObjectType
+  QQuotationCreate(data: QQuotationInputType!): QQuotationAllObjectType
+  QQuotationUpdate(id: Float!, data: QQuotationInputType!): QQuotationAllObjectType
+  createFolio(id: Float!): JSON
+  sendQuotation(id: Float!): JSON
+  approvedQuotation(id: Float!): JSON
+  refusedQuotation(id: Float!): JSON
+  QStatusCreate(data: QStatusInputType!): QStatusAllObjectType
+  QStatusUpdate(id: Float!, data: QStatusInputType!): QStatusAllObjectType
+}
+
+input QBusinessInputType {
+  name: String!
+  businessName: String!
+  rut: String!
+  address: String!
+  emails: String
+  emailAdditionals: String
+  usersId: Float
+}
+
+input QClientsInputType {
+  name: String!
+  rut: String!
+  address: String!
+  emails: String
+  emailAdditionals: String
+  businessId: Float
+}
+
+input QItemsQuotationInputType {
+  cant: Float!
+  prodServId: Float
+  quotationId: Float
+}
+
+input QProdServInputType {
+  detail: String!
+  price: Float!
+  type: String!
+}
+
+input QQuotationInputType {
+  folio: String!
+  title: String!
+  detail: String!
+  dateQuote: String!
+  clientsId: Float!
+  statusId: Float!
+}
+
+"""
+The `JSON` scalar type represents JSON values as specified by [ECMA-404](http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf).
+"""
+scalar JSON
+
+input QStatusInputType {
+  name: String!
+  key: String!
+  type: String!
 }

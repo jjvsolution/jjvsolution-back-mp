@@ -5,7 +5,7 @@ import {
   GraphQLRequestContextWillSendResponse,
 } from '@apollo/server';
 import { Plugin } from '@nestjs/apollo';
-import { ErrorRepository, LogRepository } from '@prisma';
+import { ErrorRepository, LogRepository } from '@database/prisma';
 import { Prisma } from '@prisma/client';
 import { Log4jsService } from '@shared/log4js';
 import { app } from 'apps/quotation/src/main';
