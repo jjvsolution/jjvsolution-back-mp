@@ -19,6 +19,7 @@ import {
   QProdServResolver,
   QQuotationResolver,
   QStatusResolver,
+  QTemplateResolver,
   QTypeFileResolver,
   QUserResolver,
 } from '.';
@@ -36,6 +37,7 @@ const resolver: Provider[] = [
   QProdServResolver,
   QQuotationResolver,
   QStatusResolver,
+  QTemplateResolver,
   QTypeFileResolver,
   QUserResolver,
 ];

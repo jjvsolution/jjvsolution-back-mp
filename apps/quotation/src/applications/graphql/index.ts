@@ -5,6 +5,7 @@ export * from './qItemsQuotation.resolver';
 export * from './qProdServ.resolver';
 export * from './qQuotation.resolver';
 export * from './qStatus.resolver';
+export * from './qTemplate.resolver';
 export * from './qTypeFile.resolver';
 export * from './qUser.resolver';
 

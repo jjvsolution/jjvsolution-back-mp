@@ -55,6 +55,7 @@
     "graphql-type-json": "^0.3.2",
     "graphql-ws": "^6.0.4",
     "log4js": "^6.9.1",
+    "md-to-pdf": "^5.2.4",
     "passport": "^0.7.0",
     "passport-github": "^1.1.0",
     "passport-google-oauth20": "^2.0.0",

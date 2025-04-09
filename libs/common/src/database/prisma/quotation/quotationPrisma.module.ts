@@ -8,6 +8,7 @@ import {
   QProdServRepository,
   QQuotationRepository,
   QStatusRepository,
+  QTemplateRepository,
   QTypeFileRepository,
   QUsersRepository,
 } from '.';
@@ -21,6 +22,7 @@ const provider = [
   QProdServRepository,
   QQuotationRepository,
   QStatusRepository,
+  QTemplateRepository,
   QTypeFileRepository,
   QUsersRepository,
 ];

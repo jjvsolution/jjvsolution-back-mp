@@ -27,6 +27,7 @@ model Parameter {
   group       String
   type        TypeParameter
 }
+
 model CodeError {
   id           Int    @id @default(autoincrement())
   code         String
@@ -47,7 +48,7 @@ model Error {
   headers      String   @db.Text
   type         String
   requestUser  String?
-  stack        String?   @db.Text
+  stack        String?  @db.Text
 }
 
 model Log {
@@ -61,6 +62,7 @@ model Log {
   error        String   @db.Text
   level        String
 }
+
 // Access Control con prefijo AC
 model ACUser {
   id                      Int                         @id @default(autoincrement())
@@ -251,10 +253,10 @@ model QUsers {
 model QBusiness {
   id               Int        @id @default(autoincrement())
   name             String
-  businessName    String
+  businessName     String
   rut              String     @unique
   users            QUsers?    @relation(fields: [usersId], references: [id])
-  usersId         Int
+  usersId          Int
   clients          QClients[]
   address          String
   emails           String?
@@ -267,7 +269,7 @@ model QClients {
   rut              String       @unique
   address          String
   business         QBusiness?   @relation(fields: [businessId], references: [id])
-  businessId      Int
+  businessId       Int
   quotation        QQuotation[]
   emails           String?
   emailAdditionals String?
@@ -280,20 +282,20 @@ model QQuotation {
   detail         String
   dateQuote      String
   clients        QClients?         @relation(fields: [clientsId], references: [id])
-  clientsId     Int
+  clientsId      Int
   ItemsQuotation QItemsQuotation[]
   file           QFile?            @relation(fields: [fileId], references: [id])
-  fileId        Int?
+  fileId         Int?
   status         QStatus?          @relation(fields: [statusId], references: [id])
-  statusId      Int
+  statusId       Int
 }
 
 model QItemsQuotation {
-  id           Int         @id @default(autoincrement())
-  cant         Int
-  quotation    QQuotation? @relation(fields: [quotationId], references: [id])
+  id          Int         @id @default(autoincrement())
+  cant        Int
+  quotation   QQuotation? @relation(fields: [quotationId], references: [id])
   quotationId Int?
-  prodServ     QProdServ?  @relation(fields: [prodServId], references: [id])
+  prodServ    QProdServ?  @relation(fields: [prodServId], references: [id])
   prodServId  Int?
 }
 
@@ -306,11 +308,11 @@ model QProdServ {
 }
 
 model QFile {
-  id          Int          @id @default(autoincrement())
-  url         String
-  typeFile    QTypeFile?   @relation(fields: [typeFileId], references: [id])
+  id         Int          @id @default(autoincrement())
+  url        String
+  typeFile   QTypeFile?   @relation(fields: [typeFileId], references: [id])
   typeFileId Int
-  quotation   QQuotation[]
+  quotation  QQuotation[]
 }
 
 model QTypeFile {
@@ -327,6 +329,13 @@ model QStatus {
   key       String
   type      String
   quotation QQuotation[]
+}
+
+model QTemplate {
+  id          Int    @id @default(autoincrement())
+  key         String @unique
+  description String
+  template    String @db.Text
 }
 
 // base de datos para Google con prefijo G 
@@ -355,9 +364,9 @@ model GContacts {
 }
 
 model GtemplateContact {
-  id               Int             @id @default(autoincrement())
-  emailTemplate    GEmailTemplate? @relation(fields: [emailTemplateId], references: [id])
+  id              Int             @id @default(autoincrement())
+  emailTemplate   GEmailTemplate? @relation(fields: [emailTemplateId], references: [id])
   emailTemplateId Int
-  Contacts         GContacts?      @relation(fields: [contactsId], references: [id])
+  Contacts        GContacts?      @relation(fields: [contactsId], references: [id])
   contactsId      Int
 }

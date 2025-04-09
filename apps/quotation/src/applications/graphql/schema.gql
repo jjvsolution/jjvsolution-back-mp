@@ -106,6 +106,13 @@ type QFileAllObjectType {
   quotation: QQuotationAllObjectType
 }
 
+type QTemplateAllObjectType {
+  key: String!
+  description: String!
+  template: String!
+  id: Float!
+}
+
 input QUsersInputType {
   UID: String!
   createdAt: DateTime
@@ -197,13 +204,20 @@ input QFileAllInputType {
   quotation: QQuotationAllInputType
 }
 
+input QTemplateAllInputType {
+  key: String!
+  description: String!
+  template: String!
+  id: Float!
+}
+
 type Query {
   QBusiness: [QBusinessAllObjectType!]!
   QBusinessById(id: Float!): QBusinessAllObjectType
   QClients: [QClientsAllObjectType!]!
   QClientsById(id: Float!): QClientsAllObjectType
-  QUser: [QUsersAllObjectType!]!
-  QUserById(id: Float!): QUsersAllObjectType
+  QFile: [QFileAllObjectType!]!
+  QFileById(id: Float!): QFileAllObjectType
   QItemsQuotation: [QItemsQuotationAllObjectType!]!
   QItemsQuotationById(id: Float!): QItemsQuotationAllObjectType
   QProdServ: [QProdServAllObjectType!]!
@@ -212,6 +226,13 @@ type Query {
   QQuotationById(id: Float!): QQuotationAllObjectType
   QStatus: [QStatusAllObjectType!]!
   QStatusById(id: Float!): QStatusAllObjectType
+  QTemplate: [QTemplateAllObjectType!]!
+  QTemplateById(id: Float!): QTemplateAllObjectType
+  getTemplate: String!
+  QTypeFile: [QTypeFileAllObjectType!]!
+  QTypeFileById(id: Float!): QTypeFileAllObjectType
+  QUser: [QUsersAllObjectType!]!
+  QUserById(id: Float!): QUsersAllObjectType
 }
 
 type Mutation {
@@ -219,8 +240,8 @@ type Mutation {
   QBusinessUpdate(id: Float!, data: QBusinessInputType!): QBusinessAllObjectType
   QClientsCreate(data: QClientsInputType!): QClientsAllObjectType
   QClientsUpdate(id: Float!, data: QClientsInputType!): QClientsAllObjectType
-  QUserCreate(data: QUsersInputType!): QUsersAllObjectType
-  QUserUpdate(id: Float!, data: QUsersInputType!): QUsersAllObjectType
+  QFileCreate(data: QFileInputType!): QFileAllObjectType
+  QFileUpdate(id: Float!, data: QFileInputType!): QFileAllObjectType
   QItemsQuotationCreate(data: QItemsQuotationInputType!): QItemsQuotationAllObjectType
   QItemsQuotationUpdate(id: Float!, data: QItemsQuotationInputType!): QItemsQuotationAllObjectType
   QProdServCreate(data: QProdServInputType!): QProdServAllObjectType
@@ -233,6 +254,12 @@ type Mutation {
   refusedQuotation(id: Float!): JSON
   QStatusCreate(data: QStatusInputType!): QStatusAllObjectType
   QStatusUpdate(id: Float!, data: QStatusInputType!): QStatusAllObjectType
+  QTemplateCreate(data: QTemplateInputType!): QTemplateAllObjectType
+  QTemplateUpdate(id: Float!, data: QTemplateInputType!): QTemplateAllObjectType
+  QTypeFileCreate(data: QTypeFileInputType!): QTypeFileAllObjectType
+  QTypeFileUpdate(id: Float!, data: QTypeFileInputType!): QTypeFileAllObjectType
+  QUserCreate(data: QUsersInputType!): QUsersAllObjectType
+  QUserUpdate(id: Float!, data: QUsersInputType!): QUsersAllObjectType
 }
 
 input QBusinessInputType {
@@ -252,6 +279,11 @@ input QClientsInputType {
   emails: String
   emailAdditionals: String
   businessId: Float
+}
+
+input QFileInputType {
+  url: String!
+  typeFileId: Float!
 }
 
 input QItemsQuotationInputType {
@@ -284,4 +316,16 @@ input QStatusInputType {
   name: String!
   key: String!
   type: String!
+}
+
+input QTemplateInputType {
+  key: String!
+  description: String!
+  template: String!
+}
+
+input QTypeFileInputType {
+  name: String!
+  mime: String!
+  extension: String!
 }

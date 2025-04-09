@@ -7,5 +7,6 @@ export * from './qItemsQuotation.model';
 export * from './qProdServ.model';
 export * from './qQuotation.model';
 export * from './qStatus.model';
+export * from './qTemplate.model';
 export * from './qTypeFile.model';
 export * from './qUsers.model';

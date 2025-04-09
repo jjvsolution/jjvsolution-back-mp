@@ -6,9 +6,15 @@ import { ConfigurationsInterface } from '@interfaces';
 import { PassportModule } from '@nestjs/passport';
 import { QuotationPrismaModule } from '@database/prisma';
 import { jwtFactory } from 'common/config';
-import { QQuotationBusiness } from './qQuitation.business';
+import { QQuotationBusiness } from './qQuotation.business';
+import { GenetarePdfBusiness } from '../generic/generate-pdf.business';
+import { QTemplateBusiness } from './qTemplate.business';
 
-const businessExport: Provider[] = [AuthService, QQuotationBusiness];
+const businessExport: Provider[] = [
+  AuthService,
+  QQuotationBusiness,
+  QTemplateBusiness,
+];
 
 @Module({
   imports: [
@@ -19,7 +25,7 @@ const businessExport: Provider[] = [AuthService, QQuotationBusiness];
       useFactory: jwtFactory,
     }), */
   ],
-  providers: [...businessExport, JwtService],
+  providers: [GenetarePdfBusiness, ...businessExport, JwtService],
   exports: businessExport,
 })
 export class QuotationBusinessModule {}

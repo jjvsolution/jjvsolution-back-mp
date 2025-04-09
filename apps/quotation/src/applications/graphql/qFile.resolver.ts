@@ -10,24 +10,24 @@ export class QFileResolver {
 
   //@UseGuards(JwtAuthGuard)
   @Query(() => [QFileAllModel])
-  async QUser(): Promise<QFileAllModel[]> {
+  async QFile(): Promise<QFileAllModel[]> {
     return this.qFileRepository.db.findMany();
   }
   //@UseGuards(JwtAuthGuard)
   @Query(() => QFileAllModel, { nullable: true })
-  async QUserById(@Args('id') id: number): Promise<QFileAllModel | null> {
+  async QFileById(@Args('id') id: number): Promise<QFileAllModel | null> {
     return this.qFileRepository.db.findUnique({ where: { id } });
   }
   //@UseGuards(JwtAuthGuard)
   @Mutation(() => QFileAllModel, { nullable: true })
-  async QUserCreate(
+  async QFileCreate(
     @Args('data') data: QFileModel,
   ): Promise<QFileAllModel | null> {
     return this.qFileRepository.db.create({ data });
   }
   //@UseGuards(JwtAuthGuard)
   @Mutation(() => QFileAllModel, { nullable: true })
-  async QUserUpdate(
+  async QFileUpdate(
     @Args('id') id: number,
     @Args('data') data: QFileModel,
   ): Promise<QFileAllModel | null> {

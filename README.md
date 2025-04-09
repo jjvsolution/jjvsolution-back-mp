@@ -100,5 +100,5 @@ Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
 
 Install dependency
 ```bash
-$ npm i @apollo/server @nestjs/apollo @nestjs/axios @nestjs/config @nestjs/graphql @nestjs/jwt @nestjs/passport @nestjs/platform-express @nestjs/swagger @prisma/client @types/qrcode @types/uuid apollo-server-core apollo-server-express axios circular-json-es6 class-transformer class-validator dd-trace graphql graphql-subscriptions graphql-type-json graphql-ws  log4js passport passport-github passport-google-oauth20 passport-jwt passport-local qrcode speakeasy subscriptions-transport-ws telegraf uuid vm2 graphql-type-json
+$ npm i @apollo/server @nestjs/apollo @nestjs/axios @nestjs/config @nestjs/graphql @nestjs/jwt @nestjs/passport @nestjs/platform-express @nestjs/swagger @prisma/client @types/qrcode @types/uuid apollo-server-core apollo-server-express axios circular-json-es6 class-transformer class-validator dd-trace graphql graphql-subscriptions graphql-type-json graphql-ws  log4js passport passport-github passport-google-oauth20 passport-jwt passport-local qrcode speakeasy subscriptions-transport-ws telegraf uuid vm2 graphql-type-json md-to-pdf
 ```

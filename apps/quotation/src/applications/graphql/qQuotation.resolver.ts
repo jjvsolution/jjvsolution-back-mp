@@ -3,7 +3,7 @@ import { Query, Args, Resolver, Mutation } from '@nestjs/graphql';
 import { JwtAuthGuard } from '@config/cross/guards';
 import { QQuotationAllModel, QQuotationModel } from './models';
 import { QQuotationRepository } from '@database/prisma';
-import { QQuotationBusiness } from 'common/business/quotation/qQuitation.business';
+import { QQuotationBusiness } from 'common/business/quotation/qQuotation.business';
 
 import GraphQLJSON from 'graphql-type-json';
 
