@@ -31,7 +31,7 @@ export class QQuotationResolver {
   async QQuotationCreate(
     @Args('data') data: QQuotationModel,
   ): Promise<QQuotationAllModel | null> {
-    return this.qQuotationBusiness.create(data);
+    return this.qQuotationBusiness.createQuotation(data);
   }
   //@UseGuards(JwtAuthGuard)
   @Mutation(() => QQuotationAllModel, { nullable: true })

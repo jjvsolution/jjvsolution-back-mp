@@ -1,4 +1,5 @@
 import { Injectable } from '@nestjs/common';
+import { ResponseObjectType } from '@quotation/applications/graphql/models';
 import { ResponseClass } from 'common/config';
 import { QTemplateRepository } from 'common/database/prisma';
 import { mdToPdf } from 'md-to-pdf';
@@ -28,16 +29,29 @@ code {
     color: #e83e8c;
 }
 img { max-width: 100%; }
+
 table {
-    border-collapse: collapse;
-    width: 100%;
-    margin: 1em 0;
+  width: 100% !important;
+  border-collapse: collapse;
+  font-size: 14px;
 }
+
 th, td {
-    border: 1px solid #ddd;
-    padding: 8px;
+  border: 1px solid #ccc;
+  padding: 8px;
+  text-align: left;
 }
-th { background-color: #f4f4f4; }
+
+th {
+  background-color: #f5f5f5;
+  color: #333;
+}
+
+tr:nth-child(even) {
+  background-color: #fafafa;
+}
+
+
 blockquote {
     border-left: 4px solid #ddd;
     padding-left: 1em;
@@ -67,30 +81,55 @@ h3 {
   constructor(private readonly qTemplateRepository: QTemplateRepository) {
     super();
   }
-  async getTemplate(key: string, replace: Record<string, replaceInterface>) {
+  async getTemplate(
+    key: string,
+    replace: replaceInterface[],
+  ): Promise<ResponseObjectType<string>> {
     const template = await this.qTemplateRepository.db.findUnique({
       where: { key },
     });
 
     if (!template) return super.badRequest({});
-
-    const pdf = await mdToPdf(
-      { content: this.replace(template.template, replace) },
-      { css: this.css },
-    );
-
+    const content = this.replace(template.template, replace);
+    const pdf = await mdToPdf({ content }, { css: this.css, stylesheet_encoding: 'utf-8' });
+    console.log(pdf)
     const buffer = Buffer.from(pdf.content);
-    const base64 = buffer.toString('base64');
-    return base64;
+    const base64: string = buffer.toString('base64');
+    return super.successGQL<string>(base64);
   }
-  private replace(template: string, replace: Record<string, replaceInterface>) {
+  private replace(template: string, replace: replaceInterface[]) {
     const finalReplace = '';
+
+    for (const r of replace) {
+      if (r.type === 'string') {
+        template = template.replace(`{{${r.id}}}`, r.value.toString());
+      } else if (r.type === 'table') {
+        const values = r.value as tableInterface;
+
+        let table = `|${values.header.join('|')}|`;
+        let separador = '';
+        for (let i = 0; i < values.header.length; i++) {
+          separador += `${i == 0 ? '|' : ''}${Array.from({ length: values.header[i].length }, (_) => '-').join('')}|`;
+        }
+        table += '\n' + separador + '\n';
+
+        for (const row of values.rows) {
+          table += `|${row.join('|')}|\n`;
+        }
+        template = template.replace(`{{${r.id}}}`, table);
+      }
+    }
 
     return template;
   }
 }
 
+export interface tableInterface {
+  header: string[];
+  rows: string[][];
+}
 export interface replaceInterface {
-  id: string | { key: string; value: string }[];
+  id: string;
   type: 'string' | 'table';
+  value: string | tableInterface;
 }

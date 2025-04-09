@@ -1,7 +1,11 @@
 import { UseGuards } from '@nestjs/common';
 import { Query, Args, Resolver, Mutation } from '@nestjs/graphql';
 import { JwtAuthGuard } from '@config/cross/guards';
-import { QTemplateAllModel, QTemplateModel } from './models';
+import {
+  QTemplateAllModel,
+  QTemplateModel,
+  ResponseObjectType,
+} from './models';
 import { QTemplateRepository } from '@database/prisma';
 import { QTemplateBusiness } from '@business';
 
@@ -39,8 +43,9 @@ export class QTemplateResolver {
   ): Promise<QTemplateAllModel | null> {
     return this.qTemplateRepository.db.update({ data, where: { id } });
   }
-  @Query(() => String)
-  async getTemplate() {
+  //@UseGuards(JwtAuthGuard)
+  @Query(() => ResponseObjectType<string>)
+  async getTemplate(): Promise<ResponseObjectType<string>> {
     return this.qTemplateBusiness.getTemplate();
   }
 }

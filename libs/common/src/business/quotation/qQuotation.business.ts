@@ -11,7 +11,7 @@ export class QQuotationBusiness extends ResponseClass {
   ) {
     super();
   }
-  async create(data: Prisma.QQuotationUncheckedCreateInput) {
+  async createQuotation(data: Prisma.QQuotationUncheckedCreateInput) {
     const status = await this.qStatusRepository.db.findFirst({
       where: {
         key: 'DRAFT',

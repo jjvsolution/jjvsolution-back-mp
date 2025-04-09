@@ -10,7 +10,7 @@ export class ResponseObjectType<T> {
   message?: string;
 
   @Field(() => GraphQLJSON, { nullable: true })
-  payload: T;
+  payload?: T;
 
   @Field(() => String, { nullable: true })
   monitoringCode?: string;

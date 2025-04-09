@@ -22,6 +22,8 @@ import {
 } from '@nestjs/common';
 import { DataInterface, ResponseInterface } from '@interfaces';
 import { ExceptionTemplateError } from '@exceptions';
+import { DataObjectType, ResponseObjectType } from '@quotation/applications/graphql/models';
+
 
 export abstract class ResponseClass {
   protected success<T>(
@@ -31,17 +33,42 @@ export abstract class ResponseClass {
     /* data.message = data.message || MESSAGE_DEFAULT[HttpStatus.OK]; */
     return { code: HttpStatus.OK, payload, data };
   }
-  /* protected create<T>(
+  protected successGQL<T>(
+    payload: T,
+    data: DataObjectType[] = [],
+    message?: string,
+  ): ResponseObjectType<T> {
+    /* data.message = data.message || MESSAGE_DEFAULT[HttpStatus.OK]; */
+    return { code: HttpStatus.OK, payload, data, message };
+  }
+  protected create<T>(
     payload: T,
     data: DataInterface[] = [],
   ): ResponseInterface<T> {
+    /* data.message = data.message || MESSAGE_DEFAULT[HttpStatus.CREATED]; */
     return { code: HttpStatus.CREATED, payload, data };
-  } */
+  }
+
+  protected createGQL<T>(
+    payload: T,
+    data: DataObjectType[] = [],
+  ): ResponseObjectType<T> {
+    /* data.message = data.message || MESSAGE_DEFAULT[HttpStatus.CREATED]; */
+    return { code: HttpStatus.CREATED, payload, data };
+  }
 
   protected accepted<T>(
     payload: T,
     data: DataInterface[] = [],
   ): ResponseInterface<T> {
+    /* data.message = data.message || MESSAGE_DEFAULT[HttpStatus.ACCEPTED]; */
+    return { code: HttpStatus.ACCEPTED, payload, data };
+  }
+
+  protected acceptedGQL<T>(
+    payload: T,
+    data: DataObjectType[] = [],
+  ): ResponseObjectType<T> {
     /* data.message = data.message || MESSAGE_DEFAULT[HttpStatus.ACCEPTED]; */
     return { code: HttpStatus.ACCEPTED, payload, data };
   }
@@ -55,9 +82,20 @@ export abstract class ResponseClass {
     };
   }
 
+  protected noContentGQL<T>(
+    data: DataObjectType[] = [],
+  ): ResponseObjectType<T> {
+    return {
+      code: HttpStatus.NO_CONTENT,
+      message: '',
+      payload: undefined,
+      data,
+    };
+  }
+
   protected badRequest<T>(
     payload: T,
-    arg?: { key: string; value: string }[],
+    arg: { key: string; value: string }[] | undefined = undefined,
     description = MESSAGE_DEFAULT[HttpStatus.BAD_REQUEST],
   ): never {
     if (arg === undefined) {

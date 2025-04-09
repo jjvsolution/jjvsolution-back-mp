@@ -2,6 +2,20 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
+type ResponseObjectType {
+  code: Float
+  message: String
+  payload: JSON
+  monitoringCode: String
+  errors: [String!]
+  data: [DataObjectType!]
+}
+
+"""
+The `JSON` scalar type represents JSON values as specified by [ECMA-404](http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf).
+"""
+scalar JSON
+
 type DataObjectType {
   message: String
   type: String
@@ -228,7 +242,7 @@ type Query {
   QStatusById(id: Float!): QStatusAllObjectType
   QTemplate: [QTemplateAllObjectType!]!
   QTemplateById(id: Float!): QTemplateAllObjectType
-  getTemplate: String!
+  getTemplate: ResponseObjectType!
   QTypeFile: [QTypeFileAllObjectType!]!
   QTypeFileById(id: Float!): QTypeFileAllObjectType
   QUser: [QUsersAllObjectType!]!
@@ -306,11 +320,6 @@ input QQuotationInputType {
   clientsId: Float!
   statusId: Float!
 }
-
-"""
-The `JSON` scalar type represents JSON values as specified by [ECMA-404](http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf).
-"""
-scalar JSON
 
 input QStatusInputType {
   name: String!
