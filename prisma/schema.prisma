@@ -248,6 +248,7 @@ model QUsers {
   UID       String
   createdAt DateTime    @default(now())
   business  QBusiness[]
+  isDeleted Boolean     @default(false)
 }
 
 model QBusiness {
@@ -261,6 +262,7 @@ model QBusiness {
   address          String
   emails           String?
   emailAdditionals String?
+  isDeleted        Boolean    @default(false)
 }
 
 model QClients {
@@ -273,6 +275,7 @@ model QClients {
   quotation        QQuotation[]
   emails           String?
   emailAdditionals String?
+  isDeleted        Boolean      @default(false)
 }
 
 model QQuotation {
@@ -288,6 +291,7 @@ model QQuotation {
   fileId         Int?
   status         QStatus?          @relation(fields: [statusId], references: [id])
   statusId       Int
+  isDeleted      Boolean           @default(false)
 }
 
 model QItemsQuotation {
@@ -297,6 +301,7 @@ model QItemsQuotation {
   quotationId Int?
   prodServ    QProdServ?  @relation(fields: [prodServId], references: [id])
   prodServId  Int?
+  isDeleted   Boolean     @default(false)
 }
 
 model QProdServ {
@@ -305,6 +310,7 @@ model QProdServ {
   price          Int
   type           TypeTypeProdServ
   itemsQuotation QItemsQuotation[]
+  isDeleted      Boolean           @default(false)
 }
 
 model QFile {
@@ -313,6 +319,7 @@ model QFile {
   typeFile   QTypeFile?   @relation(fields: [typeFileId], references: [id])
   typeFileId Int
   quotation  QQuotation[]
+  isDeleted  Boolean      @default(false)
 }
 
 model QTypeFile {
@@ -321,6 +328,7 @@ model QTypeFile {
   mime      String
   extension String
   file      QFile[]
+  isDeleted Boolean @default(false)
 }
 
 model QStatus {
@@ -329,13 +337,15 @@ model QStatus {
   key       String
   type      String
   quotation QQuotation[]
+  isDeleted Boolean      @default(false)
 }
 
 model QTemplate {
-  id          Int    @id @default(autoincrement())
-  key         String @unique
+  id          Int     @id @default(autoincrement())
+  key         String  @unique
   description String
-  template    String @db.Text
+  template    String  @db.Text
+  isDeleted   Boolean @default(false)
 }
 
 // base de datos para Google con prefijo G 

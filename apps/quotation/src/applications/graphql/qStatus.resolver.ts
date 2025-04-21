@@ -33,4 +33,12 @@ export class QStatusResolver {
   ): Promise<QStatusAllModel | null> {
     return this.qStatusRepository.db.update({ data, where: { id } });
   }
+  //@UseGuards(JwtAuthGuard)
+  @Mutation(() => QStatusAllModel, { nullable: true })
+  async QStatusDelete(@Args('id') id: number): Promise<QStatusAllModel | null> {
+    return this.qStatusRepository.db.update({
+      data: { isDeleted: true },
+      where: { id },
+    });
+  }
 }

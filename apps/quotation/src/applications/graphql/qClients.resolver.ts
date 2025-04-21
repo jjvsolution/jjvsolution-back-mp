@@ -33,4 +33,14 @@ export class QClientsResolver {
   ): Promise<QClientsAllModel | null> {
     return this.qClientsRepository.db.update({ data, where: { id } });
   }
+  //@UseGuards(JwtAuthGuard)
+  @Mutation(() => QClientsAllModel, { nullable: true })
+  async QClientsDelete(
+    @Args('id') id: number,
+  ): Promise<QClientsAllModel | null> {
+    return this.qClientsRepository.db.update({
+      data: { isDeleted: true },
+      where: { id },
+    });
+  }
 }

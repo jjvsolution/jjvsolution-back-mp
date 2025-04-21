@@ -33,4 +33,14 @@ export class QUserResolver {
   ): Promise<QUsersAllModel | null> {
     return this.qUsersRepository.db.update({ data, where: { id } });
   }
+  //@UseGuards(JwtAuthGuard)
+  @Mutation(() => QUsersAllModel, { nullable: true })
+  async QUserDelete(
+    @Args('id') id: number,
+  ): Promise<QUsersAllModel | null> {
+    return this.qUsersRepository.db.update({
+      data: { isDeleted: true },
+      where: { id },
+    });
+  }
 }

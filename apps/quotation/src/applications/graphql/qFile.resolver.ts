@@ -33,4 +33,14 @@ export class QFileResolver {
   ): Promise<QFileAllModel | null> {
     return this.qFileRepository.db.update({ data, where: { id } });
   }
+  //@UseGuards(JwtAuthGuard)
+  @Mutation(() => QFileAllModel, { nullable: true })
+  async QFileDelete(
+    @Args('id') id: number,
+  ): Promise<QFileAllModel | null> {
+    return this.qFileRepository.db.update({
+      data: { isDeleted: true },
+      where: { id },
+    });
+  }
 }

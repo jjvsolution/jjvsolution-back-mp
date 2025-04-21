@@ -15,7 +15,9 @@ export class QTypeFileResolver {
   }
   //@UseGuards(JwtAuthGuard)
   @Query(() => QTypeFileAllModel, { nullable: true })
-  async QTypeFileById(@Args('id') id: number): Promise<QTypeFileAllModel | null> {
+  async QTypeFileById(
+    @Args('id') id: number,
+  ): Promise<QTypeFileAllModel | null> {
     return this.qTypeFileRepository.db.findUnique({ where: { id } });
   }
   //@UseGuards(JwtAuthGuard)
@@ -32,5 +34,15 @@ export class QTypeFileResolver {
     @Args('data') data: QTypeFileModel,
   ): Promise<QTypeFileAllModel | null> {
     return this.qTypeFileRepository.db.update({ data, where: { id } });
+  }
+  //@UseGuards(JwtAuthGuard)
+  @Mutation(() => QTypeFileAllModel, { nullable: true })
+  async QTypeFileDelete(
+    @Args('id') id: number,
+  ): Promise<QTypeFileAllModel | null> {
+    return this.qTypeFileRepository.db.update({
+      data: { isDeleted: true },
+      where: { id },
+    });
   }
 }

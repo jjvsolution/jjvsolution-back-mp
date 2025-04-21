@@ -15,7 +15,9 @@ export class QBusinessResolver {
   }
   //@UseGuards(JwtAuthGuard)
   @Query(() => QBusinessAllModel, { nullable: true })
-  async QBusinessById(@Args('id') id: number): Promise<QBusinessAllModel | null> {
+  async QBusinessById(
+    @Args('id') id: number,
+  ): Promise<QBusinessAllModel | null> {
     return this.qBusinessRepository.db.findUnique({ where: { id } });
   }
   //@UseGuards(JwtAuthGuard)
@@ -32,5 +34,15 @@ export class QBusinessResolver {
     @Args('data') data: QBusinessModel,
   ): Promise<QBusinessAllModel | null> {
     return this.qBusinessRepository.db.update({ data, where: { id } });
+  }
+  //@UseGuards(JwtAuthGuard)
+  @Mutation(() => QBusinessAllModel, { nullable: true })
+  async QBusinessDelete(
+    @Args('id') id: number,
+  ): Promise<QBusinessAllModel | null> {
+    return this.qBusinessRepository.db.update({
+      data: { isDeleted: true },
+      where: { id },
+    });
   }
 }

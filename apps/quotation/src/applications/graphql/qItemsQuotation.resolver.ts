@@ -6,7 +6,9 @@ import { QItemsQuotationRepository } from '@database/prisma';
 
 @Resolver(() => QItemsQuotationAllModel)
 export class QItemsQuotationResolver {
-  constructor(private readonly qItemsQuotationRepository: QItemsQuotationRepository) {}
+  constructor(
+    private readonly qItemsQuotationRepository: QItemsQuotationRepository,
+  ) {}
 
   //@UseGuards(JwtAuthGuard)
   @Query(() => [QItemsQuotationAllModel])
@@ -15,7 +17,9 @@ export class QItemsQuotationResolver {
   }
   //@UseGuards(JwtAuthGuard)
   @Query(() => QItemsQuotationAllModel, { nullable: true })
-  async QItemsQuotationById(@Args('id') id: number): Promise<QItemsQuotationAllModel | null> {
+  async QItemsQuotationById(
+    @Args('id') id: number,
+  ): Promise<QItemsQuotationAllModel | null> {
     return this.qItemsQuotationRepository.db.findUnique({ where: { id } });
   }
   //@UseGuards(JwtAuthGuard)
@@ -32,5 +36,15 @@ export class QItemsQuotationResolver {
     @Args('data') data: QItemsQuotationModel,
   ): Promise<QItemsQuotationAllModel | null> {
     return this.qItemsQuotationRepository.db.update({ data, where: { id } });
+  }
+  //@UseGuards(JwtAuthGuard)
+  @Mutation(() => QItemsQuotationAllModel, { nullable: true })
+  async QItemsQuotationDelete(
+    @Args('id') id: number,
+  ): Promise<QItemsQuotationAllModel | null> {
+    return this.qItemsQuotationRepository.db.update({
+      data: { isDeleted: true },
+      where: { id },
+    });
   }
 }

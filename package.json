@@ -54,6 +54,7 @@
     "graphql-subscriptions": "^3.0.0",
     "graphql-type-json": "^0.3.2",
     "graphql-ws": "^6.0.4",
+    "html-pdf-node": "^1.0.8",
     "log4js": "^6.9.1",
     "md-to-pdf": "^5.2.4",
     "passport": "^0.7.0",

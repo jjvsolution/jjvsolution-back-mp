@@ -15,7 +15,9 @@ export class QProdServResolver {
   }
   //@UseGuards(JwtAuthGuard)
   @Query(() => QProdServAllModel, { nullable: true })
-  async QProdServById(@Args('id') id: number): Promise<QProdServAllModel | null> {
+  async QProdServById(
+    @Args('id') id: number,
+  ): Promise<QProdServAllModel | null> {
     return this.qProdServRepository.db.findUnique({ where: { id } });
   }
   //@UseGuards(JwtAuthGuard)
@@ -32,5 +34,15 @@ export class QProdServResolver {
     @Args('data') data: QProdServModel,
   ): Promise<QProdServAllModel | null> {
     return this.qProdServRepository.db.update({ data, where: { id } });
+  }
+  //@UseGuards(JwtAuthGuard)
+  @Mutation(() => QProdServAllModel, { nullable: true })
+  async QProdServDelete(
+    @Args('id') id: number,
+  ): Promise<QProdServAllModel | null> {
+    return this.qProdServRepository.db.update({
+      data: { isDeleted: true },
+      where: { id },
+    });
   }
 }

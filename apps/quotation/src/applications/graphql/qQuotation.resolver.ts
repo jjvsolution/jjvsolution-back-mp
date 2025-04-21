@@ -42,31 +42,33 @@ export class QQuotationResolver {
     return this.qQuotationRepository.db.update({ data, where: { id } });
   }
   //@UseGuards(JwtAuthGuard)
-  @Mutation(() => GraphQLJSON, { nullable: true })
-  async createFolio(
+  @Mutation(() => QQuotationAllModel, { nullable: true })
+  async QQuotationDelete(
     @Args('id') id: number,
-  ): Promise<undefined> {
+  ): Promise<QQuotationAllModel | null> {
+    return this.qQuotationRepository.db.update({
+      data: { isDeleted: true },
+      where: { id },
+    });
+  }
+  //@UseGuards(JwtAuthGuard)
+  @Mutation(() => GraphQLJSON, { nullable: true })
+  async createFolio(@Args('id') id: number): Promise<undefined> {
     await this.qQuotationBusiness.createFolio(id);
   }
   //@UseGuards(JwtAuthGuard)
   @Mutation(() => GraphQLJSON, { nullable: true })
-  async sendQuotation(
-    @Args('id') id: number,
-  ): Promise<undefined> {
+  async sendQuotation(@Args('id') id: number): Promise<undefined> {
     await this.qQuotationBusiness.sendQuotation(id);
   }
   //@UseGuards(JwtAuthGuard)
   @Mutation(() => GraphQLJSON, { nullable: true })
-  async approvedQuotation(
-    @Args('id') id: number,
-  ): Promise<undefined> {
+  async approvedQuotation(@Args('id') id: number): Promise<undefined> {
     await this.qQuotationBusiness.approvedQuotation(id);
   }
   //@UseGuards(JwtAuthGuard)
   @Mutation(() => GraphQLJSON, { nullable: true })
-  async refusedQuotation(
-    @Args('id') id: number,
-  ): Promise<undefined> {
+  async refusedQuotation(@Args('id') id: number): Promise<undefined> {
     await this.qQuotationBusiness.refusedQuotation(id);
   }
 }

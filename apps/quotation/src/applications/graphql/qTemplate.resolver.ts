@@ -44,6 +44,16 @@ export class QTemplateResolver {
     return this.qTemplateRepository.db.update({ data, where: { id } });
   }
   //@UseGuards(JwtAuthGuard)
+  @Mutation(() => QTemplateAllModel, { nullable: true })
+  async QTemplateDelete(
+    @Args('id') id: number,
+  ): Promise<QTemplateAllModel | null> {
+    return this.qTemplateRepository.db.update({
+      data: { isDeleted: true },
+      where: { id },
+    });
+  }
+  //@UseGuards(JwtAuthGuard)
   @Query(() => ResponseObjectType<string>)
   async getTemplate(): Promise<ResponseObjectType<string>> {
     return this.qTemplateBusiness.getTemplate();
