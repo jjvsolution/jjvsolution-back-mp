@@ -29,6 +29,13 @@ export class QTemplateResolver {
     return this.qTemplateRepository.db.findUnique({ where: { id } });
   }
   //@UseGuards(JwtAuthGuard)
+  @Query(() => QTemplateAllModel, { nullable: true })
+  async QTemplateByKey(
+    @Args('key') key: string,
+  ): Promise<QTemplateAllModel | null> {
+    return this.qTemplateRepository.db.findUnique({ where: { key } });
+  }
+  //@UseGuards(JwtAuthGuard)
   @Mutation(() => QTemplateAllModel, { nullable: true })
   async QTemplateCreate(
     @Args('data') data: QTemplateModel,

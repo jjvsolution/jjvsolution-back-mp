@@ -242,6 +242,7 @@ type Query {
   QStatusById(id: Float!): QStatusAllObjectType
   QTemplate: [QTemplateAllObjectType!]!
   QTemplateById(id: Float!): QTemplateAllObjectType
+  QTemplateByKey(key: String!): QTemplateAllObjectType
   getTemplate: ResponseObjectType!
   QTypeFile: [QTypeFileAllObjectType!]!
   QTypeFileById(id: Float!): QTypeFileAllObjectType
@@ -252,28 +253,38 @@ type Query {
 type Mutation {
   QBusinessCreate(data: QBusinessInputType!): QBusinessAllObjectType
   QBusinessUpdate(id: Float!, data: QBusinessInputType!): QBusinessAllObjectType
+  QBusinessDelete(id: Float!): QBusinessAllObjectType
   QClientsCreate(data: QClientsInputType!): QClientsAllObjectType
   QClientsUpdate(id: Float!, data: QClientsInputType!): QClientsAllObjectType
+  QClientsDelete(id: Float!): QClientsAllObjectType
   QFileCreate(data: QFileInputType!): QFileAllObjectType
   QFileUpdate(id: Float!, data: QFileInputType!): QFileAllObjectType
+  QFileDelete(id: Float!): QFileAllObjectType
   QItemsQuotationCreate(data: QItemsQuotationInputType!): QItemsQuotationAllObjectType
   QItemsQuotationUpdate(id: Float!, data: QItemsQuotationInputType!): QItemsQuotationAllObjectType
+  QItemsQuotationDelete(id: Float!): QItemsQuotationAllObjectType
   QProdServCreate(data: QProdServInputType!): QProdServAllObjectType
   QProdServUpdate(id: Float!, data: QProdServInputType!): QProdServAllObjectType
+  QProdServDelete(id: Float!): QProdServAllObjectType
   QQuotationCreate(data: QQuotationInputType!): QQuotationAllObjectType
   QQuotationUpdate(id: Float!, data: QQuotationInputType!): QQuotationAllObjectType
+  QQuotationDelete(id: Float!): QQuotationAllObjectType
   createFolio(id: Float!): JSON
   sendQuotation(id: Float!): JSON
   approvedQuotation(id: Float!): JSON
   refusedQuotation(id: Float!): JSON
   QStatusCreate(data: QStatusInputType!): QStatusAllObjectType
   QStatusUpdate(id: Float!, data: QStatusInputType!): QStatusAllObjectType
+  QStatusDelete(id: Float!): QStatusAllObjectType
   QTemplateCreate(data: QTemplateInputType!): QTemplateAllObjectType
   QTemplateUpdate(id: Float!, data: QTemplateInputType!): QTemplateAllObjectType
+  QTemplateDelete(id: Float!): QTemplateAllObjectType
   QTypeFileCreate(data: QTypeFileInputType!): QTypeFileAllObjectType
   QTypeFileUpdate(id: Float!, data: QTypeFileInputType!): QTypeFileAllObjectType
+  QTypeFileDelete(id: Float!): QTypeFileAllObjectType
   QUserCreate(data: QUsersInputType!): QUsersAllObjectType
   QUserUpdate(id: Float!, data: QUsersInputType!): QUsersAllObjectType
+  QUserDelete(id: Float!): QUsersAllObjectType
 }
 
 input QBusinessInputType {

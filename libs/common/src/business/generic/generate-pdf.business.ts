@@ -32,7 +32,7 @@ export class GenetarePdfBusiness extends ResponseClass {
     } else if (type === 'PDF') {
       let content = this.replacePDF(template.template, replace);
       const file = { content };
-      const options = { format: 'A4' };
+      const options = { format: 'A4', printBackground: true };
       bufferArray = await generatePdf(file, options);
       //bufferArray
     }
@@ -43,30 +43,57 @@ export class GenetarePdfBusiness extends ResponseClass {
   }
   private replacePDF(template: string, replace: replaceInterface[]) {
     for (const r of replace) {
+      const regex = new RegExp(`{{${r.id}}}`, 'g');
       if (r.type === 'string') {
-        template = template.replace(`{{${r.id}}}`, r.value.toString());
+        template = template.replace(regex, r.value.toString());
+      }
+      if (r.type === 'array_string') {
+        const values = r.value as string[];
+        template = template.replace(regex, values.join(', '));
       } else if (r.type === 'table') {
         const values = r.value as tableInterface;
-        let table = '<table class="table-minimalista">';
-        table += values.header
-          .map(
-            (r, i) =>
-              `${i === 0 ? '<tr>' : ''}<th>${r}</th>${i === values.header.length - 1 ? '</tr>' : ''}`,
-          )
-          .join('');
+        let table = '<table class="productTable">';
+        table +=
+          '<thead>' +
+          values.header
+            .map(
+              (r, i) =>
+                `${i === 0 ? '<tr>' : ''}<th>${r}</th>${i === values.header.length - 1 ? '</tr>' : ''}`,
+            )
+            .join('') +
+          '</thead>';
         for (const row of values.rows) {
-          table += row
-          .map(
-            (r, i) =>
-              `${i === 0 ? '<tr>' : ''}<td>${r}</td>${i === row.length - 1 ? '</tr>' : ''}`,
-          )
-          .join('');
+          table +=
+            '<tbody>' +
+            row
+              .map(
+                (r, i) =>
+                  `${i === 0 ? '<tr>' : ''}<td class="${values.align[i]}">${r}</td>${i === row.length - 1 ? '</tr>' : ''}`,
+              )
+              .join('') +
+            '</tbody>';
         }
+        table += `<!-- Sección de totales -->
+        <tr>
+          <td colspan="4" class="totales">SUBTOTAL</td>
+          <td>{{TABLE_SUBTOTAL}}</td>
+        </tr>
+        <tr>
+          <td colspan="4" class="totales">IVA</td>
+          <td>{{TABLE_IVA}}</td>
+        </tr>
+        <tr>
+          <td colspan="4" class="totales">TOTAL</td>
+          <td>{{TABLE_TOTAL}}</td>
+        </tr>`;
         table += '</table>';
-        template = template.replace(`{{${r.id}}}`, table);
+        template = template.replace(regex, table);
       }
     }
-    return template + stylePDF;
+    template = template.replace(/{{(.*?)}}/g, '');
+    //template = template.replace(/\n/g, '<br>');
+    template = template.replace(new RegExp('<p></p>', 'g'), '<br>');
+    return stylePDF + `<div class="ql-editor">${template}</div>`;
   }
   private replaceMD(template: string, replace: replaceInterface[]) {
     const finalReplace = '';
@@ -95,12 +122,14 @@ export class GenetarePdfBusiness extends ResponseClass {
   }
 }
 
+type align = 'center' | 'right' | 'left' | 'justify';
 export interface tableInterface {
   header: string[];
   rows: string[][];
+  align: align[];
 }
 export interface replaceInterface {
   id: string;
-  type: 'string' | 'table';
-  value: string | tableInterface;
+  type: 'string' | 'array_string' | 'table';
+  value: string | string[] | tableInterface;
 }
