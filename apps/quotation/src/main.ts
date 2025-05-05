@@ -5,6 +5,11 @@ import { INestApplication, VersioningType } from '@nestjs/common';
 export let app: INestApplication;
 async function bootstrap() {
   app = await NestFactory.create(QuotationModule);
+  app.enableCors({
+    origin: 'http://localhost:4204',
+    methods: ['GET', 'POST'], 
+    allowedHeaders: ['Content-Type', 'Authorization'],
+  });
   app.setGlobalPrefix('quotation');
   app.enableVersioning({
     type: VersioningType.URI,

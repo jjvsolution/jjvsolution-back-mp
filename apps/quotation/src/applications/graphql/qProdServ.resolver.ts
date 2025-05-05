@@ -21,6 +21,20 @@ export class QProdServResolver {
     return this.qProdServRepository.db.findUnique({ where: { id } });
   }
   //@UseGuards(JwtAuthGuard)
+  @Query(() => [QProdServAllModel], { nullable: true })
+  async QProdServByDetail(
+    @Args('detail') detail: string,
+  ): Promise<QProdServAllModel[] | null> {
+    return this.qProdServRepository.db.findMany({
+      where: {
+        detail: {
+          contains: detail,
+          mode: 'insensitive',
+        },
+      },
+    });
+  }
+  //@UseGuards(JwtAuthGuard)
   @Mutation(() => QProdServAllModel, { nullable: true })
   async QProdServCreate(
     @Args('data') data: QProdServModel,

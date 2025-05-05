@@ -19,6 +19,30 @@ export class QClientsResolver {
     return this.qClientsRepository.db.findUnique({ where: { id } });
   }
   //@UseGuards(JwtAuthGuard)
+  @Query(() => [QClientsAllModel], { nullable: true })
+  async QClientsByRut(
+    @Args('rutOrName') rutOrName: string,
+  ): Promise<QClientsAllModel[] | null> {
+    return this.qClientsRepository.db.findMany({
+      where: {
+        OR: [
+          {
+            rut: {
+              contains: rutOrName,
+              mode: 'insensitive',
+            },
+          },
+          {
+            name: {
+              contains: rutOrName,
+              mode: 'insensitive',
+            },
+          },
+        ],
+      },
+    });
+  }
+  //@UseGuards(JwtAuthGuard)
   @Mutation(() => QClientsAllModel, { nullable: true })
   async QClientsCreate(
     @Args('data') data: QClientsModel,

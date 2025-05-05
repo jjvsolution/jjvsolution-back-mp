@@ -230,12 +230,14 @@ type Query {
   QBusinessById(id: Float!): QBusinessAllObjectType
   QClients: [QClientsAllObjectType!]!
   QClientsById(id: Float!): QClientsAllObjectType
+  QClientsByRut(rutOrName: String!): [QClientsAllObjectType!]
   QFile: [QFileAllObjectType!]!
   QFileById(id: Float!): QFileAllObjectType
   QItemsQuotation: [QItemsQuotationAllObjectType!]!
   QItemsQuotationById(id: Float!): QItemsQuotationAllObjectType
   QProdServ: [QProdServAllObjectType!]!
   QProdServById(id: Float!): QProdServAllObjectType
+  QProdServByDetail(detail: String!): [QProdServAllObjectType!]
   QQuotation: [QQuotationAllObjectType!]!
   QQuotationById(id: Float!): QQuotationAllObjectType
   QStatus: [QStatusAllObjectType!]!
