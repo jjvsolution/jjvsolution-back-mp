@@ -8,6 +8,9 @@ export class QProdServModel {
   @Field(() => String)
   detail: string;
 
+  @Field(() => String)
+  gloss: string;
+
   @Field(() => Number)
   price: number;
 

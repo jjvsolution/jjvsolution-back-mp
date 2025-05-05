@@ -33,6 +33,6 @@ export class QClientsAllModel extends QClientsModel {
   @Field(() => QBusinessAllModel, { nullable: true })
   business?: QBusinessAllModel;
 
-  @Field(() => QQuotationAllModel, { nullable: true })
-  quotation?: QQuotationAllModel;
+  @Field(() => [QQuotationAllModel], { nullable: true })
+  quotation?: QQuotationAllModel[];
 }

@@ -11,12 +11,14 @@ export class QUserResolver {
   //@UseGuards(JwtAuthGuard)
   @Query(() => [QUsersAllModel])
   async QUser(): Promise<QUsersAllModel[]> {
-    return this.qUsersRepository.db.findMany();
+    return this.qUsersRepository.db.findMany({ where: { isDeleted: false } });
   }
   //@UseGuards(JwtAuthGuard)
   @Query(() => QUsersAllModel, { nullable: true })
   async QUserById(@Args('id') id: number): Promise<QUsersAllModel | null> {
-    return this.qUsersRepository.db.findUnique({ where: { id } });
+    return this.qUsersRepository.db.findUnique({
+      where: { id, isDeleted: false },
+    });
   }
   //@UseGuards(JwtAuthGuard)
   @Mutation(() => QUsersAllModel, { nullable: true })
@@ -35,9 +37,7 @@ export class QUserResolver {
   }
   //@UseGuards(JwtAuthGuard)
   @Mutation(() => QUsersAllModel, { nullable: true })
-  async QUserDelete(
-    @Args('id') id: number,
-  ): Promise<QUsersAllModel | null> {
+  async QUserDelete(@Args('id') id: number): Promise<QUsersAllModel | null> {
     return this.qUsersRepository.db.update({
       data: { isDeleted: true },
       where: { id },

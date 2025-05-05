@@ -11,14 +11,18 @@ export class QTypeFileResolver {
   //@UseGuards(JwtAuthGuard)
   @Query(() => [QTypeFileAllModel])
   async QTypeFile(): Promise<QTypeFileAllModel[]> {
-    return this.qTypeFileRepository.db.findMany();
+    return this.qTypeFileRepository.db.findMany({
+      where: { isDeleted: false },
+    });
   }
   //@UseGuards(JwtAuthGuard)
   @Query(() => QTypeFileAllModel, { nullable: true })
   async QTypeFileById(
     @Args('id') id: number,
   ): Promise<QTypeFileAllModel | null> {
-    return this.qTypeFileRepository.db.findUnique({ where: { id } });
+    return this.qTypeFileRepository.db.findUnique({
+      where: { id, isDeleted: false },
+    });
   }
   //@UseGuards(JwtAuthGuard)
   @Mutation(() => QTypeFileAllModel, { nullable: true })

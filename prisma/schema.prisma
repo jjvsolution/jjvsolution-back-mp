@@ -307,6 +307,7 @@ model QItemsQuotation {
 model QProdServ {
   id             Int               @id @default(autoincrement())
   detail         String
+  gloss          String            @default("")
   price          Int
   type           TypeTypeProdServ
   itemsQuotation QItemsQuotation[]

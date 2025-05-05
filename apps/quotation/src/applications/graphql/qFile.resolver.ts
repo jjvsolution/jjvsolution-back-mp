@@ -11,12 +11,14 @@ export class QFileResolver {
   //@UseGuards(JwtAuthGuard)
   @Query(() => [QFileAllModel])
   async QFile(): Promise<QFileAllModel[]> {
-    return this.qFileRepository.db.findMany();
+    return this.qFileRepository.db.findMany({ where: { isDeleted: false } });
   }
   //@UseGuards(JwtAuthGuard)
   @Query(() => QFileAllModel, { nullable: true })
   async QFileById(@Args('id') id: number): Promise<QFileAllModel | null> {
-    return this.qFileRepository.db.findUnique({ where: { id } });
+    return this.qFileRepository.db.findUnique({
+      where: { id, isDeleted: false },
+    });
   }
   //@UseGuards(JwtAuthGuard)
   @Mutation(() => QFileAllModel, { nullable: true })
@@ -35,9 +37,7 @@ export class QFileResolver {
   }
   //@UseGuards(JwtAuthGuard)
   @Mutation(() => QFileAllModel, { nullable: true })
-  async QFileDelete(
-    @Args('id') id: number,
-  ): Promise<QFileAllModel | null> {
+  async QFileDelete(@Args('id') id: number): Promise<QFileAllModel | null> {
     return this.qFileRepository.db.update({
       data: { isDeleted: true },
       where: { id },

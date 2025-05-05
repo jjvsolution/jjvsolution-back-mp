@@ -11,12 +11,14 @@ export class QStatusResolver {
   //@UseGuards(JwtAuthGuard)
   @Query(() => [QStatusAllModel])
   async QStatus(): Promise<QStatusAllModel[]> {
-    return this.qStatusRepository.db.findMany();
+    return this.qStatusRepository.db.findMany({ where: { isDeleted: false } });
   }
   //@UseGuards(JwtAuthGuard)
   @Query(() => QStatusAllModel, { nullable: true })
   async QStatusById(@Args('id') id: number): Promise<QStatusAllModel | null> {
-    return this.qStatusRepository.db.findUnique({ where: { id } });
+    return this.qStatusRepository.db.findUnique({
+      where: { id, isDeleted: false },
+    });
   }
   //@UseGuards(JwtAuthGuard)
   @Mutation(() => QStatusAllModel, { nullable: true })

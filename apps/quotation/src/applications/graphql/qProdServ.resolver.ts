@@ -1,24 +1,46 @@
 import { UseGuards } from '@nestjs/common';
-import { Query, Args, Resolver, Mutation } from '@nestjs/graphql';
+import {
+  Query,
+  Args,
+  Resolver,
+  Mutation,
+  ResolveField,
+  Parent,
+} from '@nestjs/graphql';
 import { JwtAuthGuard } from '@config/cross/guards';
-import { QProdServAllModel, QProdServModel } from './models';
-import { QProdServRepository } from '@database/prisma';
+import {
+  QItemsQuotationAllModel,
+  QProdServAllModel,
+  QProdServModel,
+  QQuotationAllModel,
+} from './models';
+import {
+  QItemsQuotationRepository,
+  QProdServRepository,
+} from '@database/prisma';
 
 @Resolver(() => QProdServAllModel)
 export class QProdServResolver {
-  constructor(private readonly qProdServRepository: QProdServRepository) {}
+  constructor(
+    private readonly qProdServRepository: QProdServRepository,
+    private readonly qItemsQuotationRepository: QItemsQuotationRepository,
+  ) {}
 
   //@UseGuards(JwtAuthGuard)
   @Query(() => [QProdServAllModel])
   async QProdServ(): Promise<QProdServAllModel[]> {
-    return this.qProdServRepository.db.findMany();
+    return this.qProdServRepository.db.findMany({
+      where: { isDeleted: false },
+    });
   }
   //@UseGuards(JwtAuthGuard)
   @Query(() => QProdServAllModel, { nullable: true })
   async QProdServById(
     @Args('id') id: number,
   ): Promise<QProdServAllModel | null> {
-    return this.qProdServRepository.db.findUnique({ where: { id } });
+    return this.qProdServRepository.db.findUnique({
+      where: { id, isDeleted: false },
+    });
   }
   //@UseGuards(JwtAuthGuard)
   @Query(() => [QProdServAllModel], { nullable: true })
@@ -57,6 +79,12 @@ export class QProdServResolver {
     return this.qProdServRepository.db.update({
       data: { isDeleted: true },
       where: { id },
+    });
+  }
+  @ResolveField(() => [QItemsQuotationAllModel])
+  ItemsQuotation(@Parent() qProdServAllModel: QProdServAllModel) {
+    return this.qItemsQuotationRepository.db.findMany({
+      where: { prodServId: qProdServAllModel.id, isDeleted: false },
     });
   }
 }

@@ -37,6 +37,6 @@ export class QQuotationAllModel extends QQuotationModel {
   @Field(() => QStatusAllModel, { nullable: true })
   status?: QStatusAllModel;
 
-  @Field(() => QItemsQuotationAllModel, { nullable: true })
-  ItemsQuotation?: QItemsQuotationAllModel;
+  @Field(() => [QItemsQuotationAllModel], { nullable: true })
+  ItemsQuotation?: QItemsQuotationAllModel[];
 }

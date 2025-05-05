@@ -51,10 +51,12 @@ type QStatusAllObjectType {
 
 type QProdServAllObjectType {
   detail: String!
+  gloss: String!
   price: Float!
   type: String!
   id: Float!
   itemsQuotation: [QItemsQuotationAllObjectType!]
+  ItemsQuotation: [QItemsQuotationAllObjectType!]!
 }
 
 type QItemsQuotationAllObjectType {
@@ -76,7 +78,7 @@ type QQuotationAllObjectType {
   id: Float!
   clients: QClientsAllObjectType
   status: QStatusAllObjectType
-  ItemsQuotation: QItemsQuotationAllObjectType
+  ItemsQuotation: [QItemsQuotationAllObjectType!]
 }
 
 type QClientsAllObjectType {
@@ -88,7 +90,7 @@ type QClientsAllObjectType {
   businessId: Float
   id: Float!
   business: QBusinessAllObjectType
-  quotation: QQuotationAllObjectType
+  quotation: [QQuotationAllObjectType!]
 }
 
 type QBusinessAllObjectType {
@@ -149,6 +151,7 @@ input QStatusAllInputType {
 
 input QProdServAllInputType {
   detail: String!
+  gloss: String!
   price: Float!
   type: String!
   id: Float!
@@ -174,7 +177,7 @@ input QQuotationAllInputType {
   id: Float!
   clients: QClientsAllInputType
   status: QStatusAllInputType
-  ItemsQuotation: QItemsQuotationAllInputType
+  ItemsQuotation: [QItemsQuotationAllInputType!]
 }
 
 input QClientsAllInputType {
@@ -186,7 +189,7 @@ input QClientsAllInputType {
   businessId: Float
   id: Float!
   business: QBusinessAllInputType
-  quotation: QQuotationAllInputType
+  quotation: [QQuotationAllInputType!]
 }
 
 input QBusinessAllInputType {
@@ -321,6 +324,7 @@ input QItemsQuotationInputType {
 
 input QProdServInputType {
   detail: String!
+  gloss: String!
   price: Float!
   type: String!
 }

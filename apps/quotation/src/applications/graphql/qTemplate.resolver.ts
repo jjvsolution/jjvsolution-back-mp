@@ -19,14 +19,18 @@ export class QTemplateResolver {
   //@UseGuards(JwtAuthGuard)
   @Query(() => [QTemplateAllModel])
   async QTemplate(): Promise<QTemplateAllModel[]> {
-    return this.qTemplateRepository.db.findMany();
+    return this.qTemplateRepository.db.findMany({
+      where: { isDeleted: false },
+    });
   }
   //@UseGuards(JwtAuthGuard)
   @Query(() => QTemplateAllModel, { nullable: true })
   async QTemplateById(
     @Args('id') id: number,
   ): Promise<QTemplateAllModel | null> {
-    return this.qTemplateRepository.db.findUnique({ where: { id } });
+    return this.qTemplateRepository.db.findUnique({
+      where: { id, isDeleted: false },
+    });
   }
   //@UseGuards(JwtAuthGuard)
   @Query(() => QTemplateAllModel, { nullable: true })

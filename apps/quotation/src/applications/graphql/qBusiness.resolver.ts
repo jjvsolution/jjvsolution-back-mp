@@ -11,14 +11,18 @@ export class QBusinessResolver {
   //@UseGuards(JwtAuthGuard)
   @Query(() => [QBusinessAllModel])
   async QBusiness(): Promise<QBusinessAllModel[]> {
-    return this.qBusinessRepository.db.findMany();
+    return this.qBusinessRepository.db.findMany({
+      where: { isDeleted: false },
+    });
   }
   //@UseGuards(JwtAuthGuard)
   @Query(() => QBusinessAllModel, { nullable: true })
   async QBusinessById(
     @Args('id') id: number,
   ): Promise<QBusinessAllModel | null> {
-    return this.qBusinessRepository.db.findUnique({ where: { id } });
+    return this.qBusinessRepository.db.findUnique({
+      where: { id, isDeleted: false },
+    });
   }
   //@UseGuards(JwtAuthGuard)
   @Mutation(() => QBusinessAllModel, { nullable: true })
