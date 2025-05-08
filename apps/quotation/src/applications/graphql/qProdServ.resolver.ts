@@ -53,6 +53,7 @@ export class QProdServResolver {
           contains: detail,
           mode: 'insensitive',
         },
+        isDeleted: false,
       },
     });
   }
@@ -85,6 +86,7 @@ export class QProdServResolver {
   ItemsQuotation(@Parent() qProdServAllModel: QProdServAllModel) {
     return this.qItemsQuotationRepository.db.findMany({
       where: { prodServId: qProdServAllModel.id, isDeleted: false },
+      orderBy: { id: 'asc' }
     });
   }
 }

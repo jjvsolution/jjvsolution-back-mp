@@ -106,6 +106,7 @@ export class QQuotationResolver {
   ItemsQuotation(@Parent() qQuotationAllModel: QQuotationAllModel) {
     return this.qItemsQuotationRepository.db.findMany({
       where: { quotationId: qQuotationAllModel.id, isDeleted: false },
+      orderBy: { id: 'asc' }
     });
   }
 }

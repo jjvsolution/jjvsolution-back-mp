@@ -33,6 +33,7 @@ export class QItemsQuotationResolver {
   async QItemsQuotation(): Promise<QItemsQuotationAllModel[]> {
     return this.qItemsQuotationRepository.db.findMany({
       where: { isDeleted: false },
+      orderBy: { id: 'asc' }
     });
   }
   //@UseGuards(JwtAuthGuard)

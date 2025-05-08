@@ -42,6 +42,7 @@ export class QClientsResolver {
   ): Promise<QClientsAllModel[] | null> {
     return this.qClientsRepository.db.findMany({
       where: {
+        isDeleted: false,
         OR: [
           {
             rut: {
