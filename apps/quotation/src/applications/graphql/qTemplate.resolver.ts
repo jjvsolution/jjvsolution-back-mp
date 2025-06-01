@@ -8,6 +8,7 @@ import {
 } from './models';
 import { QTemplateRepository } from '@database/prisma';
 import { QTemplateBusiness } from '@business';
+import { replaceInterface } from 'common/business/generic/generate-pdf.business';
 
 @Resolver(() => QTemplateAllModel)
 export class QTemplateResolver {
@@ -66,7 +67,20 @@ export class QTemplateResolver {
   }
   //@UseGuards(JwtAuthGuard)
   @Query(() => ResponseObjectType<string>)
-  async getTemplate(): Promise<ResponseObjectType<string>> {
-    return this.qTemplateBusiness.getTemplate();
+  async getTemplatePlantilla(@Args('quotationId') quotationId: number,): Promise<
+    ResponseObjectType<replaceInterface[]>
+  > {
+    return this.qTemplateBusiness.getTemplatePlantilla(1, quotationId);
+  }
+  //@UseGuards(JwtAuthGuard)
+  @Query(() => ResponseObjectType<string>)
+  async getTemplate(@Args('quotationId') quotationId: number,): Promise<ResponseObjectType<string>> {
+    return this.qTemplateBusiness.getTemplate(1, quotationId);
+  }
+
+  //@UseGuards(JwtAuthGuard)
+  @Query(() => ResponseObjectType<string>)
+  async getUserTemplate(): Promise<ResponseObjectType<string>> {
+    return this.qTemplateBusiness.getUserTemplate(1);
   }
 }

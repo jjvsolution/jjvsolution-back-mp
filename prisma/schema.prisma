@@ -249,6 +249,7 @@ model QUsers {
   createdAt DateTime    @default(now())
   business  QBusiness[]
   isDeleted Boolean     @default(false)
+  QTemplate QTemplate[]
 }
 
 model QBusiness {
@@ -346,7 +347,10 @@ model QTemplate {
   key         String  @unique
   description String
   template    String  @db.Text
+  isPrincipal Boolean @default(false)
   isDeleted   Boolean @default(false)
+  users       QUsers  @relation(fields: [usersId], references: [id])
+  usersId     Int
 }
 
 // base de datos para Google con prefijo G 

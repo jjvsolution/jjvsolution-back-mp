@@ -126,7 +126,10 @@ type QTemplateAllObjectType {
   key: String!
   description: String!
   template: String!
+  isPrincipal: Boolean!
+  usersId: Float!
   id: Float!
+  users: QUsersObjectType
 }
 
 input QUsersInputType {
@@ -225,7 +228,10 @@ input QTemplateAllInputType {
   key: String!
   description: String!
   template: String!
+  isPrincipal: Boolean!
+  usersId: Float!
   id: Float!
+  users: QUsersInputType
 }
 
 type Query {
@@ -248,7 +254,9 @@ type Query {
   QTemplate: [QTemplateAllObjectType!]!
   QTemplateById(id: Float!): QTemplateAllObjectType
   QTemplateByKey(key: String!): QTemplateAllObjectType
-  getTemplate: ResponseObjectType!
+  getTemplatePlantilla(quotationId: Float!): ResponseObjectType!
+  getTemplate(quotationId: Float!): ResponseObjectType!
+  getUserTemplate: ResponseObjectType!
   QTypeFile: [QTypeFileAllObjectType!]!
   QTypeFileById(id: Float!): QTypeFileAllObjectType
   QUser: [QUsersAllObjectType!]!
@@ -348,6 +356,8 @@ input QTemplateInputType {
   key: String!
   description: String!
   template: String!
+  isPrincipal: Boolean!
+  usersId: Float!
 }
 
 input QTypeFileInputType {

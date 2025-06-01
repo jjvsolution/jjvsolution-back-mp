@@ -73,19 +73,21 @@ export class GenetarePdfBusiness extends ResponseClass {
               .join('') +
             '</tbody>';
         }
-        table += `<!-- Sección de totales -->
+        if (values.rows.length > 0) {
+          table += `<!-- Sección de totales -->
         <tr>
-          <td colspan="4" class="totales">SUBTOTAL</td>
-          <td>{{TABLE_SUBTOTAL}}</td>
+          <td colspan="${values.rows[0].length - 1}" class="totales">SUBTOTAL</td>
+          <td>${values.subtotal}</td>
         </tr>
         <tr>
-          <td colspan="4" class="totales">IVA</td>
-          <td>{{TABLE_IVA}}</td>
+          <td colspan="${values.rows[0].length - 1}" class="totales">IVA</td>
+          <td>${values.iva}</td>
         </tr>
         <tr>
-          <td colspan="4" class="totales">TOTAL</td>
-          <td>{{TABLE_TOTAL}}</td>
+          <td colspan="${values.rows[0].length - 1}" class="totales">TOTAL</td>
+          <td>${values.total}</td>
         </tr>`;
+        }
         table += '</table>';
         template = template.replace(regex, table);
       }
@@ -93,7 +95,7 @@ export class GenetarePdfBusiness extends ResponseClass {
     template = template.replace(/{{(.*?)}}/g, '');
     //template = template.replace(/\n/g, '<br>');
     template = template.replace(new RegExp('<p></p>', 'g'), '<br>');
-    return stylePDF + `<div class="ql-editor">${template}</div>`;
+    return stylePDF + `<div class="">${template}</div>`;
   }
   private replaceMD(template: string, replace: replaceInterface[]) {
     const finalReplace = '';
@@ -122,14 +124,27 @@ export class GenetarePdfBusiness extends ResponseClass {
   }
 }
 
-type align = 'center' | 'right' | 'left' | 'justify';
+export type align = 'center' | 'right' | 'left' | 'justify';
 export interface tableInterface {
   header: string[];
   rows: string[][];
   align: align[];
+  subtotal: number;
+  iva: number;
+  total: number;
 }
 export interface replaceInterface {
   id: string;
-  type: 'string' | 'array_string' | 'table';
-  value: string | string[] | tableInterface;
+  type:
+    | 'string'
+    | 'number'
+    | 'bigint'
+    | 'boolean'
+    | 'symbol'
+    | 'undefined'
+    | 'object'
+    | 'function'
+    | 'array_string'
+    | 'table';
+  value: string | string[] | number | tableInterface;
 }
