@@ -9,6 +9,7 @@ async function bootstrap() {
     type: VersioningType.URI,
     defaultVersion: '1',
   });
-  await app.listen(process.env.port ?? 3000);
+  console.log(process.env.PORT_ACCESS_CONTROL);
+  await app.listen(process.env.PORT_ACCESS_CONTROL ?? 3000);
 }
 bootstrap();

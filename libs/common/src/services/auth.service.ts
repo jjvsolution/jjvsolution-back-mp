@@ -1,28 +1,69 @@
-import { ConfigurationsInterface } from '@interfaces';
-import { Injectable } from '@nestjs/common';
+import { ConfigurationsInterface, PayloadJWTInterface } from '@interfaces';
+import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
+import { ACApplicationRepository } from 'common/database/prisma';
 
 @Injectable()
 export class AuthService {
   constructor(
     private readonly jwtService: JwtService,
-    private readonly config: ConfigService<ConfigurationsInterface>,
+    private readonly applicationRepositor: ACApplicationRepository,
   ) {}
 
-  async signToken(payload: object): Promise<string> {
+  async signToken(appId: string, payload: object): Promise<string | never> {
+    const jwtConfig = await this.applicationRepositor.db.findUnique({
+      select: {
+        ConfigAuthApplication: {
+          select: {
+            jwt: true,
+          },
+        },
+      },
+      where: { id: appId },
+    });
+    if (!jwtConfig) {
+      throw new Error('AUTH_ERROR');
+    }
+    const jwt = jwtConfig.ConfigAuthApplication?.jwt as {
+      PRIVATE_KEY: string;
+      PUBLIC_KEY: string;
+      JWT_EXPIRES_IN: string;
+    };
     return await this.jwtService.signAsync(payload, {
       algorithm: 'ES384',
-      privateKey: (
-        JSON.parse(this.config.get<string>('JWT_SECRET') || '') as {
-          private_key: string;
-        }
-      ).private_key,
-      expiresIn: this.config.get<string>('JWT_EXPIRES_IN'),
+      privateKey: jwt.PRIVATE_KEY,
+      expiresIn: jwt.JWT_EXPIRES_IN,
     });
   }
 
-  async verifyToken(token: string): Promise<object> {
-    return await this.jwtService.verify(token);
+  async verifyToken(appId: string, token: string): Promise<PayloadJWTInterface> {
+    try {
+      const jwtConfig = await this.applicationRepositor.db.findUnique({
+        select: {
+          ConfigAuthApplication: {
+            select: {
+              jwt: true,
+            },
+          },
+        },
+        where: { id: appId },
+      });
+      if (!jwtConfig) {
+        throw new Error('AUTH_ERROR');
+      }
+      const jwt = jwtConfig.ConfigAuthApplication?.jwt as {
+        PRIVATE_KEY: string;
+        PUBLIC_KEY: string;
+        JWT_EXPIRES_IN: string;
+      };
+      const payload = this.jwtService.verify(token, {
+        algorithms: ['ES384'],
+        publicKey: jwt.PUBLIC_KEY,
+      });
+      return payload;
+    } catch (error) {
+      throw new UnauthorizedException('Invalid or expired token');
+    }
   }
 }

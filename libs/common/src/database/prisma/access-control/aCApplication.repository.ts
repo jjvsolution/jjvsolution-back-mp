@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { Prisma } from '@database/prisma';
 
 @Injectable()
-export class aCApplicationRepository {
+export class ACApplicationRepository {
   constructor(private prisma: Prisma) {}
 
   get db() {

@@ -1,5 +1,5 @@
 import { ClassSerializerInterceptor, Module, Provider } from '@nestjs/common';
-import { QuotationPrismaModule } from '@database/prisma';
+import { AccessControlPrismaModule, QuotationPrismaModule } from '@database/prisma';
 import { CodeErrorRepository } from '@database/prisma/codeError.repository';
 import { QuotationBusinessModule } from '@business';
 import { JwtModule, JwtService } from '@nestjs/jwt';
@@ -10,7 +10,6 @@ import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
 import { APP_INTERCEPTOR, Reflector } from '@nestjs/core';
 import { CoreClassSerializerInterceptor } from '@config/cross/interceptors';
 import { LoggingPlugin } from '@shared/graphQLPlugins/logging.plugin';
-import { JwtStrategy } from 'common/config/cross/strategies';
 import {
   QBusinessResolver,
   QClientsResolver,
@@ -28,6 +27,7 @@ import GraphQLJSON from 'graphql-type-json';
 import { join } from 'path';
 import { ApolloServerPluginLandingPageLocalDefault } from '@apollo/server/plugin/landingPage/default';
 import { ConfigurationsInterface } from 'common/interfaces';
+import { TokenService } from 'common/services';
 
 const resolver: Provider[] = [
   QBusinessResolver,
@@ -45,6 +45,7 @@ const resolver: Provider[] = [
 @Module({
   imports: [
     QuotationPrismaModule,
+    AccessControlPrismaModule,
     QuotationBusinessModule,
     JwtModule.registerAsync({
       inject: [ConfigService],
@@ -102,8 +103,8 @@ const resolver: Provider[] = [
       inject: [Reflector, CodeErrorRepository],
     },
     LoggingPlugin,
-    JwtStrategy,
     JwtService,
+    TokenService,
     ...resolver,
   ],
 })

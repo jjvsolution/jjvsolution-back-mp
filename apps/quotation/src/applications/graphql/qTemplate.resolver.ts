@@ -1,6 +1,6 @@
 import { UseGuards } from '@nestjs/common';
 import { Query, Args, Resolver, Mutation } from '@nestjs/graphql';
-import { JwtAuthGuard } from '@config/cross/guards';
+import { GQLInternalGuard } from '@config/cross/guards';
 import {
   QTemplateAllModel,
   QTemplateModel,
@@ -65,7 +65,7 @@ export class QTemplateResolver {
       where: { id },
     });
   }
-  //@UseGuards(JwtAuthGuard)
+  @UseGuards(GQLInternalGuard)
   @Query(() => ResponseObjectType<string>)
   async getTemplatePlantilla(@Args('quotationId') quotationId: number,): Promise<
     ResponseObjectType<replaceInterface[]>

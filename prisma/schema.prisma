@@ -65,9 +65,8 @@ model Log {
 
 // Access Control con prefijo AC
 model ACUser {
-  id                      Int                         @id @default(autoincrement())
+  id                      String                      @id @default(uuid()) @db.Uuid
   email                   String?                     @unique
-  UID                     String                      @default(uuid())
   firstName               String?
   lastName                String?
   fullName                String?
@@ -87,7 +86,7 @@ model ACLoginType {
   username String    @unique
   password String?   @db.VarChar(100)
   User     ACUser?   @relation(fields: [userId], references: [id])
-  userId   Int
+  userId   String    @db.Uuid
 }
 
 model ACToken {
@@ -98,7 +97,7 @@ model ACToken {
   refreshToken String?   @db.VarChar(1000)
   openId       String?
   User         ACUser?   @relation(fields: [userId], references: [id])
-  userId       Int
+  userId       String    @db.Uuid
 }
 
 enum TypeToken {
@@ -121,12 +120,27 @@ model ACCompanies {
 }
 
 model ACApplications {
-  id                    Int                       @id @default(autoincrement())
-  name                  String
-  description           String?
-  url                   String?
-  Profiles              ACProfiles[]
-  ApplicationsCompanies ACApplicationsCompanies[]
+  id                        String                    @id @default(uuid()) @db.Uuid
+  name                      String
+  description               String?
+  url                       String?
+  Profiles                  ACProfiles[]
+  ApplicationsCompanies     ACApplicationsCompanies[]
+  ConfigAuthApplication     ACConfigAuthApplication?  @relation(fields: [aCConfigAuthApplicationId], references: [id])
+  aCConfigAuthApplicationId Int?
+}
+
+model ACConfigAuthApplication {
+  id             Int              @id @default(autoincrement())
+  jwt            Json? // { PRIVATE_KEY: string; PUBLIC_KEY: string; JWT_EXPIRES_IN: string; }
+  google         Json? // { GOOGLE_CLIENT_ID: string; GOOGLE_CLIENT_SECRET: string; }
+  github         Json? // { GITHUB_CLIENT_ID: string; GITHUB_CLIENT_SECRET: string; }
+  facebook       Json? // { FACEBOOK_CLIENT_ID: string; FACEBOOK_CLIENT_SECRET: string; }
+  linkedin       Json? // { LINKEDIN_CLIENT_ID: string; LINKEDIN_CLIENT_SECRET: string; }
+  apple          Json? // { APPLE_CLIENT_ID: string; APPLE_CLIENT_SECRET: string; }
+  twitter        Json? // { TWITTER_CLIENT_ID: string; TWITTER_CLIENT_SECRET: string; }
+  microsoft      Json? // { MICROSOFT_CLIENT_ID: string; MICROSOFT_CLIENT_SECRET: string; }
+  ACApplications ACApplications[]
 }
 
 model ACProfiles {
@@ -134,7 +148,7 @@ model ACProfiles {
   name                    String
   details                 String?
   Applications            ACApplications              @relation(fields: [applicationsId], references: [id])
-  applicationsId          Int
+  applicationsId          String                      @db.Uuid
   UserProfileApplications ACUserProfileApplications[]
   RolsProfiles            ACRolsProfiles[]
 }
@@ -157,7 +171,7 @@ model ACRols {
 model ACUserProfileApplications {
   id        Int        @id @default(autoincrement())
   Users     ACUser     @relation(fields: [usersId], references: [id])
-  usersId   Int
+  usersId   String     @db.Uuid
   Profiles  ACProfiles @relation(fields: [profileId], references: [id])
   profileId Int
 }
@@ -167,7 +181,7 @@ model ACApplicationsCompanies {
   Companies      ACCompanies    @relation(fields: [companiesId], references: [id])
   companiesId    Int
   Applications   ACApplications @relation(fields: [applicationsId], references: [id])
-  applicationsId Int
+  applicationsId String         @db.Uuid
 }
 
 // portal de pago
@@ -185,7 +199,7 @@ enum TypePaymentType {
 
 model DebtsToPay {
   id          Int         @id @default(autoincrement())
-  userId      String
+  userId      String      @db.Uuid
   payId       String      @unique
   description String
   DuesofPay   DuesOfPay[]
@@ -208,7 +222,7 @@ model DuesOfPay {
 model MAAccess {
   id           Int      @id @default(autoincrement())
   createdAt    DateTime @default(now())
-  userId       String
+  userId       String   @db.Uuid
   key          String   @unique
   startDate    DateTime
   endDate      DateTime

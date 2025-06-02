@@ -1,7 +1,7 @@
 import { Request } from 'express';
 
 export interface PayloadJWTInterface {
-  sub: string;
+  uid: string;
 }
 
 export interface RequestWithUserInterface extends Request {
