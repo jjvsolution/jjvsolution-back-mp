@@ -33,8 +33,7 @@ export class GQLInternalGuard extends AuthGuard('local') {
     );
 
     // Adjuntar el usuario al request
-    //request.user = await this.getUser(user, token);
-    request.user = user;
+    request.user = await this.getUser(user, token);
     return true;
   }
   async getUser(
@@ -51,11 +50,7 @@ export class GQLInternalGuard extends AuthGuard('local') {
         },
       },
       include: {
-        Token: {
-          select: {
-            accessToken: true,
-          },
-        },
+        Token: true,
       },
     });
 

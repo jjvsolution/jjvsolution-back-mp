@@ -17,14 +17,14 @@ export class QTemplateResolver {
     private readonly qTemplateBusiness: QTemplateBusiness,
   ) {}
 
-  //@UseGuards(JwtAuthGuard)
+  @UseGuards(GQLInternalGuard)
   @Query(() => [QTemplateAllModel])
   async QTemplate(): Promise<QTemplateAllModel[]> {
     return this.qTemplateRepository.db.findMany({
       where: { isDeleted: false },
     });
   }
-  //@UseGuards(JwtAuthGuard)
+  @UseGuards(GQLInternalGuard)
   @Query(() => QTemplateAllModel, { nullable: true })
   async QTemplateById(
     @Args('id') id: number,
@@ -33,21 +33,21 @@ export class QTemplateResolver {
       where: { id, isDeleted: false },
     });
   }
-  //@UseGuards(JwtAuthGuard)
+  @UseGuards(GQLInternalGuard)
   @Query(() => QTemplateAllModel, { nullable: true })
   async QTemplateByKey(
     @Args('key') key: string,
   ): Promise<QTemplateAllModel | null> {
     return this.qTemplateRepository.db.findUnique({ where: { key } });
   }
-  //@UseGuards(JwtAuthGuard)
+  @UseGuards(GQLInternalGuard)
   @Mutation(() => QTemplateAllModel, { nullable: true })
   async QTemplateCreate(
     @Args('data') data: QTemplateModel,
   ): Promise<QTemplateAllModel | null> {
     return this.qTemplateRepository.db.create({ data });
   }
-  //@UseGuards(JwtAuthGuard)
+  @UseGuards(GQLInternalGuard)
   @Mutation(() => QTemplateAllModel, { nullable: true })
   async QTemplateUpdate(
     @Args('id') id: number,
@@ -55,7 +55,7 @@ export class QTemplateResolver {
   ): Promise<QTemplateAllModel | null> {
     return this.qTemplateRepository.db.update({ data, where: { id } });
   }
-  //@UseGuards(JwtAuthGuard)
+  @UseGuards(GQLInternalGuard)
   @Mutation(() => QTemplateAllModel, { nullable: true })
   async QTemplateDelete(
     @Args('id') id: number,
@@ -67,18 +67,20 @@ export class QTemplateResolver {
   }
   @UseGuards(GQLInternalGuard)
   @Query(() => ResponseObjectType<string>)
-  async getTemplatePlantilla(@Args('quotationId') quotationId: number,): Promise<
-    ResponseObjectType<replaceInterface[]>
-  > {
+  async getTemplatePlantilla(
+    @Args('quotationId') quotationId: number,
+  ): Promise<ResponseObjectType<replaceInterface[]>> {
     return this.qTemplateBusiness.getTemplatePlantilla(1, quotationId);
   }
-  //@UseGuards(JwtAuthGuard)
+  @UseGuards(GQLInternalGuard)
   @Query(() => ResponseObjectType<string>)
-  async getTemplate(@Args('quotationId') quotationId: number,): Promise<ResponseObjectType<string>> {
+  async getTemplate(
+    @Args('quotationId') quotationId: number,
+  ): Promise<ResponseObjectType<string>> {
     return this.qTemplateBusiness.getTemplate(1, quotationId);
   }
 
-  //@UseGuards(JwtAuthGuard)
+  @UseGuards(GQLInternalGuard)
   @Query(() => ResponseObjectType<string>)
   async getUserTemplate(): Promise<ResponseObjectType<string>> {
     return this.qTemplateBusiness.getUserTemplate(1);

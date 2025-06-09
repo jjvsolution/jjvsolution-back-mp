@@ -26,7 +26,7 @@ export class QTemplateBusiness extends ResponseClass {
     quotationId: number,
   ): Promise<ResponseObjectType<string>> {
     const replace = await this.getTemplatePlantilla(UID, quotationId);
-    //return this.successGQL(JSON.stringify(replace));
+    //return this.success(JSON.stringify(replace));
     return this.genetarePdfBusiness.getTemplate('TEST2', replace.payload!);
   }
   public async getTemplatePlantilla(
@@ -162,7 +162,7 @@ export class QTemplateBusiness extends ResponseClass {
       }
       ////// TABLE END
     }
-    return this.successGQL(replace);
+    return this.success<replaceInterface[]>(replace) as ResponseObjectType<replaceInterface[]>;
   }
   async getUserTemplate(usersId: number) {
     let templatehtml = '';
@@ -184,6 +184,6 @@ export class QTemplateBusiness extends ResponseClass {
         templatehtml = lastTemplate.template;
       }
     }
-    return this.successGQL(templatehtml);
+    return this.success(templatehtml);
   }
 }

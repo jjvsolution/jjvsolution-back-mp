@@ -39,7 +39,7 @@ export class GenetarePdfBusiness extends ResponseClass {
 
     const buffer = Buffer.from(bufferArray!);
     const base64: string = buffer.toString('base64');
-    return super.successGQL<string>(base64);
+    return super.success<string>(base64);
   }
   private replacePDF(template: string, replace: replaceInterface[]) {
     for (const r of replace) {

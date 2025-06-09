@@ -38,7 +38,6 @@ export class CustomAuthGuard implements CanActivate {
 
     // Adjuntar el usuario al request
     request.user = await this.getUser(user, token);
-    //request.user = user;
     return true;
   }
   async getUser(
@@ -48,24 +47,19 @@ export class CustomAuthGuard implements CanActivate {
     const user = await this.aCUserRepository.db.findUnique({
       where: {
         id: payload.uid,
-        /* Token: {
+        Token: {
           every: {
             token,
           },
-        }, */
+        },
       },
       include: {
-        Token: {
-          select: {
-            accessToken: true,
-          },
-        },
+        Token: true,
       },
     });
 
     let dataFinal: PayloadJWTInterface;
-    //if (user && user?.Token && user.Token.length > 0) {
-    if (user) {
+    if (user && user?.Token && user.Token.length > 0) {
       dataFinal = { uid: user.id };
     } else {
       throw new UnauthorizedException();
