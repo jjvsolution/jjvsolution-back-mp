@@ -8,7 +8,7 @@ async function bootstrap() {
   app.enableCors({
     origin: 'http://localhost:4204',
     methods: ['GET', 'POST'], 
-    allowedHeaders: ['Content-Type', 'Authorization'],
+    allowedHeaders: ['Content-Type', 'Authorization', 'x-app-id'],
   });
   app.setGlobalPrefix('quotation');
   app.enableVersioning({

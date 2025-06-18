@@ -1,6 +1,6 @@
 import { UseGuards } from '@nestjs/common';
 import { Query, Args, Resolver, Mutation } from '@nestjs/graphql';
-import { JwtAuthGuard } from '@config/cross/guards';
+import { GQLInternalGuard } from '@config/cross/guards';
 import { QBusinessAllModel, QBusinessModel } from './models';
 import { QBusinessRepository } from '@database/prisma';
 
@@ -8,14 +8,14 @@ import { QBusinessRepository } from '@database/prisma';
 export class QBusinessResolver {
   constructor(private readonly qBusinessRepository: QBusinessRepository) {}
 
-  //@UseGuards(JwtAuthGuard)
+  @UseGuards(GQLInternalGuard)
   @Query(() => [QBusinessAllModel])
   async QBusiness(): Promise<QBusinessAllModel[]> {
     return this.qBusinessRepository.db.findMany({
       where: { isDeleted: false },
     });
   }
-  //@UseGuards(JwtAuthGuard)
+  @UseGuards(GQLInternalGuard)
   @Query(() => QBusinessAllModel, { nullable: true })
   async QBusinessById(
     @Args('id') id: number,
@@ -24,14 +24,14 @@ export class QBusinessResolver {
       where: { id, isDeleted: false },
     });
   }
-  //@UseGuards(JwtAuthGuard)
+  @UseGuards(GQLInternalGuard)
   @Mutation(() => QBusinessAllModel, { nullable: true })
   async QBusinessCreate(
     @Args('data') data: QBusinessModel,
   ): Promise<QBusinessAllModel | null> {
     return this.qBusinessRepository.db.create({ data });
   }
-  //@UseGuards(JwtAuthGuard)
+  @UseGuards(GQLInternalGuard)
   @Mutation(() => QBusinessAllModel, { nullable: true })
   async QBusinessUpdate(
     @Args('id') id: number,
@@ -39,7 +39,7 @@ export class QBusinessResolver {
   ): Promise<QBusinessAllModel | null> {
     return this.qBusinessRepository.db.update({ data, where: { id } });
   }
-  //@UseGuards(JwtAuthGuard)
+  @UseGuards(GQLInternalGuard)
   @Mutation(() => QBusinessAllModel, { nullable: true })
   async QBusinessDelete(
     @Args('id') id: number,

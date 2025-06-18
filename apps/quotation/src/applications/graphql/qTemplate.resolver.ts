@@ -1,5 +1,5 @@
 import { UseGuards } from '@nestjs/common';
-import { Query, Args, Resolver, Mutation } from '@nestjs/graphql';
+import { Query, Args, Resolver, Mutation, Context } from '@nestjs/graphql';
 import { GQLInternalGuard } from '@config/cross/guards';
 import {
   QTemplateAllModel,
@@ -9,6 +9,7 @@ import {
 import { QTemplateRepository } from '@database/prisma';
 import { QTemplateBusiness } from '@business';
 import { replaceInterface } from 'common/business/generic/generate-pdf.business';
+import { RequestWithUserInterface } from 'common/interfaces';
 
 @Resolver(() => QTemplateAllModel)
 export class QTemplateResolver {
@@ -69,20 +70,24 @@ export class QTemplateResolver {
   @Query(() => ResponseObjectType<string>)
   async getTemplatePlantilla(
     @Args('quotationId') quotationId: number,
+    @Context() ctx: { req: RequestWithUserInterface },
   ): Promise<ResponseObjectType<replaceInterface[]>> {
-    return this.qTemplateBusiness.getTemplatePlantilla(1, quotationId);
+    return this.qTemplateBusiness.getTemplatePlantilla(ctx.req.user.uid, quotationId);
   }
   @UseGuards(GQLInternalGuard)
   @Query(() => ResponseObjectType<string>)
   async getTemplate(
     @Args('quotationId') quotationId: number,
+    @Context() ctx: { req: RequestWithUserInterface },
   ): Promise<ResponseObjectType<string>> {
-    return this.qTemplateBusiness.getTemplate(1, quotationId);
+    return this.qTemplateBusiness.getTemplate(ctx.req.user.uid, quotationId);
   }
 
   @UseGuards(GQLInternalGuard)
   @Query(() => ResponseObjectType<string>)
-  async getUserTemplate(): Promise<ResponseObjectType<string>> {
-    return this.qTemplateBusiness.getUserTemplate(1);
+  async getUserTemplate(
+    @Context() ctx: { req: RequestWithUserInterface },
+  ): Promise<ResponseObjectType<string>> {
+    return this.qTemplateBusiness.getUserTemplate(ctx.req.user.uid);
   }
 }

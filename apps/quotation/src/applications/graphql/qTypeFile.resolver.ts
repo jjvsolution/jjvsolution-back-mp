@@ -1,6 +1,6 @@
 import { UseGuards } from '@nestjs/common';
 import { Query, Args, Resolver, Mutation } from '@nestjs/graphql';
-import { JwtAuthGuard } from '@config/cross/guards';
+import { GQLInternalGuard } from '@config/cross/guards';
 import { QTypeFileAllModel, QTypeFileModel } from './models';
 import { QTypeFileRepository } from '@database/prisma';
 
@@ -8,14 +8,14 @@ import { QTypeFileRepository } from '@database/prisma';
 export class QTypeFileResolver {
   constructor(private readonly qTypeFileRepository: QTypeFileRepository) {}
 
-  //@UseGuards(JwtAuthGuard)
+  @UseGuards(GQLInternalGuard)
   @Query(() => [QTypeFileAllModel])
   async QTypeFile(): Promise<QTypeFileAllModel[]> {
     return this.qTypeFileRepository.db.findMany({
       where: { isDeleted: false },
     });
   }
-  //@UseGuards(JwtAuthGuard)
+  @UseGuards(GQLInternalGuard)
   @Query(() => QTypeFileAllModel, { nullable: true })
   async QTypeFileById(
     @Args('id') id: number,
@@ -24,14 +24,14 @@ export class QTypeFileResolver {
       where: { id, isDeleted: false },
     });
   }
-  //@UseGuards(JwtAuthGuard)
+  @UseGuards(GQLInternalGuard)
   @Mutation(() => QTypeFileAllModel, { nullable: true })
   async QTypeFileCreate(
     @Args('data') data: QTypeFileModel,
   ): Promise<QTypeFileAllModel | null> {
     return this.qTypeFileRepository.db.create({ data });
   }
-  //@UseGuards(JwtAuthGuard)
+  @UseGuards(GQLInternalGuard)
   @Mutation(() => QTypeFileAllModel, { nullable: true })
   async QTypeFileUpdate(
     @Args('id') id: number,
@@ -39,7 +39,7 @@ export class QTypeFileResolver {
   ): Promise<QTypeFileAllModel | null> {
     return this.qTypeFileRepository.db.update({ data, where: { id } });
   }
-  //@UseGuards(JwtAuthGuard)
+  @UseGuards(GQLInternalGuard)
   @Mutation(() => QTypeFileAllModel, { nullable: true })
   async QTypeFileDelete(
     @Args('id') id: number,

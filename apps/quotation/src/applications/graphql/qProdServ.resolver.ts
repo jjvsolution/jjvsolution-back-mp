@@ -7,7 +7,7 @@ import {
   ResolveField,
   Parent,
 } from '@nestjs/graphql';
-import { JwtAuthGuard } from '@config/cross/guards';
+import { GQLInternalGuard } from '@config/cross/guards';
 import {
   QItemsQuotationAllModel,
   QProdServAllModel,
@@ -26,14 +26,14 @@ export class QProdServResolver {
     private readonly qItemsQuotationRepository: QItemsQuotationRepository,
   ) {}
 
-  //@UseGuards(JwtAuthGuard)
+  @UseGuards(GQLInternalGuard)
   @Query(() => [QProdServAllModel])
   async QProdServ(): Promise<QProdServAllModel[]> {
     return this.qProdServRepository.db.findMany({
       where: { isDeleted: false },
     });
   }
-  //@UseGuards(JwtAuthGuard)
+  @UseGuards(GQLInternalGuard)
   @Query(() => QProdServAllModel, { nullable: true })
   async QProdServById(
     @Args('id') id: number,
@@ -42,7 +42,7 @@ export class QProdServResolver {
       where: { id, isDeleted: false },
     });
   }
-  //@UseGuards(JwtAuthGuard)
+  @UseGuards(GQLInternalGuard)
   @Query(() => [QProdServAllModel], { nullable: true })
   async QProdServByDetail(
     @Args('detail') detail: string,
@@ -57,14 +57,14 @@ export class QProdServResolver {
       },
     });
   }
-  //@UseGuards(JwtAuthGuard)
+  @UseGuards(GQLInternalGuard)
   @Mutation(() => QProdServAllModel, { nullable: true })
   async QProdServCreate(
     @Args('data') data: QProdServModel,
   ): Promise<QProdServAllModel | null> {
     return this.qProdServRepository.db.create({ data });
   }
-  //@UseGuards(JwtAuthGuard)
+  @UseGuards(GQLInternalGuard)
   @Mutation(() => QProdServAllModel, { nullable: true })
   async QProdServUpdate(
     @Args('id') id: number,
@@ -72,7 +72,7 @@ export class QProdServResolver {
   ): Promise<QProdServAllModel | null> {
     return this.qProdServRepository.db.update({ data, where: { id } });
   }
-  //@UseGuards(JwtAuthGuard)
+  @UseGuards(GQLInternalGuard)
   @Mutation(() => QProdServAllModel, { nullable: true })
   async QProdServDelete(
     @Args('id') id: number,

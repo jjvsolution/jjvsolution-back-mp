@@ -22,7 +22,7 @@ export class QTemplateBusiness extends ResponseClass {
     super();
   }
   public async getTemplate(
-    UID: number,
+    UID: string,
     quotationId: number,
   ): Promise<ResponseObjectType<string>> {
     const replace = await this.getTemplatePlantilla(UID, quotationId);
@@ -30,7 +30,7 @@ export class QTemplateBusiness extends ResponseClass {
     return this.genetarePdfBusiness.getTemplate('TEST2', replace.payload!);
   }
   public async getTemplatePlantilla(
-    UID: number,
+    UID: string,
     quotationId: number,
   ): Promise<ResponseObjectType<replaceInterface[]>> {
     const tableFilter = {
@@ -162,20 +162,22 @@ export class QTemplateBusiness extends ResponseClass {
       }
       ////// TABLE END
     }
-    return this.success<replaceInterface[]>(replace) as ResponseObjectType<replaceInterface[]>;
+    return this.success<replaceInterface[]>(replace) as ResponseObjectType<
+      replaceInterface[]
+    >;
   }
-  async getUserTemplate(usersId: number) {
+  async getUserTemplate(UID: string) {
     let templatehtml = '';
     const template = await this.qTemplateRepository.db.findFirst({
       select: { template: true },
-      where: { usersId: 1, isPrincipal: true },
+      where: { users: { UID }, isPrincipal: true },
     });
     if (template) {
       templatehtml = template.template;
     } else {
       const lastTemplate = await this.qTemplateRepository.db.findFirst({
         select: { template: true },
-        where: { usersId: 1 },
+        where: { users: { UID } },
         orderBy: {
           id: 'desc',
         },

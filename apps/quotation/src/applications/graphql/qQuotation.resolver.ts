@@ -7,7 +7,7 @@ import {
   ResolveField,
   Parent,
 } from '@nestjs/graphql';
-import { JwtAuthGuard } from '@config/cross/guards';
+import { GQLInternalGuard } from '@config/cross/guards';
 import { QClientsAllModel, QItemsQuotationAllModel, QQuotationAllModel, QQuotationModel, QStatusAllModel } from './models';
 import {
   QClientsRepository,
@@ -29,14 +29,14 @@ export class QQuotationResolver {
     private readonly qItemsQuotationRepository: QItemsQuotationRepository,
   ) {}
 
-  //@UseGuards(JwtAuthGuard)
+  @UseGuards(GQLInternalGuard)
   @Query(() => [QQuotationAllModel])
   async QQuotation(): Promise<QQuotationAllModel[]> {
     return this.qQuotationRepository.db.findMany({
       where: { isDeleted: false },
     });
   }
-  //@UseGuards(JwtAuthGuard)
+  @UseGuards(GQLInternalGuard)
   @Query(() => QQuotationAllModel, { nullable: true })
   async QQuotationById(
     @Args('id') id: number,
@@ -45,14 +45,14 @@ export class QQuotationResolver {
       where: { id, isDeleted: false },
     });
   }
-  //@UseGuards(JwtAuthGuard)
+  @UseGuards(GQLInternalGuard)
   @Mutation(() => QQuotationAllModel, { nullable: true })
   async QQuotationCreate(
     @Args('data') data: QQuotationModel,
   ): Promise<QQuotationAllModel | null> {
     return this.qQuotationBusiness.createQuotation(data);
   }
-  //@UseGuards(JwtAuthGuard)
+  @UseGuards(GQLInternalGuard)
   @Mutation(() => QQuotationAllModel, { nullable: true })
   async QQuotationUpdate(
     @Args('id') id: number,
@@ -60,7 +60,7 @@ export class QQuotationResolver {
   ): Promise<QQuotationAllModel | null> {
     return this.qQuotationRepository.db.update({ data, where: { id } });
   }
-  //@UseGuards(JwtAuthGuard)
+  @UseGuards(GQLInternalGuard)
   @Mutation(() => QQuotationAllModel, { nullable: true })
   async QQuotationDelete(
     @Args('id') id: number,
@@ -70,22 +70,22 @@ export class QQuotationResolver {
       where: { id },
     });
   }
-  //@UseGuards(JwtAuthGuard)
+  @UseGuards(GQLInternalGuard)
   @Mutation(() => GraphQLJSON, { nullable: true })
   async createFolio(@Args('id') id: number): Promise<undefined> {
     await this.qQuotationBusiness.createFolio(id);
   }
-  //@UseGuards(JwtAuthGuard)
+  @UseGuards(GQLInternalGuard)
   @Mutation(() => GraphQLJSON, { nullable: true })
   async sendQuotation(@Args('id') id: number): Promise<undefined> {
     await this.qQuotationBusiness.sendQuotation(id);
   }
-  //@UseGuards(JwtAuthGuard)
+  @UseGuards(GQLInternalGuard)
   @Mutation(() => GraphQLJSON, { nullable: true })
   async approvedQuotation(@Args('id') id: number): Promise<undefined> {
     await this.qQuotationBusiness.approvedQuotation(id);
   }
-  //@UseGuards(JwtAuthGuard)
+  @UseGuards(GQLInternalGuard)
   @Mutation(() => GraphQLJSON, { nullable: true })
   async refusedQuotation(@Args('id') id: number): Promise<undefined> {
     await this.qQuotationBusiness.refusedQuotation(id);

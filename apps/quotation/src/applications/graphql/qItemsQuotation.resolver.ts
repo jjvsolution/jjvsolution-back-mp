@@ -7,7 +7,7 @@ import {
   ResolveField,
   Parent,
 } from '@nestjs/graphql';
-import { JwtAuthGuard } from '@config/cross/guards';
+import { GQLInternalGuard } from '@config/cross/guards';
 import {
   QItemsQuotationAllModel,
   QItemsQuotationModel,
@@ -28,7 +28,7 @@ export class QItemsQuotationResolver {
     private readonly qQuotationRepository: QQuotationRepository,
   ) {}
 
-  //@UseGuards(JwtAuthGuard)
+  @UseGuards(GQLInternalGuard)
   @Query(() => [QItemsQuotationAllModel])
   async QItemsQuotation(): Promise<QItemsQuotationAllModel[]> {
     return this.qItemsQuotationRepository.db.findMany({
@@ -36,7 +36,7 @@ export class QItemsQuotationResolver {
       orderBy: { id: 'asc' }
     });
   }
-  //@UseGuards(JwtAuthGuard)
+  @UseGuards(GQLInternalGuard)
   @Query(() => QItemsQuotationAllModel, { nullable: true })
   async QItemsQuotationById(
     @Args('id') id: number,
@@ -45,14 +45,14 @@ export class QItemsQuotationResolver {
       where: { id, isDeleted: false },
     });
   }
-  //@UseGuards(JwtAuthGuard)
+  @UseGuards(GQLInternalGuard)
   @Mutation(() => QItemsQuotationAllModel, { nullable: true })
   async QItemsQuotationCreate(
     @Args('data') data: QItemsQuotationModel,
   ): Promise<QItemsQuotationAllModel | null> {
     return this.qItemsQuotationRepository.db.create({ data });
   }
-  //@UseGuards(JwtAuthGuard)
+  @UseGuards(GQLInternalGuard)
   @Mutation(() => QItemsQuotationAllModel, { nullable: true })
   async QItemsQuotationUpdate(
     @Args('id') id: number,
@@ -60,7 +60,7 @@ export class QItemsQuotationResolver {
   ): Promise<QItemsQuotationAllModel | null> {
     return this.qItemsQuotationRepository.db.update({ data, where: { id } });
   }
-  //@UseGuards(JwtAuthGuard)
+  @UseGuards(GQLInternalGuard)
   @Mutation(() => QItemsQuotationAllModel, { nullable: true })
   async QItemsQuotationDelete(
     @Args('id') id: number,

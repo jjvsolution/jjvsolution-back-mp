@@ -43,14 +43,13 @@ export class GQLInternalGuard extends AuthGuard('local') {
     const user = await this.aCUserRepository.db.findUnique({
       where: {
         id: payload.uid,
+      },
+      include: {
         Token: {
-          every: {
+          where: {
             token,
           },
         },
-      },
-      include: {
-        Token: true,
       },
     });
 

@@ -1,6 +1,6 @@
 import { UseGuards } from '@nestjs/common';
 import { Query, Args, Resolver, Mutation } from '@nestjs/graphql';
-import { JwtAuthGuard } from '@config/cross/guards';
+import { GQLInternalGuard } from '@config/cross/guards';
 import { QStatusAllModel, QStatusModel } from './models';
 import { QStatusRepository } from '@database/prisma';
 
@@ -8,26 +8,26 @@ import { QStatusRepository } from '@database/prisma';
 export class QStatusResolver {
   constructor(private readonly qStatusRepository: QStatusRepository) {}
 
-  //@UseGuards(JwtAuthGuard)
+  @UseGuards(GQLInternalGuard)
   @Query(() => [QStatusAllModel])
   async QStatus(): Promise<QStatusAllModel[]> {
     return this.qStatusRepository.db.findMany({ where: { isDeleted: false } });
   }
-  //@UseGuards(JwtAuthGuard)
+  @UseGuards(GQLInternalGuard)
   @Query(() => QStatusAllModel, { nullable: true })
   async QStatusById(@Args('id') id: number): Promise<QStatusAllModel | null> {
     return this.qStatusRepository.db.findUnique({
       where: { id, isDeleted: false },
     });
   }
-  //@UseGuards(JwtAuthGuard)
+  @UseGuards(GQLInternalGuard)
   @Mutation(() => QStatusAllModel, { nullable: true })
   async QStatusCreate(
     @Args('data') data: QStatusModel,
   ): Promise<QStatusAllModel | null> {
     return this.qStatusRepository.db.create({ data });
   }
-  //@UseGuards(JwtAuthGuard)
+  @UseGuards(GQLInternalGuard)
   @Mutation(() => QStatusAllModel, { nullable: true })
   async QStatusUpdate(
     @Args('id') id: number,
@@ -35,7 +35,7 @@ export class QStatusResolver {
   ): Promise<QStatusAllModel | null> {
     return this.qStatusRepository.db.update({ data, where: { id } });
   }
-  //@UseGuards(JwtAuthGuard)
+  @UseGuards(GQLInternalGuard)
   @Mutation(() => QStatusAllModel, { nullable: true })
   async QStatusDelete(@Args('id') id: number): Promise<QStatusAllModel | null> {
     return this.qStatusRepository.db.update({

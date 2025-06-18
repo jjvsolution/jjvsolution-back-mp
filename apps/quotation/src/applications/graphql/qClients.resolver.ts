@@ -7,7 +7,7 @@ import {
   ResolveField,
   Parent,
 } from '@nestjs/graphql';
-import { JwtAuthGuard } from '@config/cross/guards';
+import { GQLInternalGuard } from '@config/cross/guards';
 import { QBusinessAllModel, QClientsAllModel, QClientsModel, QQuotationAllModel } from './models';
 import {
   QBusinessRepository,
@@ -23,19 +23,19 @@ export class QClientsResolver {
     private readonly qQuotationRepository: QQuotationRepository,
   ) {}
 
-  //@UseGuards(JwtAuthGuard)
+  @UseGuards(GQLInternalGuard)
   @Query(() => [QClientsAllModel])
   async QClients(): Promise<QClientsAllModel[]> {
     return this.qClientsRepository.db.findMany({ where: { isDeleted: false } });
   }
-  //@UseGuards(JwtAuthGuard)
+  @UseGuards(GQLInternalGuard)
   @Query(() => QClientsAllModel, { nullable: true })
   async QClientsById(@Args('id') id: number): Promise<QClientsAllModel | null> {
     return this.qClientsRepository.db.findUnique({
       where: { id, isDeleted: false },
     });
   }
-  //@UseGuards(JwtAuthGuard)
+  @UseGuards(GQLInternalGuard)
   @Query(() => [QClientsAllModel], { nullable: true })
   async QClientsByRut(
     @Args('rutOrName') rutOrName: string,
@@ -60,14 +60,14 @@ export class QClientsResolver {
       },
     });
   }
-  //@UseGuards(JwtAuthGuard)
+  @UseGuards(GQLInternalGuard)
   @Mutation(() => QClientsAllModel, { nullable: true })
   async QClientsCreate(
     @Args('data') data: QClientsModel,
   ): Promise<QClientsAllModel | null> {
     return this.qClientsRepository.db.create({ data });
   }
-  //@UseGuards(JwtAuthGuard)
+  @UseGuards(GQLInternalGuard)
   @Mutation(() => QClientsAllModel, { nullable: true })
   async QClientsUpdate(
     @Args('id') id: number,
@@ -75,7 +75,7 @@ export class QClientsResolver {
   ): Promise<QClientsAllModel | null> {
     return this.qClientsRepository.db.update({ data, where: { id } });
   }
-  //@UseGuards(JwtAuthGuard)
+  @UseGuards(GQLInternalGuard)
   @Mutation(() => QClientsAllModel, { nullable: true })
   async QClientsDelete(
     @Args('id') id: number,
