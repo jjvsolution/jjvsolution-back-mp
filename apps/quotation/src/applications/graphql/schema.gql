@@ -61,6 +61,7 @@ type QProdServAllObjectType {
 
 type QItemsQuotationAllObjectType {
   cant: Float!
+  detail: String!
   prodServId: Float
   quotationId: Float
   id: Float!
@@ -163,6 +164,7 @@ input QProdServAllInputType {
 
 input QItemsQuotationAllInputType {
   cant: Float!
+  detail: String!
   prodServId: Float
   quotationId: Float
   id: Float!
@@ -326,6 +328,7 @@ input QFileInputType {
 
 input QItemsQuotationInputType {
   cant: Float!
+  detail: String!
   prodServId: Float
   quotationId: Float
 }

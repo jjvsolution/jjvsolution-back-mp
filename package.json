@@ -16,6 +16,8 @@
     "start:access-control": "nest start access-control --watch",
     "start:landing": "nest start landing --watch",
     "start:quotation": "nest start quotation --watch",
+    "start:quotation-wind": "set POST_QUOTATION=3000 && nest start quotation --watch",
+    "start:access-controll-wind": "set POST_QUOTATION=3000 && nest start access-control --watch",
     "build:all": "npm run build && npm run build:admin && npm run build:access-control && npm run build:landing && npm run build:quotation",
     "build:admin": "nest build admin",
     "build:access-control": "nest build access-control",

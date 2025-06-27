@@ -8,6 +8,9 @@ export class QItemsQuotationModel {
   @Field(() => Number)
   cant: number;
 
+  @Field(() => String)
+  detail: string;
+
   @Field(() => Number, { nullable: true })
   prodServId?: number | null;
 

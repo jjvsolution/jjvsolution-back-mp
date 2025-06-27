@@ -312,6 +312,7 @@ model QQuotation {
 model QItemsQuotation {
   id          Int         @id @default(autoincrement())
   cant        Int
+  detail      String      @default("")
   quotation   QQuotation? @relation(fields: [quotationId], references: [id])
   quotationId Int?
   prodServ    QProdServ?  @relation(fields: [prodServId], references: [id])
