@@ -36,7 +36,6 @@ export class GenetarePdfBusiness extends ResponseClass {
       bufferArray = await generatePdf(file, options);
       //bufferArray
     }
-
     const buffer = Buffer.from(bufferArray!);
     const base64: string = buffer.toString('base64');
     return super.success<string>(base64);
@@ -52,7 +51,7 @@ export class GenetarePdfBusiness extends ResponseClass {
         template = template.replace(regex, values.join(', '));
       } else if (r.type === 'table') {
         const values = r.value as tableInterface;
-        let table = '<table class="productTable">';
+        let table = '<table class="product-table">';
         table +=
           '<thead>' +
           values.header
@@ -62,40 +61,39 @@ export class GenetarePdfBusiness extends ResponseClass {
             )
             .join('') +
           '</thead>';
+        table += '<tbody>';
         for (const row of values.rows) {
-          table +=
-            '<tbody>' +
-            row
-              .map(
-                (r, i) =>
-                  `${i === 0 ? '<tr>' : ''}<td class="${values.align[i]}">${r}</td>${i === row.length - 1 ? '</tr>' : ''}`,
-              )
-              .join('') +
-            '</tbody>';
+          console.log(row)
+          table += row
+            .map(
+              (r, i) =>
+                `${i === 0 ? '<tr>' : ''}<td class="${values.align[i]}">${typeof r === 'number' ? Number(r).toLocaleString('es-CL') : r}</td>${i === row.length - 1 ? '</tr>' : ''}`,
+            )
+            .join('');
         }
         if (values.rows.length > 0) {
           table += `<!-- Sección de totales -->
         <tr>
-          <td colspan="${values.rows[0].length - 1}" class="totales">SUBTOTAL</td>
-          <td>${values.subtotal}</td>
+          <td colspan="${values.rows[0].length - 1}" class="left totales">SUBTOTAL</td>
+          <td class="totales-value">${values.subtotal.toLocaleString('es-CL')}</td>
         </tr>
         <tr>
-          <td colspan="${values.rows[0].length - 1}" class="totales">IVA</td>
-          <td>${values.iva}</td>
+          <td colspan="${values.rows[0].length - 1}" class="left totales">IVA</td>
+          <td class="totales-value">${values.iva.toLocaleString('es-CL')}</td>
         </tr>
         <tr>
-          <td colspan="${values.rows[0].length - 1}" class="totales">TOTAL</td>
-          <td>${values.total}</td>
+          <td colspan="${values.rows[0].length}" class="total">$ ${values.total.toLocaleString('es-CL')}</td>
         </tr>`;
         }
-        table += '</table>';
+        table += '</tbody></table>';
         template = template.replace(regex, table);
       }
     }
     template = template.replace(/{{(.*?)}}/g, '');
     //template = template.replace(/\n/g, '<br>');
     template = template.replace(new RegExp('<p></p>', 'g'), '<br>');
-    return stylePDF + `<div class="">${template}</div>`;
+    //return stylePDF + `<div class="">${template}</div>`;
+    return template;
   }
   private replaceMD(template: string, replace: replaceInterface[]) {
     const finalReplace = '';
@@ -127,7 +125,7 @@ export class GenetarePdfBusiness extends ResponseClass {
 export type align = 'center' | 'right' | 'left' | 'justify';
 export interface tableInterface {
   header: string[];
-  rows: string[][];
+  rows: (string | number)[][];
   align: align[];
   subtotal: number;
   iva: number;

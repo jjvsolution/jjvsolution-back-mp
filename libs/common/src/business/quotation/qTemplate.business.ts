@@ -25,21 +25,42 @@ export class QTemplateBusiness extends ResponseClass {
     UID: string,
     quotationId: number,
   ): Promise<ResponseObjectType<string>> {
+    const templatehtml = await this.qTemplateRepository.getUserTemplate(UID);
     const replace = await this.getTemplatePlantilla(UID, quotationId);
+    console.log('\n\n replace \n', JSON.stringify(replace), '\n\n\n\n');
     //return this.success(JSON.stringify(replace));
-    return this.genetarePdfBusiness.getTemplate('TEST2', replace.payload!);
+    return this.genetarePdfBusiness.getTemplate(
+      templatehtml!.key,
+      replace.payload!,
+    );
   }
   public async getTemplatePlantilla(
     UID: string,
     quotationId: number,
   ): Promise<ResponseObjectType<replaceInterface[]>> {
     const tableFilter = {
-      ID: { id: 'id', align: 'right', active: true },
-      TYPE: { id: 'type', align: 'left', active: true },
-      DETAIL: { id: 'detail', align: 'left', active: true },
-      GLOSS: { id: 'gloss', align: 'left', active: false },
-      CANT: { id: 'cant', align: 'right', active: true },
-      PRICE: { id: 'price', align: 'right', active: true },
+      ID: { id: 'id', align: 'right', active: true, title: 'N° artículo' },
+      TYPE: { id: 'type', align: 'left', active: true, title: 'type' },
+      ITEM_DETAIL: {
+        id: 'item_detail',
+        align: 'left',
+        active: true,
+        title: 'Descripción',
+      },
+      DETAIL: {
+        id: 'detail',
+        align: 'left',
+        active: false,
+        title: 'Descripción',
+      },
+      GLOSS: { id: 'gloss', align: 'left', active: false, title: 'Glosa' },
+      CANT: { id: 'cant', align: 'right', active: true, title: 'cant' },
+      PRICE: {
+        id: 'price',
+        align: 'right',
+        active: true,
+        title: 'Precio unitario',
+      },
     };
     const tableFilterFinal = Object.entries(tableFilter).filter(
       ([_, v]) => v.active,
@@ -100,6 +121,7 @@ export class QTemplateBusiness extends ResponseClass {
       ////// TABLE INIT
       const it = ItemsQuotation.map((v) => ({
         ...v,
+        item_detail: v.detail,
         ...v.prodServ,
         prodServ: undefined,
       })).map((item) =>
@@ -119,9 +141,12 @@ export class QTemplateBusiness extends ResponseClass {
           let cant = 0;
           for (let [key, o] of Object.entries(it[inxObj])) {
             if (+inxObj === 0) {
-              value.header.push(key);
               let align: align = 'center';
               const arrayValue = tableFilterFinal.find(([k]) => k === key);
+              value.header.push(
+                arrayValue && arrayValue.length > 1 ? arrayValue[1].title : key,
+              );
+              console.log(arrayValue);
               if (Array.isArray(arrayValue)) {
                 align = arrayValue[1].align as align;
               } else {
@@ -142,20 +167,21 @@ export class QTemplateBusiness extends ResponseClass {
               value.align.push(align);
             }
             if (Array.isArray(value.rows[inxObj])) {
-              value.rows[inxObj].push(`${o}`);
+              value.rows[inxObj].push(o);
             } else {
-              value.rows[inxObj] = [`${o}`];
+              value.rows[inxObj] = [o];
             }
             key === 'PRICE' ? (price += +o) : null;
             key === 'CANT' ? (cant += +o) : null;
             //console.log(key)
           }
           if (+inxObj === it.length - 1) {
-            value.header = [...value.header, 'TOTAL'];
+            value.header = [...value.header, 'Precio total'];
+            value.align = [...value.align, 'right'];
           }
           const total = cant * price;
           value.subtotal += total;
-          value.rows[inxObj] = [...value.rows[inxObj], `${total}`];
+          value.rows[inxObj] = [...value.rows[inxObj], total];
         }
         value.iva = value.subtotal * 0.19;
         value.total = value.subtotal * 1.19;
@@ -167,25 +193,7 @@ export class QTemplateBusiness extends ResponseClass {
     >;
   }
   async getUserTemplate(UID: string) {
-    let templatehtml = '';
-    const template = await this.qTemplateRepository.db.findFirst({
-      select: { template: true },
-      where: { users: { UID }, isPrincipal: true },
-    });
-    if (template) {
-      templatehtml = template.template;
-    } else {
-      const lastTemplate = await this.qTemplateRepository.db.findFirst({
-        select: { template: true },
-        where: { users: { UID } },
-        orderBy: {
-          id: 'desc',
-        },
-      });
-      if (lastTemplate) {
-        templatehtml = lastTemplate.template;
-      }
-    }
-    return this.success(templatehtml);
+    const templatehtml = await this.qTemplateRepository.getUserTemplate(UID);
+    return this.success(templatehtml?.template || '');
   }
 }
