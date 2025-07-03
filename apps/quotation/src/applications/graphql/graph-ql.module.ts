@@ -102,7 +102,7 @@ const resolver: Provider[] = [
         new CoreClassSerializerInterceptor(reflector, codeErrorRepository),
       inject: [Reflector, CodeErrorRepository],
     },
-    LoggingPlugin,
+    /* LoggingPlugin, */ // se debe descomentar para ver logs, solo funciona al ejecutar solo la app de quotation
     JwtService,
     TokenService,
     ...resolver,

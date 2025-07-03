@@ -10,7 +10,7 @@
     "format": "prettier --write \"apps/**/*.ts\" \"libs/**/*.ts\"",
     "start": "nest start",
     "start:dev": "nest start --watch",
-    "start:debug": "nest start --debug --watch",
+    "start:debug": "nest start --debug --watch --inspect",
     "start:prod": "node dist/apps/jjvsolution-back-mp/main",
     "start:admin": "nest start admin && nest start admin --watch",
     "start:access-control": "nest start access-control --watch",

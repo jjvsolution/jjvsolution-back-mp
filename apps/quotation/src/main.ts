@@ -15,7 +15,6 @@ async function bootstrap() {
     type: VersioningType.URI,
     defaultVersion: '1',
   });
-  app.enableCors();
   await app.listen(process.env.POST_QUOTATION ?? 3000);
 }
 bootstrap();

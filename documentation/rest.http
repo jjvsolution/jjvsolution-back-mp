@@ -1,0 +1,13 @@
+// rest
+POST http://localhost:3002/access-control/v1/auth/login
+Content-Type: application/json
+X-App-ID: 54b76485-880c-409a-b25e-808f1196ffb2
+{
+    "username": "info.wede@gmail.com",
+    "password": "juan"
+}
+
+GET http://localhost:3002/access-control/v1/auth/valid
+Content-Type: application/json
+X-App-ID: 54b76485-880c-409a-b25e-808f1196ffb2
+Authorization: Bearer eyJhbGciOiJFUzM4NCIsInR5cCI6IkpXVCJ9.eyJ1aWQiOiJkODQ0ZjUzMS0yMjA1LTQ4N2MtYWFlZi04ZGFhMmM0NTE5MDkiLCJpYXQiOjE3NDg4MzMyNDMsImV4cCI6MTc0ODkxOTY0M30.7SwIUSngGprhpv-RIss05yFnkhASzZ51OYgwzI4YkEYFzO3rF2OHN2_hKQt2ijHv60snMVHBvAG4i0dxGFleIaKRF0mDjWwkWMCu4Oiy5bVZKn5RmZvm2Mm6t8gVW8xm
