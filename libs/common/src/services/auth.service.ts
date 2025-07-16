@@ -2,13 +2,13 @@ import { ConfigurationsInterface, PayloadJWTInterface } from '@interfaces';
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
-import { ACApplicationRepository } from 'common/database/prisma';
+import { ACApplicationsRepository } from 'common/database/prisma';
 
 @Injectable()
 export class AuthService {
   constructor(
     private readonly jwtService: JwtService,
-    private readonly applicationRepositor: ACApplicationRepository,
+    private readonly applicationRepositor: ACApplicationsRepository,
   ) {}
 
   async signToken(appId: string, payload: object): Promise<string | never> {

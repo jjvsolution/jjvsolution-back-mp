@@ -1,7 +1,6 @@
 import { ClassSerializerInterceptor, Module, Provider } from '@nestjs/common';
-import { AccessControlPrismaModule, QuotationPrismaModule } from '@database/prisma';
+import { AccessControlPrismaModule } from '@database/prisma';
 import { CodeErrorRepository } from '@database/prisma/codeError.repository';
-import { QuotationBusinessModule } from '@business';
 import { JwtModule, JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
 import { jwtFactory } from '@config';
@@ -10,42 +9,38 @@ import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
 import { APP_INTERCEPTOR, Reflector } from '@nestjs/core';
 import { CoreClassSerializerInterceptor } from '@config/cross/interceptors';
 //import { LoggingPlugin } from '@shared/graphQLPlugins/logging.plugin';
-import {
-  QBusinessResolver,
-  QClientsResolver,
-  QFileResolver,
-  QItemsQuotationResolver,
-  QProdServResolver,
-  QQuotationResolver,
-  QStatusResolver,
-  QTemplateResolver,
-  QTypeFileResolver,
-  QUserResolver,
-} from '.';
 import { GraphQLFormattedError } from 'graphql';
 import { join } from 'path';
 import { ApolloServerPluginLandingPageLocalDefault } from '@apollo/server/plugin/landingPage/default';
 import { ConfigurationsInterface } from 'common/interfaces';
 import { TokenService } from 'common/services';
+import { AccessControlBusinessModule } from '@business';
+import {
+  ACApplicationsResolver,
+  ACConfigAuthApplicationResolver,
+  ACCompaniesResolver,
+  ACLoginTypeResolver,
+  ACProfilesResolver,
+  ACRolsResolver,
+  ACTokenResolver,
+  ACUserResolver,
+} from './';
 
 const resolver: Provider[] = [
-  QBusinessResolver,
-  QClientsResolver,
-  QFileResolver,
-  QItemsQuotationResolver,
-  QProdServResolver,
-  QQuotationResolver,
-  QStatusResolver,
-  QTemplateResolver,
-  QTypeFileResolver,
-  QUserResolver,
+  ACApplicationsResolver,
+  ACConfigAuthApplicationResolver,
+  ACCompaniesResolver,
+  ACLoginTypeResolver,
+  ACProfilesResolver,
+  ACRolsResolver,
+  ACTokenResolver,
+  ACUserResolver,
 ];
 
 @Module({
   imports: [
-    QuotationPrismaModule,
     AccessControlPrismaModule,
-    QuotationBusinessModule,
+    AccessControlBusinessModule,
     JwtModule.registerAsync({
       inject: [ConfigService],
       useFactory: jwtFactory,
@@ -61,13 +56,11 @@ const resolver: Provider[] = [
         return {
           autoSchemaFile: join(
             process.cwd(),
-            'apps/quotation/src/applications/graphql/schema.gql',
+            'apps/access-control/src/applications/graphql/schema.gql',
           ),
           playground: false,
-          subscriptions: {
-            'graphql-ws': true,
-          },
-          path: '/quotation/graphql',
+          subscriptions: { 'graphql-ws': true },
+          path: '/access-control/graphql',
           plugins,
           formatError: (
             formattedError: GraphQLFormattedError,
@@ -106,4 +99,4 @@ const resolver: Provider[] = [
     ...resolver,
   ],
 })
-export class GraphQlQuotationModule {}
+export class GraphQlAccessControlModule {}

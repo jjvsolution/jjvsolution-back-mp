@@ -15,6 +15,59 @@ type ACUserAllObjectType {
   id: String!
 }
 
+type ACApplicationsAllObjectType {
+  name: String!
+  description: String
+  url: String
+  aCConfigAuthApplicationId: Float
+  id: String!
+}
+
+type ACCompaniesAllObjectType {
+  name: String!
+  rut: String!
+  CompaniesParentId: Float
+  id: Float!
+}
+
+type ACConfigAuthApplicationAllObjectType {
+  jwt: JSON
+  google: JSON
+  github: JSON
+  facebook: JSON
+  linkedin: JSON
+  apple: JSON
+  twitter: JSON
+  microsoft: JSON
+  id: Float!
+}
+
+"""
+The `JSON` scalar type represents JSON values as specified by [ECMA-404](http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf).
+"""
+scalar JSON
+
+type ACLoginTypeAllObjectType {
+  type: String!
+  username: String!
+  password: String
+  userId: String!
+  id: Float!
+}
+
+type ACProfilesAllObjectType {
+  name: String!
+  details: String
+  applicationsId: String!
+  id: Float!
+}
+
+type ACRolsAllObjectType {
+  name: String!
+  details: String
+  id: Float!
+}
+
 type ACTokenAllObjectType {
   type: String!
   token: String!
@@ -33,11 +86,6 @@ type ResponseObjectType {
   errors: [String!]
   data: [DataObjectType!]
 }
-
-"""
-The `JSON` scalar type represents JSON values as specified by [ECMA-404](http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf).
-"""
-scalar JSON
 
 type DataObjectType {
   message: String
@@ -169,6 +217,54 @@ input ACUserAllInputType {
   id: String!
 }
 
+input ACApplicationsAllInputType {
+  name: String!
+  description: String
+  url: String
+  aCConfigAuthApplicationId: Float
+  id: String!
+}
+
+input ACCompaniesAllInputType {
+  name: String!
+  rut: String!
+  CompaniesParentId: Float
+  id: Float!
+}
+
+input ACConfigAuthApplicationAllInputType {
+  jwt: JSON
+  google: JSON
+  github: JSON
+  facebook: JSON
+  linkedin: JSON
+  apple: JSON
+  twitter: JSON
+  microsoft: JSON
+  id: Float!
+}
+
+input ACLoginTypeAllInputType {
+  type: String!
+  username: String!
+  password: String
+  userId: String!
+  id: Float!
+}
+
+input ACProfilesAllInputType {
+  name: String!
+  details: String
+  applicationsId: String!
+  id: Float!
+}
+
+input ACRolsAllInputType {
+  name: String!
+  details: String
+  id: Float!
+}
+
 input ACTokenAllInputType {
   type: String!
   token: String!
@@ -283,10 +379,22 @@ input QTemplateAllInputType {
 }
 
 type Query {
-  ACUser: [ACUserAllObjectType!]!
-  ACUserById(id: String!): ACUserAllObjectType
+  ACApplications: [ACApplicationsAllObjectType!]!
+  ACApplicationsById(id: String!): ACApplicationsAllObjectType
+  ACConfigAuthApplication: [ACConfigAuthApplicationAllObjectType!]!
+  ACConfigAuthApplicationById(id: Float!): ACConfigAuthApplicationAllObjectType
+  ACCompanies: [ACCompaniesAllObjectType!]!
+  ACCompaniesById(id: Float!): ACCompaniesAllObjectType
+  ACLoginType: [ACLoginTypeAllObjectType!]!
+  ACLoginTypeById(id: Float!): ACLoginTypeAllObjectType
+  ACProfiles: [ACProfilesAllObjectType!]!
+  ACProfilesById(id: Float!): ACProfilesAllObjectType
+  ACRols: [ACRolsAllObjectType!]!
+  ACRolsById(id: Float!): ACRolsAllObjectType
   ACToken: [ACTokenAllObjectType!]!
   ACTokenById(id: Float!): ACTokenAllObjectType
+  ACUser: [ACUserAllObjectType!]!
+  ACUserById(id: String!): ACUserAllObjectType
   QBusiness: [QBusinessAllObjectType!]!
   QBusinessById(id: Float!): QBusinessAllObjectType
   QClients: [QClientsAllObjectType!]!
@@ -316,12 +424,30 @@ type Query {
 }
 
 type Mutation {
-  ACUserCreate(data: ACUserInputType!): ACUserAllObjectType
-  ACUserUpdate(id: String!, data: ACUserInputType!): ACUserAllObjectType
-  ACUserDelete(id: String!): ACUserAllObjectType
+  ACApplicationsCreate(data: ACApplicationsInputType!): ACApplicationsAllObjectType
+  ACApplicationsUpdate(id: String!, data: ACApplicationsInputType!): ACApplicationsAllObjectType
+  ACApplicationsDelete(id: String!): ACApplicationsAllObjectType
+  ACConfigAuthApplicationCreate(data: ACConfigAuthApplicationInputType!): ACConfigAuthApplicationAllObjectType
+  ACConfigAuthApplicationUpdate(id: Float!, data: ACConfigAuthApplicationInputType!): ACConfigAuthApplicationAllObjectType
+  ACConfigAuthApplicationDelete(id: Float!): ACConfigAuthApplicationAllObjectType
+  ACCompaniesCreate(data: ACCompaniesInputType!): ACCompaniesAllObjectType
+  ACCompaniesUpdate(id: Float!, data: ACCompaniesInputType!): ACCompaniesAllObjectType
+  ACCompaniesDelete(id: Float!): ACCompaniesAllObjectType
+  ACLoginTypeCreate(data: ACLoginTypeInputType!): ACLoginTypeAllObjectType
+  ACLoginTypeUpdate(id: Float!, data: ACLoginTypeInputType!): ACLoginTypeAllObjectType
+  ACLoginTypeDelete(id: Float!): ACLoginTypeAllObjectType
+  ACProfilesCreate(data: ACProfilesInputType!): ACProfilesAllObjectType
+  ACProfilesUpdate(id: Float!, data: ACProfilesInputType!): ACProfilesAllObjectType
+  ACProfilesDelete(id: Float!): ACProfilesAllObjectType
+  ACRolsCreate(data: ACRolsInputType!): ACRolsAllObjectType
+  ACRolsUpdate(id: Float!, data: ACRolsInputType!): ACRolsAllObjectType
+  ACRolsDelete(id: Float!): ACRolsAllObjectType
   ACTokenCreate(data: ACTokenInputType!): ACTokenAllObjectType
   ACTokenUpdate(id: Float!, data: ACTokenInputType!): ACTokenAllObjectType
   ACTokenDelete(id: Float!): ACTokenAllObjectType
+  ACUserCreate(data: ACUserInputType!): ACUserAllObjectType
+  ACUserUpdate(id: String!, data: ACUserInputType!): ACUserAllObjectType
+  ACUserDelete(id: String!): ACUserAllObjectType
   QBusinessCreate(data: QBusinessInputType!): QBusinessAllObjectType
   QBusinessUpdate(id: Float!, data: QBusinessInputType!): QBusinessAllObjectType
   QBusinessDelete(id: Float!): QBusinessAllObjectType
@@ -358,6 +484,57 @@ type Mutation {
   QUserDelete(id: Float!): QUsersAllObjectType
 }
 
+input ACApplicationsInputType {
+  name: String!
+  description: String
+  url: String
+  aCConfigAuthApplicationId: Float
+}
+
+input ACConfigAuthApplicationInputType {
+  jwt: JSON
+  google: JSON
+  github: JSON
+  facebook: JSON
+  linkedin: JSON
+  apple: JSON
+  twitter: JSON
+  microsoft: JSON
+}
+
+input ACCompaniesInputType {
+  name: String!
+  rut: String!
+  CompaniesParentId: Float
+}
+
+input ACLoginTypeInputType {
+  type: String!
+  username: String!
+  password: String
+  userId: String!
+}
+
+input ACProfilesInputType {
+  name: String!
+  details: String
+  applicationsId: String!
+}
+
+input ACRolsInputType {
+  name: String!
+  details: String
+}
+
+input ACTokenInputType {
+  type: String!
+  token: String!
+  accessToken: String
+  refreshToken: String
+  openId: String
+  userId: String!
+}
+
 input ACUserInputType {
   email: String
   firstName: String
@@ -368,15 +545,6 @@ input ACUserInputType {
   twofa_base32: String
   twofa_enabled: Boolean
   twofa_verified: Boolean
-}
-
-input ACTokenInputType {
-  type: String!
-  token: String!
-  accessToken: String
-  refreshToken: String
-  openId: String
-  userId: String!
 }
 
 input QBusinessInputType {

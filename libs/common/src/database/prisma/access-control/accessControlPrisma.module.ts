@@ -1,20 +1,26 @@
 import { Module } from '@nestjs/common';
 import { Prisma } from '../prisma';
 import {
-  ACParameterRepository,
+  ACApplicationsRepository,
+  ACCompaniesRepository,
+  ACConfigAuthApplicationRepository,
+  ACLoginTypeRepository,
+  ACProfilesRepository,
+  ACRolsRepository,
   ACTokenRepository,
   ACUserRepository,
-  ACApplicationRepository,
-  ACCompaniesRepository,
 } from '.';
 
 const provider = [
   Prisma,
-  ACParameterRepository,
+  ACApplicationsRepository,
+  ACCompaniesRepository,
+  ACConfigAuthApplicationRepository,
+  ACLoginTypeRepository,
+  ACProfilesRepository,
+  ACRolsRepository,
   ACTokenRepository,
   ACUserRepository,
-  ACApplicationRepository,
-  ACCompaniesRepository,
 ];
 
 @Module({

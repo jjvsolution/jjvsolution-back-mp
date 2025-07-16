@@ -3,7 +3,7 @@ import { Prisma } from '@database/prisma';
 import { $Enums } from '@prisma/client';
 
 @Injectable()
-export class ACParameterRepository {
+export class ParameterRepository {
   constructor(private prisma: Prisma) {}
 
   get db() {

@@ -2,7 +2,7 @@ import { Module } from '@nestjs/common';
 import { QuotationController } from './quotation.controller';
 import { QuotationService } from './quotation.service';
 import { PrismaModule } from '@database/prisma';
-import { GraphQlModule } from './applications/graphql';
+import { GraphQlQuotationModule } from './applications/graphql';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import configuration from 'common/config/configuration';
 import { Log4jsModule } from 'common/shared';
@@ -20,7 +20,7 @@ import { useFactoryLogger } from 'common/config';
       inject: [ConfigService],
     }),
     PrismaModule,
-    GraphQlModule,
+    GraphQlQuotationModule,
   ],
   controllers: [QuotationController],
   providers: [QuotationService],

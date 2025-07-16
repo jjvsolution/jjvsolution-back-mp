@@ -1,6 +1,9 @@
-export * from './aCApplication.repository';
+export * from './aCApplications.repository';
 export * from './aCCompanies.repository';
-export * from './aCParameter.repository';
+export * from './ACConfigAuthApplication.repository';
+export * from './aCLoginType.repository';
+export * from './aCProfiles.repository';
+export * from './ACRols.repository';
 export * from './aCToken.repository';
 export * from './aCUser.repository';
 

@@ -75,18 +75,20 @@ model ACUser {
   twofa_base32            String?
   twofa_enabled           Boolean?
   twofa_verified          Boolean?
+  isDeleted               Boolean                     @default(false)
   Token                   ACToken[]
   LoginType               ACLoginType[]
   UserProfileApplications ACUserProfileApplications[]
 }
 
 model ACLoginType {
-  id       Int       @id @default(autoincrement())
-  type     TypeToken
-  username String    @unique
-  password String?   @db.VarChar(100)
-  User     ACUser?   @relation(fields: [userId], references: [id])
-  userId   String    @db.Uuid
+  id        Int       @id @default(autoincrement())
+  type      TypeToken
+  username  String    @unique
+  password  String?   @db.VarChar(100)
+  isDeleted Boolean   @default(false)
+  User      ACUser?   @relation(fields: [userId], references: [id])
+  userId    String    @db.Uuid
 }
 
 model ACToken {
@@ -96,6 +98,7 @@ model ACToken {
   accessToken  String?   @db.VarChar(1000)
   refreshToken String?   @db.VarChar(1000)
   openId       String?
+  isDeleted    Boolean   @default(false)
   User         ACUser?   @relation(fields: [userId], references: [id])
   userId       String    @db.Uuid
 }
@@ -113,6 +116,7 @@ model ACCompanies {
   id                    Int                       @id @default(autoincrement())
   name                  String
   rut                   String
+  isDeleted             Boolean                   @default(false)
   CompaniesParent       ACCompanies?              @relation("CompaniesChildren", fields: [CompaniesParentId], references: [id])
   CompaniesParentId     Int?
   Companies             ACCompanies[]             @relation("CompaniesChildren")
@@ -124,6 +128,7 @@ model ACApplications {
   name                      String
   description               String?
   url                       String?
+  isDeleted                 Boolean                   @default(false)
   Profiles                  ACProfiles[]
   ApplicationsCompanies     ACApplicationsCompanies[]
   ConfigAuthApplication     ACConfigAuthApplication?  @relation(fields: [aCConfigAuthApplicationId], references: [id])
@@ -147,6 +152,7 @@ model ACProfiles {
   id                      Int                         @id @default(autoincrement())
   name                    String
   details                 String?
+  isDeleted               Boolean                     @default(false)
   Applications            ACApplications              @relation(fields: [applicationsId], references: [id])
   applicationsId          String                      @db.Uuid
   UserProfileApplications ACUserProfileApplications[]
