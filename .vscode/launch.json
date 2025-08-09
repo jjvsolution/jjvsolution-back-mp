@@ -1,0 +1,25 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Debug API Monorepo",
+      "type": "node",
+      "request": "launch",
+      "runtimeArgs": [
+        "-r",
+        "tsconfig-paths/register",
+        "-r",
+        "ts-node/register",
+        "/home/asus/ws/jjvsolution/jjvsolution/jjvsolution-back-mp/apps/jjvsolution-back-mp/src/main.ts"
+      ],
+      "cwd": "${workspaceFolder}",
+      "protocol": "inspector",
+      "envFile": "${workspaceFolder}/.env",
+      "env": {
+        "NODE_ENV": "development"
+      },
+      "skipFiles": ["<node_internals>/**", "node_modules/**"],
+      "console": "integratedTerminal"
+    }
+  ]
+}

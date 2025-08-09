@@ -25,8 +25,9 @@ import {
   ACTokenResolver,
   ACUserResolver,
 } from './';
+import { IResolvers } from '@graphql-tools/utils';
 
-const resolver: Provider[] = [
+export const resolver: Provider[] = [
   ACApplicationsResolver,
   ACConfigAuthApplicationResolver,
   ACCompaniesResolver,
@@ -36,7 +37,7 @@ const resolver: Provider[] = [
   ACTokenResolver,
   ACUserResolver,
 ];
-
+const onlyServer = `${process?.env?.ONLY_SERVER}` == 'true';
 @Module({
   imports: [
     AccessControlPrismaModule,
@@ -45,42 +46,53 @@ const resolver: Provider[] = [
       inject: [ConfigService],
       useFactory: jwtFactory,
     }),
-    GQLModule.forRootAsync<ApolloDriverConfig>({
-      inject: [ConfigService],
-      driver: ApolloDriver,
-      useFactory: async (config: ConfigService<ConfigurationsInterface>) => {
-        const plugins =
-          config.get('ENVIRONMENT').toUpperCase() === 'LOCAL'
-            ? [ApolloServerPluginLandingPageLocalDefault()]
-            : [];
-        return {
-          autoSchemaFile: join(
-            process.cwd(),
-            'apps/access-control/src/applications/graphql/schema.gql',
-          ),
-          playground: false,
-          subscriptions: { 'graphql-ws': true },
-          path: '/access-control/graphql',
-          plugins,
-          formatError: (
-            formattedError: GraphQLFormattedError,
-            error: Error,
-          ) => {
-            let newError: any;
-            try {
-              newError = JSON.parse(error.message);
-            } catch (error) {
-              newError = error?.message;
-            }
+    ...(onlyServer === true
+      ? [
+          GQLModule.forRootAsync<ApolloDriverConfig>({
+            inject: [ConfigService],
+            driver: ApolloDriver,
+            useFactory: (config: ConfigService<ConfigurationsInterface>) => {
+              const plugins =
+                config.get<string>('ENVIRONMENT')?.toUpperCase() === 'LOCAL'
+                  ? [ApolloServerPluginLandingPageLocalDefault()]
+                  : [];
+              return {
+                resolvers: resolver as unknown as IResolvers[],
+                autoSchemaFile: join(
+                  process.cwd(),
+                  'apps/access-control/src/applications/graphql/schema.gql',
+                ),
+                playground: false,
+                subscriptions: { 'graphql-ws': true },
+                path: '/access-control/graphql',
+                plugins,
+                formatError: (
+                  formattedError: GraphQLFormattedError,
+                  error: Error,
+                ) => {
+                  let newError:
+                    | { message?: string }
+                    | string
+                    | { payload?: string };
+                  try {
+                    newError = JSON.parse(error.message) as object;
+                  } catch (error2) {
+                    newError = (error2 as { message?: string })?.message || '';
+                  }
 
-            return {
-              message: newError?.payload || 'Errors', //originalError.message,
-              code: newError?.message || formattedError.extensions?.code,
-            };
-          },
-        };
-      },
-    }),
+                  return {
+                    message:
+                      (newError as { payload?: string })?.payload || 'Errors', //originalError.message,
+                    code:
+                      (newError as { message?: string })?.message ||
+                      formattedError.extensions?.code,
+                  };
+                },
+              };
+            },
+          }),
+        ]
+      : []),
   ],
   providers: [
     CodeErrorRepository,

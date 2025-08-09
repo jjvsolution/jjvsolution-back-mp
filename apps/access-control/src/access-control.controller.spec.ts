@@ -11,7 +11,9 @@ describe('AccessControlController', () => {
       providers: [AccessControlService],
     }).compile();
 
-    accessControlController = app.get<AccessControlController>(AccessControlController);
+    accessControlController = app.get<AccessControlController>(
+      AccessControlController,
+    );
   });
 
   describe('root', () => {

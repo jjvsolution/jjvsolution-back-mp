@@ -192,7 +192,7 @@ export class QTemplateBusiness extends ResponseClass {
       replaceInterface[]
     >;
   }
-  async getUserTemplate(UID: string) {
+  async getUserTemplate(UID: string): Promise<ResponseObjectType<string>> {
     const templatehtml = await this.qTemplateRepository.getUserTemplate(UID);
     return this.success(templatehtml?.template || '');
   }
