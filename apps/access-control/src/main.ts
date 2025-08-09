@@ -6,7 +6,7 @@ async function bootstrap() {
   const app = await NestFactory.create(AccessControlModule);
   app.enableCors({
     /* origin: 'http://localhost:4202', */
-    methods: ['GET', 'POST'],
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'],
     allowedHeaders: ['Content-Type', 'Authorization', 'x-app-id'],
   });
   app.setGlobalPrefix('access-control');

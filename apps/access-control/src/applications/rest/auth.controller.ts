@@ -7,12 +7,17 @@ import { LocalAuthDto } from 'common/dto';
 import { RequestWithUserInterface } from 'common/interfaces';
 import { AuthService, TokenService } from 'common/services';
 
-@Controller('auth')
+@Controller(['auth', 'access-control/auth'])
 export class AuthController {
   constructor(
     private readonly authBusiness: AuthBusiness,
     private readonly tokenService: TokenService,
   ) {}
+
+  @Get('status')
+  async status() {
+    return 'ok';
+  }
 
   @UseGuards(CustomAuthGuard)
   @Get('valid')
