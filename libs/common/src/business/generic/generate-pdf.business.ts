@@ -4,7 +4,7 @@ import { ResponseClass } from 'common/config';
 import { QTemplateRepository } from 'common/database/prisma';
 import { mdToPdf } from 'md-to-pdf';
 import { generatePdf } from 'html-pdf-node';
-import { cssMD, stylePDF } from './constant';
+import { cssMD } from './constant';
 
 @Injectable()
 export class GenetarePdfBusiness extends ResponseClass {
@@ -23,16 +23,23 @@ export class GenetarePdfBusiness extends ResponseClass {
     if (!template) return super.badRequest({});
     let bufferArray: Buffer<ArrayBufferLike>;
     if (type === 'MD') {
-      let content = this.replaceMD(template.template, replace);
+      const content = this.replaceMD(template.template, replace);
       const pdf = await mdToPdf(
         { content },
         { css: cssMD, stylesheet_encoding: 'utf-8' },
       );
       bufferArray = pdf.content;
     } else if (type === 'PDF') {
-      let content = this.replacePDF(template.template, replace);
+      const content = this.replacePDF(template.template, replace);
       const file = { content };
-      const options = { format: 'A4', printBackground: true };
+      const options = {
+        format: 'A4',
+        printBackground: true,
+        puppeteerArgs: {
+          executablePath: process.env.CHROMIUM_PATH,
+          args: ['--no-sandbox', '--disable-setuid-sandbox'],
+        },
+      };
       bufferArray = await generatePdf(file, options);
       //bufferArray
     }
@@ -63,7 +70,7 @@ export class GenetarePdfBusiness extends ResponseClass {
           '</thead>';
         table += '<tbody>';
         for (const row of values.rows) {
-          console.log(row)
+          console.log(row);
           table += row
             .map(
               (r, i) =>
@@ -96,7 +103,7 @@ export class GenetarePdfBusiness extends ResponseClass {
     return template;
   }
   private replaceMD(template: string, replace: replaceInterface[]) {
-    const finalReplace = '';
+    //const finalReplace = '';
 
     for (const r of replace) {
       if (r.type === 'string') {
