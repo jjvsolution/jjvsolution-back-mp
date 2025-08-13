@@ -35,7 +35,7 @@ export class GenetarePdfBusiness extends ResponseClass {
       const options = {
         format: 'A4',
         printBackground: true,
-        puppeteerArgs: {
+        args: {
           executablePath: process.env.CHROMIUM_PATH,
           args: ['--no-sandbox', '--disable-setuid-sandbox'],
         },
