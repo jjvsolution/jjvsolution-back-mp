@@ -18,7 +18,7 @@ RUN npx prisma generate
 COPY . .
 
 # Compilar la aplicación
-RUN npm run build:all
+RUN npm run build-graphql
 
 # Etapa 2: Imagen final con OpenSSL instalado
 FROM node:22-alpine
@@ -26,7 +26,15 @@ FROM node:22-alpine
 WORKDIR /app
 
 # 🔥 Instalar OpenSSL correctamente en Alpine
-RUN apk add --no-cache openssl
+# RUN apk add --no-cache openssl
+RUN apk add --no-cache \
+    openssl \
+    chromium \
+    nss \
+    freetype \
+    harfbuzz \
+    ca-certificates \
+    ttf-freefont
 # RUN apk add --no-cache openssl nginx
 
 # Copiar archivos necesarios
@@ -44,4 +52,4 @@ COPY --from=builder /app/prisma ./prisma
 EXPOSE 3000
  
 # CMD ["sh", "-c", "nginx && node dist/apps/graphql/main"]
-CMD ["node", "dist/apps/jjvsolution-back-mp/main"]
+CMD ["node", "dist/apps/graphql/main"]
