@@ -7,6 +7,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import configuration from 'common/config/configuration';
 import { Log4jsModule } from 'common/shared';
 import { useFactoryLogger } from 'common/config';
+import puppeteer from 'puppeteer';
 
 @Module({
   imports: [
@@ -25,4 +26,13 @@ import { useFactoryLogger } from 'common/config';
   controllers: [QuotationController],
   providers: [QuotationService],
 })
-export class QuotationModule {}
+export class QuotationModule {
+  constructor() {
+    puppeteer
+      .launch({
+        executablePath: process.env.CHROMIUM_PATH, // usar el chromium del sistema
+        args: ['--no-sandbox', '--disable-setuid-sandbox'],
+      })
+      .then((browser) => console.log(browser));
+  }
+}

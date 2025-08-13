@@ -37,6 +37,10 @@ RUN apk add --no-cache \
     ttf-freefont
 # RUN apk add --no-cache openssl nginx
 
+# Variables de entorno
+ENV PUPPETEER_SKIP_DOWNLOAD=true \
+    CHROMIUM_PATH=/usr/bin/chromium-browser
+
 # Copiar archivos necesarios
 COPY --from=builder /app/node_modules ./node_modules
 COPY --from=builder /app/dist ./dist
