@@ -18,7 +18,7 @@ RUN npx prisma generate
 COPY . .
 
 # Compilar la aplicación
-RUN npm run build-graphql
+RUN npm run build:all
 
 # Etapa 2: Imagen final con OpenSSL instalado
 FROM node:22-alpine
@@ -52,4 +52,4 @@ COPY --from=builder /app/prisma ./prisma
 EXPOSE 3000
  
 # CMD ["sh", "-c", "nginx && node dist/apps/graphql/main"]
-CMD ["node", "dist/apps/graphql/main"]
+CMD ["node", "dist/apps/jjvsolution-back-mp/main"]
