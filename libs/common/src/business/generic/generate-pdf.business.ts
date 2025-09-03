@@ -3,7 +3,7 @@ import { ResponseObjectType } from '@quotation/applications/graphql/models';
 import { ResponseClass } from 'common/config';
 import { QTemplateRepository } from 'common/database/prisma';
 import { mdToPdf } from 'md-to-pdf';
-import { generatePdf } from 'html-pdf-node';
+import { generatePdf } from './pdf';
 import { cssMD } from './constant';
 
 @Injectable()
@@ -36,10 +36,12 @@ export class GenetarePdfBusiness extends ResponseClass {
         format: 'A4',
         printBackground: true,
         args: {
-          executablePath: process.env.CHROMIUM_PATH,
+          executablePath:
+            process.env.PUPPETEER_EXECUTABLE_PATH || '/usr/bin/chromium',
           args: ['--no-sandbox', '--disable-setuid-sandbox'],
         },
       };
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
       bufferArray = await generatePdf(file, options);
       //bufferArray
     }

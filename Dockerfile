@@ -21,39 +21,41 @@ COPY . .
 RUN npm run build:all
 
 # Etapa 2: Imagen final con OpenSSL instalado
-FROM node:22-alpine
+FROM node:22-slim
 
 WORKDIR /app
 
-# 🔥 Instalar OpenSSL correctamente en Alpine
-# RUN apk add --no-cache openssl
-RUN apk add --no-cache \
-    openssl \
+# 🔥 Dependencias necesarias para Chromium
+RUN apt-get update && apt-get install -y \
     chromium \
-    nss \
-    freetype \
-    harfbuzz \
-    ca-certificates \
-    ttf-freefont
-# RUN apk add --no-cache openssl nginx
+    fonts-liberation \
+    libasound2 \
+    libatk-bridge2.0-0 \
+    libatk1.0-0 \
+    libcups2 \
+    libdrm2 \
+    libgbm1 \
+    libgtk-3-0 \
+    libnspr4 \
+    libnss3 \
+    libx11-xcb1 \
+    libxcomposite1 \
+    libxdamage1 \
+    libxext6 \
+    libxfixes3 \
+    libxrandr2 \
+    xdg-utils \
+    && rm -rf /var/lib/apt/lists/*
 
-# Variables de entorno
+# Variables para Puppeteer
 ENV PUPPETEER_SKIP_DOWNLOAD=true \
-    CHROMIUM_PATH=/usr/bin/chromium-browser
+    PUPPETEER_EXECUTABLE_PATH=/usr/bin/chromium
 
-# Copiar archivos necesarios
 COPY --from=builder /app/node_modules ./node_modules
 COPY --from=builder /app/dist ./dist
 COPY --from=builder /app/package*.json ./
 COPY --from=builder /app/prisma ./prisma
-#COPY --from=builder /app/.env .env
 
-# Configuración de Nginx
-# COPY nginx.conf /etc/nginx/nginx.conf
-
-# Exponer el puerto de la aplicación
-#EXPOSE 80 443
 EXPOSE 3000
- 
-# CMD ["sh", "-c", "nginx && node dist/apps/graphql/main"]
+
 CMD ["node", "dist/apps/jjvsolution-back-mp/main"]
