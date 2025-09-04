@@ -21,6 +21,11 @@ export class AuthBusiness extends ResponseClass {
             Profiles: {
               select: {
                 Applications: true,
+                RolsProfiles: {
+                  include: {
+                    Rols: true
+                  }
+                }
               },
             },
           },
@@ -40,10 +45,18 @@ export class AuthBusiness extends ResponseClass {
     ) {
       this.unauthorized('USER_NOT_FOUND');
     }
+
+    const rols = user?.UserProfileApplications
+      .flatMap(upa => upa.Profiles)
+      .flatMap(profile => profile.RolsProfiles)
+      .map(rp => rp.Rols.name);
+
     const payload = {
       uid: user?.id,
+      rols,
     };
     const token = await this.authService.signToken(appId, payload);
+    console.log(token)
     await this.aCTokenRepository.db.create({
       data: {
         token,
