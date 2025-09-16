@@ -2,7 +2,7 @@
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
 generator client {
-  provider = "prisma-client-js"
+  provider      = "prisma-client-js"
   binaryTargets = ["native", "rhel-openssl-1.0.x", "darwin-arm64", "debian-openssl-3.0.x", "linux-musl-openssl-3.0.x"]
 }
 
@@ -275,6 +275,7 @@ model QUsers {
 
 model QBusiness {
   id               Int        @id @default(autoincrement())
+  createdAt        DateTime   @default(now())
   name             String
   businessName     String
   rut              String     @unique
@@ -289,6 +290,7 @@ model QBusiness {
 
 model QClients {
   id               Int          @id @default(autoincrement())
+  createdAt        DateTime     @default(now())
   name             String
   rut              String       @unique
   address          String
@@ -302,6 +304,7 @@ model QClients {
 
 model QQuotation {
   id             Int               @id @default(autoincrement())
+  createdAt      DateTime          @default(now())
   folio          String
   title          String
   detail         String
@@ -329,6 +332,7 @@ model QItemsQuotation {
 
 model QProdServ {
   id             Int               @id @default(autoincrement())
+  createdAt      DateTime          @default(now())
   detail         String
   gloss          String            @default("")
   price          Int
@@ -339,6 +343,7 @@ model QProdServ {
 
 model QFile {
   id         Int          @id @default(autoincrement())
+  createdAt  DateTime     @default(now())
   url        String
   typeFile   QTypeFile?   @relation(fields: [typeFileId], references: [id])
   typeFileId Int
@@ -365,13 +370,14 @@ model QStatus {
 }
 
 model QTemplate {
-  id          Int     @id @default(autoincrement())
-  key         String  @unique
+  id          Int      @id @default(autoincrement())
+  createdAt   DateTime @default(now())
+  key         String   @unique
   description String
-  template    String  @db.Text
-  isPrincipal Boolean @default(false)
-  isDeleted   Boolean @default(false)
-  users       QUsers  @relation(fields: [usersId], references: [id])
+  template    String   @db.Text
+  isPrincipal Boolean  @default(false)
+  isDeleted   Boolean  @default(false)
+  users       QUsers   @relation(fields: [usersId], references: [id])
   usersId     Int
 }
 
