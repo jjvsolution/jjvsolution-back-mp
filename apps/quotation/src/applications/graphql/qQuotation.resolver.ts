@@ -8,7 +8,13 @@ import {
   Parent,
 } from '@nestjs/graphql';
 import { GQLInternalGuard } from '@config/cross/guards';
-import { QClientsAllModel, QItemsQuotationAllModel, QQuotationAllModel, QQuotationModel, QStatusAllModel } from './models';
+import {
+  QClientsAllModel,
+  QItemsQuotationAllModel,
+  QQuotationAllModel,
+  QQuotationModel,
+  QStatusAllModel,
+} from './models';
 import {
   QClientsRepository,
   QItemsQuotationRepository,
@@ -106,7 +112,7 @@ export class QQuotationResolver {
   ItemsQuotation(@Parent() qQuotationAllModel: QQuotationAllModel) {
     return this.qItemsQuotationRepository.db.findMany({
       where: { quotationId: qQuotationAllModel.id, isDeleted: false },
-      orderBy: { id: 'asc' }
+      orderBy: { id: 'asc' },
     });
   }
 }

@@ -80,7 +80,12 @@ export class QQuotationBusiness extends ResponseClass {
         status: {},
       },
     });
-    if (q && q?.status && q?.status?.key == 'CREATED' && q.status.type == 'QUOTATION') {
+    if (
+      q &&
+      q?.status &&
+      q?.status?.key == 'CREATED' &&
+      q.status.type == 'QUOTATION'
+    ) {
       const status = await this.qStatusRepository.db.findFirst({
         where: {
           key: 'SENT',

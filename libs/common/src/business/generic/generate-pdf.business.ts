@@ -35,11 +35,11 @@ export class GenetarePdfBusiness extends ResponseClass {
       const options = {
         format: 'A4',
         printBackground: true,
-        args: {
+        /* args: {
           executablePath:
             process.env.PUPPETEER_EXECUTABLE_PATH || '/usr/bin/chromium',
           args: ['--no-sandbox', '--disable-setuid-sandbox'],
-        },
+        }, */
       };
       // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
       bufferArray = await generatePdf(file, options);
