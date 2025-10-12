@@ -13,6 +13,7 @@ import { ConfigurationsInterface } from 'common/interfaces';
 import { ApolloServerPluginLandingPageLocalDefault } from '@apollo/server/plugin/landingPage/default';
 import { join } from 'path';
 import { GraphQLFormattedError } from 'graphql';
+import { PaymentPortalModule } from 'apps/payment-portal/src/payment-portal.module';
 
 @Module({
   imports: [
@@ -55,11 +56,13 @@ import { GraphQLFormattedError } from 'graphql';
     AdminModule,
     LandingModule,
     QuotationModule,
+    PaymentPortalModule,
     RouterModule.register([
       { path: 'access-control', module: AccessControlModule },
       { path: 'admin', module: AdminModule },
       { path: 'landing', module: LandingModule },
       { path: 'quotation', module: QuotationModule },
+      { path: 'payment-portal', module: PaymentPortalModule },
     ]),
   ],
   controllers: [AppController],

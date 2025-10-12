@@ -193,35 +193,35 @@ model ACApplicationsCompanies {
 
 // portal de pago
 
-enum TypeTypeOfCurrency {
+enum PPTypeTypeOfCurrency {
   CLP @map("Peso Chileno")
   CLF @map("UF")
   USD @map("Dólar")
 }
 
-enum TypePaymentType {
+enum PPTypePaymentType {
   TRANSFER  @map("Transferencia")
   TRANSBANK @map("Transbank")
 }
 
-model DebtsToPay {
+model PPDebtsToPay {
   id          Int         @id @default(autoincrement())
   userId      String      @db.Uuid
   payId       String      @unique
   description String
-  DuesofPay   DuesOfPay[]
+  DuesofPay   PPDuesOfPay[]
 }
 
-model DuesOfPay {
+model PPDuesOfPay {
   id             Int                @id @default(autoincrement())
   expirationDate DateTime
   description    String
   amount         Float
-  TypeOfCurrency TypeTypeOfCurrency
+  TypeOfCurrency PPTypeTypeOfCurrency
   paid           Boolean            @default(false)
-  DebtsToPay     DebtsToPay         @relation(fields: [debtsToPayId], references: [id])
+  DebtsToPay     PPDebtsToPay         @relation(fields: [debtsToPayId], references: [id])
   debtsToPayId   Int
-  paymentType    TypePaymentType?
+  paymentType    PPTypePaymentType?
 }
 
 // Portal My Acceso

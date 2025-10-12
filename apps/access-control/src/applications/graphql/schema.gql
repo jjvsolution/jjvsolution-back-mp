@@ -204,6 +204,43 @@ type QTemplateAllObjectType {
   users: QUsersObjectType
 }
 
+type DebtsToPayObjectType {
+  userId: String!
+  payId: String!
+  description: String!
+  debtsToPay: [DebtsToPayAllObjectType!]
+}
+
+type DebtsToPayAllObjectType {
+  userId: String!
+  payId: String!
+  description: String!
+  debtsToPay: [DebtsToPayAllObjectType!]
+  id: Float!
+  PPDuesofPay: [DuesofPayAllObjectType!]!
+}
+
+type DuesofPayObjectType {
+  expirationDate: DateTime!
+  description: String!
+  amount: Float!
+  TypeOfCurrency: String!
+  paid: Boolean!
+  paymentType: String
+  debtsToPayId: Float!
+}
+
+type DuesofPayAllObjectType {
+  expirationDate: DateTime!
+  description: String!
+  amount: Float!
+  TypeOfCurrency: String!
+  paid: Boolean!
+  paymentType: String
+  debtsToPayId: Float!
+  id: Float!
+}
+
 input ACUserAllInputType {
   email: String
   firstName: String
@@ -378,6 +415,42 @@ input QTemplateAllInputType {
   users: QUsersInputType
 }
 
+input DebtsToPayInputType {
+  userId: String!
+  payId: String!
+  description: String!
+  debtsToPay: [DebtsToPayAllInputType!]
+}
+
+input DebtsToPayAllInputType {
+  userId: String!
+  payId: String!
+  description: String!
+  debtsToPay: [DebtsToPayAllInputType!]
+  id: Float!
+}
+
+input DuesofPayInputType {
+  expirationDate: DateTime!
+  description: String!
+  amount: Float!
+  TypeOfCurrency: String!
+  paid: Boolean!
+  paymentType: String
+  debtsToPayId: Float!
+}
+
+input DuesofPayAllInputType {
+  expirationDate: DateTime!
+  description: String!
+  amount: Float!
+  TypeOfCurrency: String!
+  paid: Boolean!
+  paymentType: String
+  debtsToPayId: Float!
+  id: Float!
+}
+
 type Query {
   ACApplications: [ACApplicationsAllObjectType!]!
   ACApplicationsById(id: String!): ACApplicationsAllObjectType
@@ -409,6 +482,7 @@ type Query {
   QProdServByDetail(detail: String!): [QProdServAllObjectType!]
   QQuotation: [QQuotationAllObjectType!]!
   QQuotationById(id: Float!): QQuotationAllObjectType
+  QDashboard: JSON!
   QStatus: [QStatusAllObjectType!]!
   QStatusById(id: Float!): QStatusAllObjectType
   QTemplate: [QTemplateAllObjectType!]!
@@ -421,6 +495,9 @@ type Query {
   QTypeFileById(id: Float!): QTypeFileAllObjectType
   QUser: [QUsersAllObjectType!]!
   QUserById(id: Float!): QUsersAllObjectType
+  PPDebtsToPayPayId(id: Float!): DuesofPayAllObjectType
+  PPDebtsToPay(id: Float!): DebtsToPayAllObjectType
+  PPDebtsToPayUserId(userId: String!): [DebtsToPayAllObjectType!]!
 }
 
 type Mutation {
@@ -482,6 +559,10 @@ type Mutation {
   QUserCreate(data: QUsersInputType!): QUsersAllObjectType
   QUserUpdate(id: Float!, data: QUsersInputType!): QUsersAllObjectType
   QUserDelete(id: Float!): QUsersAllObjectType
+  PPCreateDebtsToPay(data: DebtsToPayInputType!): DebtsToPayObjectType
+  PPUpdateDebtsToPay(id: Float!, data: DebtsToPayInputType!): DebtsToPayObjectType
+  PPCreateDuesofPay(data: DuesofPayInputType!): DuesofPayObjectType
+  PPUpdateDuesofPay(id: Float!, data: DuesofPayInputType!): DuesofPayObjectType
 }
 
 input ACApplicationsInputType {

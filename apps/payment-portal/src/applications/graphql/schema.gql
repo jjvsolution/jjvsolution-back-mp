@@ -1,0 +1,94 @@
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+# ------------------------------------------------------
+
+type DebtsToPayObjectType {
+  userId: String!
+  payId: String!
+  description: String!
+  debtsToPay: [DebtsToPayAllObjectType!]
+}
+
+type DebtsToPayAllObjectType {
+  userId: String!
+  payId: String!
+  description: String!
+  debtsToPay: [DebtsToPayAllObjectType!]
+  id: Float!
+  PPDuesofPay: [DuesofPayAllObjectType!]!
+}
+
+type DuesofPayObjectType {
+  expirationDate: DateTime!
+  description: String!
+  amount: Float!
+  TypeOfCurrency: String!
+  paid: Boolean!
+  paymentType: String
+  debtsToPayId: Float!
+}
+
+"""
+A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
+"""
+scalar DateTime
+
+type DuesofPayAllObjectType {
+  expirationDate: DateTime!
+  description: String!
+  amount: Float!
+  TypeOfCurrency: String!
+  paid: Boolean!
+  paymentType: String
+  debtsToPayId: Float!
+  id: Float!
+}
+
+input DebtsToPayInputType {
+  userId: String!
+  payId: String!
+  description: String!
+  debtsToPay: [DebtsToPayAllInputType!]
+}
+
+input DebtsToPayAllInputType {
+  userId: String!
+  payId: String!
+  description: String!
+  debtsToPay: [DebtsToPayAllInputType!]
+  id: Float!
+}
+
+input DuesofPayInputType {
+  expirationDate: DateTime!
+  description: String!
+  amount: Float!
+  TypeOfCurrency: String!
+  paid: Boolean!
+  paymentType: String
+  debtsToPayId: Float!
+}
+
+input DuesofPayAllInputType {
+  expirationDate: DateTime!
+  description: String!
+  amount: Float!
+  TypeOfCurrency: String!
+  paid: Boolean!
+  paymentType: String
+  debtsToPayId: Float!
+  id: Float!
+}
+
+type Query {
+  PPDebtsToPayPayId(id: Float!): DuesofPayAllObjectType
+  PPDebtsToPay(id: Float!): DebtsToPayAllObjectType
+  PPDebtsToPayUserId(userId: String!): [DebtsToPayAllObjectType!]!
+}
+
+type Mutation {
+  PPCreateDebtsToPay(data: DebtsToPayInputType!): DebtsToPayObjectType
+  PPUpdateDebtsToPay(id: Float!, data: DebtsToPayInputType!): DebtsToPayObjectType
+  PPCreateDuesofPay(data: DuesofPayInputType!): DuesofPayObjectType
+  PPUpdateDuesofPay(id: Float!, data: DuesofPayInputType!): DuesofPayObjectType
+}
