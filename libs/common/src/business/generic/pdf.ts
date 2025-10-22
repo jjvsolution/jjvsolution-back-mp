@@ -16,6 +16,12 @@ export async function generatePdf(
   }
 
   const browser = await puppeteer.launch({
+    ...(`${process.env.ENVIRONMENT}` !== 'LOCAL'
+      ? {
+          executablePath:
+            process.env.PUPPETEER_EXECUTABLE_PATH || '/usr/bin/chromium',
+        }
+      : {}),
     ...args,
   });
   const page = await browser.newPage();
