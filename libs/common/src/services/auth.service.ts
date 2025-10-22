@@ -30,11 +30,12 @@ export class AuthService {
       PUBLIC_KEY: string;
       JWT_EXPIRES_IN: string;
     };
-    return await this.jwtService.signAsync(payload, {
+    const token = await this.jwtService.signAsync(payload, {
       algorithm: 'ES384',
       privateKey: jwt.PRIVATE_KEY,
       expiresIn: jwt.JWT_EXPIRES_IN,
     });
+    return `${token}`;
   }
 
   async verifyToken(appId: string, token: string): Promise<PayloadJWTInterface> {
