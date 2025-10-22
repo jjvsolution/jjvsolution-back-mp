@@ -9,7 +9,7 @@ COPY package*.json prisma ./
 # Instalar dependencias
 RUN rm -rf node_modules package-lock.json
 RUN npm install -g @nestjs/cli
-RUN npm install
+RUN npm install --legacy-peer-deps
 
 # Generar el cliente de Prisma
 RUN npx prisma generate
