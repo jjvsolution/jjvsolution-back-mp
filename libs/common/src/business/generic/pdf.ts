@@ -9,7 +9,7 @@ export async function generatePdf(
   callback?: any,
 ) {
   // we are using headless mode
-  let args: object = { arg: ['--no-sandbox', '--disable-setuid-sandbox'] };
+  let args: object = { args: ['--no-sandbox', '--disable-setuid-sandbox'] };
   if ((options as { args?: object })?.args) {
     args = (options as { args: object }).args;
     delete (options as { args: any }).args;
