@@ -1,8 +1,8 @@
-import { ConfigurationsInterface, PayloadJWTInterface } from '@interfaces';
+import { PayloadJWTInterface } from '@interfaces';
 import { Injectable, UnauthorizedException } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import { ACApplicationsRepository } from 'common/database/prisma';
+import { StringValue } from 'ms';
 
 @Injectable()
 export class AuthService {
@@ -28,17 +28,19 @@ export class AuthService {
     const jwt = jwtConfig.ConfigAuthApplication?.jwt as {
       PRIVATE_KEY: string;
       PUBLIC_KEY: string;
-      JWT_EXPIRES_IN: string;
+      JWT_EXPIRES_IN: StringValue | number | undefined;
     };
-    const token = await this.jwtService.signAsync(payload, {
+    return await this.jwtService.signAsync(payload, {
       algorithm: 'ES384',
       privateKey: jwt.PRIVATE_KEY,
       expiresIn: jwt.JWT_EXPIRES_IN,
     });
-    return `${token}`;
   }
 
-  async verifyToken(appId: string, token: string): Promise<PayloadJWTInterface> {
+  async verifyToken(
+    appId: string,
+    token: string,
+  ): Promise<PayloadJWTInterface> {
     try {
       const jwtConfig = await this.applicationRepositor.db.findUnique({
         select: {
@@ -58,12 +60,14 @@ export class AuthService {
         PUBLIC_KEY: string;
         JWT_EXPIRES_IN: string;
       };
-      const payload = this.jwtService.verify(token, {
-        algorithms: ['ES384'],
-        publicKey: jwt.PUBLIC_KEY,
-      });
+      const payload: PayloadJWTInterface =
+        this.jwtService.verify<PayloadJWTInterface>(token, {
+          algorithms: ['ES384'],
+          publicKey: jwt.PUBLIC_KEY,
+        });
       return payload;
     } catch (error) {
+      console.log(error);
       throw new UnauthorizedException('Invalid or expired token');
     }
   }
