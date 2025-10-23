@@ -15,7 +15,7 @@ export async function generatePdf(
     delete (options as { args: any }).args;
   }
 
-  const browser = await puppeteer.launch({
+  args = {
     ...(`${process.env.ENVIRONMENT}` !== 'LOCAL'
       ? {
           executablePath:
@@ -23,7 +23,9 @@ export async function generatePdf(
         }
       : {}),
     ...args,
-  });
+  };
+  console.log(JSON.stringify(args));
+  const browser = await puppeteer.launch(args);
   const page = await browser.newPage();
 
   if (file.content) {
