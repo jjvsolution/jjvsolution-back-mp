@@ -6,6 +6,9 @@ export class DebtsToPayObjectType {
   @Field(() => String)
   userId: string;
 
+  @Field(() => Number)
+  companyId: number;
+
   @Field(() => String)
   payId: string;
 

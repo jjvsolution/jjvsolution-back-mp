@@ -10,7 +10,7 @@ export class PPDuesofPayResolver {
 
   // @UseGuards(GQLInternalGuard)
   @Query(() => DuesofPayAllObjectType, { nullable: true })
-  async PPDebtsToPayPayId(
+  async PPDuesofPayPayId(
     @Args('id') id: number,
   ): Promise<DuesofPayAllObjectType | null> {
     return this.ppDuesOfPayRepository.db.findUnique({ where: { id } });

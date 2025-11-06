@@ -48,6 +48,13 @@ export class PPDebtsToPayResolver {
   ): Promise<DebtsToPayAllObjectType[]> {
     return this.ppDebtsToPayRepository.db.findMany({ where: { userId } });
   }
+  
+  @Query(() => [DebtsToPayAllObjectType])
+  async PPDebtsToPayCompanyId(
+    @Args('companyId') companyId: string,
+  ): Promise<DebtsToPayAllObjectType[]> {
+    return this.ppDebtsToPayRepository.db.findMany({ where: { companyId: Number(companyId) } });
+  }
 
   //@UseGuards(GQLInternalGuard)
   @ResolveField(() => [DuesofPayAllObjectType])

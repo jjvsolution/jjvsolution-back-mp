@@ -204,24 +204,50 @@ enum PPTypePaymentType {
   TRANSBANK @map("Transbank")
 }
 
+enum PPStatusPayment {
+  PENDING   @map("Pendiente")
+  COMPLETED @map("Completado")
+  FAILED    @map("Fallido")
+}
+
 model PPDebtsToPay {
-  id          Int         @id @default(autoincrement())
-  userId      String      @db.Uuid
-  payId       String      @unique
+  id          Int           @id @default(autoincrement())
+  userId      String
+  companyId   Int
+  payId       String        @unique
   description String
   DuesofPay   PPDuesOfPay[]
 }
 
 model PPDuesOfPay {
-  id             Int                @id @default(autoincrement())
-  expirationDate DateTime
-  description    String
-  amount         Float
-  TypeOfCurrency PPTypeTypeOfCurrency
-  paid           Boolean            @default(false)
-  DebtsToPay     PPDebtsToPay         @relation(fields: [debtsToPayId], references: [id])
-  debtsToPayId   Int
-  paymentType    PPTypePaymentType?
+  id                  Int                   @id @default(autoincrement())
+  expirationDate      DateTime
+  description         String
+  amount              Float
+  TypeOfCurrency      PPTypeTypeOfCurrency
+  paid                Boolean               @default(false)
+  DebtsToPay          PPDebtsToPay          @relation(fields: [debtsToPayId], references: [id])
+  debtsToPayId        Int
+  paymentType         PPTypePaymentType?
+  PPPaymentDeuesOfPay PPPaymentDeuesOfPay[]
+}
+
+model PPPaymentDeuesOfPay {
+  id          Int         @id @default(autoincrement())
+  payment     PPPayment   @relation(fields: [paymentId], references: [id])
+  paymentId   Int
+  duesOfPay   PPDuesOfPay @relation(fields: [duesOfPayId], references: [id])
+  duesOfPayId Int
+}
+
+model PPPayment {
+  id                  Int                   @id @default(autoincrement())
+  createdAt           DateTime              @default(now())
+  paymentDate         DateTime
+  paymentType         PPTypePaymentType
+  amount              Float
+  status              PPStatusPayment
+  PPPaymentDeuesOfPay PPPaymentDeuesOfPay[]
 }
 
 // Portal My Acceso
