@@ -193,35 +193,61 @@ model ACApplicationsCompanies {
 
 // portal de pago
 
-enum TypeTypeOfCurrency {
+enum PPTypeTypeOfCurrency {
   CLP @map("Peso Chileno")
   CLF @map("UF")
   USD @map("Dólar")
 }
 
-enum TypePaymentType {
+enum PPTypePaymentType {
   TRANSFER  @map("Transferencia")
   TRANSBANK @map("Transbank")
 }
 
-model DebtsToPay {
-  id          Int         @id @default(autoincrement())
-  userId      String      @db.Uuid
-  payId       String      @unique
-  description String
-  DuesofPay   DuesOfPay[]
+enum PPStatusPayment {
+  PENDING   @map("Pendiente")
+  COMPLETED @map("Completado")
+  FAILED    @map("Fallido")
 }
 
-model DuesOfPay {
-  id             Int                @id @default(autoincrement())
-  expirationDate DateTime
-  description    String
-  amount         Float
-  TypeOfCurrency TypeTypeOfCurrency
-  paid           Boolean            @default(false)
-  DebtsToPay     DebtsToPay         @relation(fields: [debtsToPayId], references: [id])
-  debtsToPayId   Int
-  paymentType    TypePaymentType?
+model PPDebtsToPay {
+  id          Int           @id @default(autoincrement())
+  userId      String
+  companyId   Int
+  payId       String        @unique
+  description String
+  DuesofPay   PPDuesOfPay[]
+}
+
+model PPDuesOfPay {
+  id                  Int                   @id @default(autoincrement())
+  expirationDate      DateTime
+  description         String
+  amount              Float
+  TypeOfCurrency      PPTypeTypeOfCurrency
+  paid                Boolean               @default(false)
+  DebtsToPay          PPDebtsToPay          @relation(fields: [debtsToPayId], references: [id])
+  debtsToPayId        Int
+  paymentType         PPTypePaymentType?
+  PPPaymentDeuesOfPay PPPaymentDeuesOfPay[]
+}
+
+model PPPaymentDeuesOfPay {
+  id          Int         @id @default(autoincrement())
+  payment     PPPayment   @relation(fields: [paymentId], references: [id])
+  paymentId   Int
+  duesOfPay   PPDuesOfPay @relation(fields: [duesOfPayId], references: [id])
+  duesOfPayId Int
+}
+
+model PPPayment {
+  id                  Int                   @id @default(autoincrement())
+  createdAt           DateTime              @default(now())
+  paymentDate         DateTime
+  paymentType         PPTypePaymentType
+  amount              Float
+  status              PPStatusPayment
+  PPPaymentDeuesOfPay PPPaymentDeuesOfPay[]
 }
 
 // Portal My Acceso

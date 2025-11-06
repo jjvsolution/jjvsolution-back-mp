@@ -18,60 +18,151 @@
     "strictBindCallApply": false,
     "noFallthroughCasesInSwitch": false,
     "paths": {
-      "@access-control": ["apps/access-control/src"],
-      "@access-control/*": ["apps/access-control/src/*"],
-
-      "@admin": ["apps/admin/src"],
-      "@admin/*": ["apps/admin/src/*"],
-
-      "@landing": ["apps/landing/src"],
-      "@landing/*": ["apps/landing/src/*"],
-
-      "@quotation": ["apps/quotation/src"],
-      "@quotation/*": ["apps/quotation/src/*"],
-
-      "common": ["libs/common/src"],
-      "common/*": ["libs/common/src/*"],
-
+      "@access-control": [
+        "apps/access-control/src"
+      ],
+      "@access-control/*": [
+        "apps/access-control/src/*"
+      ],
+      "@admin": [
+        "apps/admin/src"
+      ],
+      "@admin/*": [
+        "apps/admin/src/*"
+      ],
       /* generic */
-      "@business": ["libs/common/src/business"],
-      "@business/*": ["libs/common/src/business/*"],
-      "@config": ["libs/common/src/config"],
-      "@config/*": ["libs/common/src/config/*"],
-      "@constants": ["libs/common/src/config/constants"],
-      "@constants/*": ["libs/common/src/config/constants/*"],
-      "@factories": ["libs/common/src/config/factories"],
-      "@factories/*": ["libs/common/src/config/factories/*"],
-      "@exceptions": ["libs/common/src/config/cross/exceptions"],
-      "@exceptions/*": ["libs/common/src/config/cross/exceptions/*"],
-      "@guards": ["libs/common/src/config/cross/guards"],
-      "@guards/*": ["libs/common/src/config/cross/guards/*"],
-      "@handdles": ["libs/common/src/config/cross/handdles"],
-      "@handdles/*": ["libs/common/src/config/cross/handdles/*"],
-      "@interceptors": ["libs/common/src/config/cross/interceptors"],
-      "@interceptors/*": ["libs/common/src/config/cross/interceptors/*"],
-      "@pipes": ["libs/common/src/config/cross/pipes"],
-      "@pipes/*": ["libs/common/src/config/cross/pipes/*"],
-      "@strategy": ["libs/common/src/config/cross/strategy"],
-      "@strategy/*": ["libs/common/src/config/cross/strategy/*"],
-      "@mongo": ["libs/common/src/database/mongo"],
-      "@mongo/*": ["libs/common/src/database/mongo/*"],
-      "@mongo/repositories": ["libs/common/src/database/mongo/repositories"],
-      "@mongo/repositories/*": ["libs/common/src/database/mongo/repositories/*"],
-      "@mongo/schemas": ["libs/common/src/database/mongo/schemas"],
-      "@mongo/schemas/*": ["libs/common/src/database/mongo/schemas/*"],
-      "@database/prisma": ["libs/common/src/database/prisma"],
-      "@database/prisma/*": ["libs/common/src/database/prisma/*"],
-      "@dto": ["libs/common/src/dto"],
-      "@dto/*": ["libs/common/src/dto/*"],
-      "@interfaces": ["libs/common/src/interfaces"],
-      "@interfaces/*": ["libs/common/src/interfaces/*"],
-      "@services": ["libs/common/src/services"],
-      "@services/*": ["libs/common/src/services/*"],
-      "@shared": ["libs/common/src/shared"],
-      "@shared/*": ["libs/common/src/shared/*"],
-      "@utils": ["libs/common/src/utils"],
-      "@utils/*": ["libs/common/src/utils/*"]
+      "@business": [
+        "libs/common/src/business"
+      ],
+      "@business/*": [
+        "libs/common/src/business/*"
+      ],
+      "@config": [
+        "libs/common/src/config"
+      ],
+      "@config/*": [
+        "libs/common/src/config/*"
+      ],
+      "@constants": [
+        "libs/common/src/config/constants"
+      ],
+      "@constants/*": [
+        "libs/common/src/config/constants/*"
+      ],
+      "@database/prisma": [
+        "libs/common/src/database/prisma"
+      ],
+      "@database/prisma/*": [
+        "libs/common/src/database/prisma/*"
+      ],
+      "@dto": [
+        "libs/common/src/dto"
+      ],
+      "@dto/*": [
+        "libs/common/src/dto/*"
+      ],
+      "@exceptions": [
+        "libs/common/src/config/cross/exceptions"
+      ],
+      "@exceptions/*": [
+        "libs/common/src/config/cross/exceptions/*"
+      ],
+      "@factories": [
+        "libs/common/src/config/factories"
+      ],
+      "@factories/*": [
+        "libs/common/src/config/factories/*"
+      ],
+      "@guards": [
+        "libs/common/src/config/cross/guards"
+      ],
+      "@guards/*": [
+        "libs/common/src/config/cross/guards/*"
+      ],
+      "@handdles": [
+        "libs/common/src/config/cross/handdles"
+      ],
+      "@handdles/*": [
+        "libs/common/src/config/cross/handdles/*"
+      ],
+      "@interceptors": [
+        "libs/common/src/config/cross/interceptors"
+      ],
+      "@interceptors/*": [
+        "libs/common/src/config/cross/interceptors/*"
+      ],
+      "@interfaces": [
+        "libs/common/src/interfaces"
+      ],
+      "@interfaces/*": [
+        "libs/common/src/interfaces/*"
+      ],
+      "@landing": [
+        "apps/landing/src"
+      ],
+      "@landing/*": [
+        "apps/landing/src/*"
+      ],
+      "@mongo": [
+        "libs/common/src/database/mongo"
+      ],
+      "@mongo/*": [
+        "libs/common/src/database/mongo/*"
+      ],
+      "@mongo/repositories": [
+        "libs/common/src/database/mongo/repositories"
+      ],
+      "@mongo/repositories/*": [
+        "libs/common/src/database/mongo/repositories/*"
+      ],
+      "@mongo/schemas": [
+        "libs/common/src/database/mongo/schemas"
+      ],
+      "@mongo/schemas/*": [
+        "libs/common/src/database/mongo/schemas/*"
+      ],
+      "@pipes": [
+        "libs/common/src/config/cross/pipes"
+      ],
+      "@pipes/*": [
+        "libs/common/src/config/cross/pipes/*"
+      ],
+      "@quotation": [
+        "apps/quotation/src"
+      ],
+      "@quotation/*": [
+        "apps/quotation/src/*"
+      ],
+      "@services": [
+        "libs/common/src/services"
+      ],
+      "@services/*": [
+        "libs/common/src/services/*"
+      ],
+      "@shared": [
+        "libs/common/src/shared"
+      ],
+      "@shared/*": [
+        "libs/common/src/shared/*"
+      ],
+      "@strategy": [
+        "libs/common/src/config/cross/strategy"
+      ],
+      "@strategy/*": [
+        "libs/common/src/config/cross/strategy/*"
+      ],
+      "@utils": [
+        "libs/common/src/utils"
+      ],
+      "@utils/*": [
+        "libs/common/src/utils/*"
+      ],
+      "common": [
+        "libs/common/src"
+      ],
+      "common/*": [
+        "libs/common/src/*"
+      ]
     }
   }
 }

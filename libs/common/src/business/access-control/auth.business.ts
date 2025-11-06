@@ -34,7 +34,7 @@ export class AuthBusiness extends ResponseClass {
       where: {
         LoginType: { every: { type: 'local', username, password } },
         UserProfileApplications: {
-          every: { Profiles: { Applications: { id: appId } } },
+          every: { Profiles: { Applications: { id: { in: [appId] } } } },
         },
       },
     });
