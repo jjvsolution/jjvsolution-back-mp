@@ -22,7 +22,7 @@ import { PaymentPortalModule } from 'apps/payment-portal/src/payment-portal.modu
       driver: ApolloDriver,
       useFactory: (config: ConfigService<ConfigurationsInterface>) => {
         const plugins =
-          ['LOCAL', 'DEV'].includes(config.get<string>('ENVIRONMENT')?.toUpperCase())
+          ['LOCAL', 'DEV'].includes(`${config.get<string>('ENVIRONMENT')?.toUpperCase()}`)
             ? [ApolloServerPluginLandingPageLocalDefault()]
             : [];
         return {
