@@ -50,12 +50,24 @@ export class GQLInternalGuard extends AuthGuard('local') {
             token,
           },
         },
+        UserProfileApplications: {
+          include: {
+            Profiles: {
+              include: {
+                Applications: { select: { id: true } },
+              },
+            },
+          },
+        },
       },
     });
-
+    const applications =
+      user?.UserProfileApplications.flatMap((upa) => upa.Profiles)
+        .flatMap((profile) => profile.Applications)
+        .map((app) => app.id) || [];
     let dataFinal: PayloadJWTInterface;
     if (user && user?.Token && user.Token.length > 0) {
-      dataFinal = { uid: user.id };
+      dataFinal = { uid: user.id, applications };
     } else {
       throw new UnauthorizedException();
     }

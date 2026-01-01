@@ -95,9 +95,9 @@ model ACLoginType {
 model ACToken {
   id           Int       @id @default(autoincrement())
   type         TypeToken
-  token        String    @db.VarChar(1500)
-  accessToken  String?   @db.VarChar(1500)
-  refreshToken String?   @db.VarChar(1500)
+  token        String    @db.Text
+  accessToken  String?   @db.Text
+  refreshToken String?   @db.Text
   openId       String?
   isDeleted    Boolean   @default(false)
   User         ACUser?   @relation(fields: [userId], references: [id])
@@ -411,8 +411,8 @@ model QTemplate {
 model GOauth2Setting {
   id          Int     @id @default(autoincrement())
   identifier  String
-  credentials String  @db.VarChar(1000)
-  token       String? @db.VarChar(500)
+  credentials String  @db.Text
+  token       String? @db.Text
   scopes      String
 }
 

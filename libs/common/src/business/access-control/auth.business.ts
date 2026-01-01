@@ -20,12 +20,16 @@ export class AuthBusiness extends ResponseClass {
           select: {
             Profiles: {
               select: {
-                Applications: true,
+                Applications: { select: { id: true } },
                 RolsProfiles: {
                   include: {
-                    Rols: true
-                  }
-                }
+                    Rols: {
+                      select: {
+                        name: true,
+                      },
+                    },
+                  },
+                },
               },
             },
           },
@@ -33,9 +37,9 @@ export class AuthBusiness extends ResponseClass {
       },
       where: {
         LoginType: { every: { type: 'local', username, password } },
-        UserProfileApplications: {
+        /* UserProfileApplications: {
           every: { Profiles: { Applications: { id: { in: [appId] } } } },
-        },
+        }, */
       },
     });
     if (
@@ -45,18 +49,23 @@ export class AuthBusiness extends ResponseClass {
     ) {
       this.unauthorized('USER_NOT_FOUND');
     }
-
-    const rols = user?.UserProfileApplications
-      .flatMap(upa => upa.Profiles)
-      .flatMap(profile => profile.RolsProfiles)
-      .map(rp => rp.Rols.name);
+    console.log(JSON.stringify(user));
+    const rols = user?.UserProfileApplications.flatMap((upa) => upa.Profiles)
+      .flatMap((profile) => profile.RolsProfiles)
+      .map((rp) => rp.Rols.name);
+    const applications = user?.UserProfileApplications.flatMap(
+      (upa) => upa.Profiles,
+    )
+      .flatMap((profile) => profile.Applications)
+      .map((app) => app.id);
 
     const payload = {
       uid: user?.id,
       rols,
+      applications,
     };
     const token = await this.authService.signToken(appId, payload);
-    console.log(token)
+    console.log(token);
     await this.aCTokenRepository.db.create({
       data: {
         token,
