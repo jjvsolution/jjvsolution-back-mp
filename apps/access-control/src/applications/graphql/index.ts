@@ -4,5 +4,7 @@ export * from './aCConfigAuthApplication.resolver';
 export * from './aCLoginType.resolver';
 export * from './aCProfiles.resolver';
 export * from './aCRols.resolver';
+export * from './aCRolsProfiles.resolver';
 export * from './acToken.resolver';
 export * from './aCUser.resolver';
+export * from './aCUserProfileApplications.resolver';

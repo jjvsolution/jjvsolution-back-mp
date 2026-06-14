@@ -25,7 +25,12 @@ export class ACRolsResolver {
   async ACRolsCreate(
     @Args('data') data: ACRolsModel,
   ): Promise<ACRolsAllModel | null> {
-    return this.ACRolsRepository.db.create({ data });
+    return this.ACRolsRepository.db.create({
+      data: {
+        name: data.name,
+        details: data.details ?? null,
+      },
+    });
   }
   @UseGuards(GQLInternalGuard)
   @Mutation(() => ACRolsAllModel, { nullable: true })

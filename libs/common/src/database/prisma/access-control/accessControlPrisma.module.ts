@@ -7,6 +7,8 @@ import {
   ACLoginTypeRepository,
   ACProfilesRepository,
   ACRolsRepository,
+  ACRolsProfilesRepository,
+  ACUserProfileApplicationsRepository,
   ACTokenRepository,
   ACUserRepository,
 } from '.';
@@ -19,6 +21,8 @@ const provider = [
   ACLoginTypeRepository,
   ACProfilesRepository,
   ACRolsRepository,
+  ACRolsProfilesRepository,
+  ACUserProfileApplicationsRepository,
   ACTokenRepository,
   ACUserRepository,
 ];

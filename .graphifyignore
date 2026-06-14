@@ -1,0 +1,7 @@
+# Solo código + schema — evita extracción semántica (requiere API key)
+README.md
+**/*.md
+**/*.pdf
+**/*.html
+**/*.yaml
+**/*.yml

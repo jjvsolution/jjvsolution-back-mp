@@ -22,7 +22,9 @@ import {
   ACLoginTypeResolver,
   ACProfilesResolver,
   ACRolsResolver,
+  ACRolsProfilesResolver,
   ACTokenResolver,
+  ACUserProfileApplicationsResolver,
   ACUserResolver,
 } from './';
 import { IResolvers } from '@graphql-tools/utils';
@@ -34,7 +36,9 @@ export const resolver: Provider[] = [
   ACLoginTypeResolver,
   ACProfilesResolver,
   ACRolsResolver,
+  ACRolsProfilesResolver,
   ACTokenResolver,
+  ACUserProfileApplicationsResolver,
   ACUserResolver,
 ];
 const onlyServer = `${process?.env?.ONLY_SERVER}` == 'true';
