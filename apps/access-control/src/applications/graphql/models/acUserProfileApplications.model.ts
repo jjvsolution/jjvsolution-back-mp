@@ -6,7 +6,7 @@ export class ACUserProfileApplicationsModel {
   @Field(() => String)
   usersId: string;
 
-  @Field(() => String)
+  @Field(() => Number)
   profileId: number;
 }
 

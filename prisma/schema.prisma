@@ -85,11 +85,12 @@ model ACUser {
 model ACLoginType {
   id        Int       @id @default(autoincrement())
   type      TypeToken
-  username  String    @unique
+  username  String
   password  String?   @db.VarChar(100)
   isDeleted Boolean   @default(false)
   User      ACUser?   @relation(fields: [userId], references: [id])
   userId    String    @db.Uuid
+  @@unique([type, username])
 }
 
 model ACToken {
