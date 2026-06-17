@@ -8,21 +8,29 @@ import { GraphQLModule as GQLModule } from '@nestjs/graphql';
 import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
 import { APP_INTERCEPTOR, Reflector } from '@nestjs/core';
 import { CoreClassSerializerInterceptor } from '@config/cross/interceptors';
-import { PPDebtsToPayResolver, PPDuesofPayResolver } from '.';
+import { PPDebtsToPayResolver, PPDashboardResolver, PPDuesofPayResolver, PPPaymentResolver } from '.';
 import { GraphQLFormattedError } from 'graphql';
 import { join } from 'path';
 import { ApolloServerPluginLandingPageLocalDefault } from '@apollo/server/plugin/landingPage/default';
 import { ConfigurationsInterface } from 'common/interfaces';
 import { TokenService } from 'common/services';
 import { PaymentPortalPrismaModule } from '@database/prisma/payment-portal/paymentPortalPrisma.module';
+import { AccessControlBusinessModule, PaymentPortalBusinessModule } from '@business';
 
-const resolver: Provider[] = [PPDebtsToPayResolver, PPDuesofPayResolver];
+const resolver: Provider[] = [
+  PPDebtsToPayResolver,
+  PPDuesofPayResolver,
+  PPPaymentResolver,
+  PPDashboardResolver,
+];
 
 const onlyServer = `${process?.env?.ONLY_SERVER}` == 'true';
 @Module({
   imports: [
     PaymentPortalPrismaModule,
     AccessControlPrismaModule,
+    AccessControlBusinessModule,
+    PaymentPortalBusinessModule,
     JwtModule.registerAsync({
       inject: [ConfigService],
       useFactory: jwtFactory,
