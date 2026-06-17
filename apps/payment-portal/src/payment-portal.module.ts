@@ -7,6 +7,7 @@ import { Log4jsModule } from '@shared';
 import { useFactoryLogger } from '@config';
 import { PrismaModule } from '@database/prisma';
 import { GraphQlPaymentPortalModule } from './applications/graphql';
+import { RestModule } from './applications/rest';
 
 @Module({
   imports: [
@@ -21,6 +22,7 @@ import { GraphQlPaymentPortalModule } from './applications/graphql';
     }),
     PrismaModule,
     GraphQlPaymentPortalModule,
+    RestModule,
   ],
   controllers: [PaymentPortalController],
   providers: [PaymentPortalService],

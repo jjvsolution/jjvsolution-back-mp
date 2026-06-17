@@ -1,6 +1,5 @@
 import { Field, InputType, ObjectType } from '@nestjs/graphql';
 import { $Enums } from '@prisma/client';
-import { DebtsToPayAllObjectType } from './debtsToPay.model';
 
 @ObjectType('DuesofPayObjectType')
 @InputType('DuesofPayInputType')

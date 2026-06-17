@@ -25,12 +25,36 @@ export class ACRolsProfilesResolver {
   async ACRolsProfilesCreate(
     @Args('data') data: ACRolsProfilesModel,
   ): Promise<ACRolsProfilesAllModel | null> {
-    return this.ACRolsProfilesRepository.db.create({
-      data: {
+    const existing = await this.ACRolsProfilesRepository.db.findFirst({
+      where: {
         profileId: data.profileId,
         rolsId: data.rolsId,
       },
     });
+
+    if (existing) {
+      return existing;
+    }
+
+    try {
+      return await this.ACRolsProfilesRepository.db.create({
+        data: {
+          profileId: data.profileId,
+          rolsId: data.rolsId,
+        },
+      });
+    } catch (error: any) {
+      if (error?.code === 'P2002') {
+        return this.ACRolsProfilesRepository.db.findFirst({
+          where: {
+            profileId: data.profileId,
+            rolsId: data.rolsId,
+          },
+        });
+      }
+
+      throw error;
+    }
   }
 
   @UseGuards(GQLInternalGuard)

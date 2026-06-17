@@ -1,4 +1,5 @@
 import { Field, InputType, ObjectType } from '@nestjs/graphql';
+import { DuesofPayAllObjectType } from './duesOfPay.model';
 
 @ObjectType('DebtsToPayObjectType')
 @InputType('DebtsToPayInputType')
@@ -9,14 +10,11 @@ export class DebtsToPayObjectType {
   @Field(() => Number)
   companyId: number;
 
-  @Field(() => String)
-  payId: string;
+  @Field(() => String, { nullable: true })
+  payId?: string;
 
   @Field(() => String)
   description: string;
-
-  @Field(() => [DebtsToPayAllObjectType], { nullable: true })
-  debtsToPay?: DebtsToPayAllObjectType[];
 }
 
 @ObjectType('DebtsToPayAllObjectType')
@@ -24,4 +22,7 @@ export class DebtsToPayObjectType {
 export class DebtsToPayAllObjectType extends DebtsToPayObjectType {
   @Field(() => Number)
   id: number;
+
+  @Field(() => [DuesofPayAllObjectType], { nullable: true })
+  PPDuesofPay?: DuesofPayAllObjectType[];
 }
