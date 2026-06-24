@@ -1,5 +1,5 @@
 import { UseGuards } from '@nestjs/common';
-import { Query, Args, Resolver, Mutation, Int } from '@nestjs/graphql';
+import { Query, Args, Resolver, Mutation, Int, Context } from '@nestjs/graphql';
 import { GQLInternalGuard } from '@config/cross/guards';
 import { PPDuesOfPayRepository } from '@database/prisma';
 import { PPDuesOfPayBusiness } from '@business';
@@ -9,6 +9,7 @@ import {
   PPDuesofPayBalanceObjectType,
   PPDuesofPayDetailObjectType,
 } from './models';
+import { RequestWithUserInterface } from '@interfaces';
 
 @Resolver(() => DuesofPayAllObjectType)
 export class PPDuesofPayResolver {
@@ -19,8 +20,8 @@ export class PPDuesofPayResolver {
 
   @UseGuards(GQLInternalGuard)
   @Query(() => [DuesofPayAllObjectType])
-  async PPDuesofPay(): Promise<DuesofPayAllObjectType[]> {
-    return this.ppDuesOfPayBusiness.listAll();
+  async PPDuesofPay(@Context() ctx: { req: RequestWithUserInterface }): Promise<DuesofPayAllObjectType[]> {
+    return this.ppDuesOfPayBusiness.listAll(ctx.req.user.uid);
   }
 
   @UseGuards(GQLInternalGuard)

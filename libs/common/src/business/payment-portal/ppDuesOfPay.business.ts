@@ -35,8 +35,9 @@ export class PPDuesOfPayBusiness extends ResponseClass {
     return today;
   }
 
-  listAll() {
+  listAll(userId: string) {
     return this.ppDuesOfPayRepository.db.findMany({
+      where: { DebtsToPay: { userId } },
       orderBy: { id: 'asc' },
     });
   }

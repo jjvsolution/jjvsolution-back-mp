@@ -7,6 +7,7 @@ import {
   Mutation,
   Parent,
   ResolveField,
+  Context,
 } from '@nestjs/graphql';
 import { GQLInternalGuard } from '@config/cross/guards';
 import {
@@ -20,6 +21,7 @@ import {
   PPDuesOfPayRepository,
 } from '@database/prisma';
 import { PPDebtsToPayBusiness } from '@business';
+import { RequestWithUserInterface } from '@interfaces';
 
 @Resolver(() => DebtsToPayAllObjectType)
 export class PPDebtsToPayResolver {
@@ -31,8 +33,10 @@ export class PPDebtsToPayResolver {
 
   @UseGuards(GQLInternalGuard)
   @Query(() => [DebtsToPayAllObjectType])
-  async PPDebtsToPay(): Promise<DebtsToPayAllObjectType[]> {
-    return this.ppDebtsToPayRepository.db.findMany();
+  async PPDebtsToPay(@Context() ctx: { req: RequestWithUserInterface }): Promise<DebtsToPayAllObjectType[]> {
+    return this.ppDebtsToPayRepository.db.findMany({
+      where: { userId: ctx.req.user.uid as string },
+    });
   }
 
   @UseGuards(GQLInternalGuard)
