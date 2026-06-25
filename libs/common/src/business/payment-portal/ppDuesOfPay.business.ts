@@ -35,9 +35,9 @@ export class PPDuesOfPayBusiness extends ResponseClass {
     return today;
   }
 
-  listAll(userId: string) {
+  listAll(userId?: string) {
     return this.ppDuesOfPayRepository.db.findMany({
-      where: { DebtsToPay: { userId } },
+      where: { DebtsToPay: userId ? { userId } : {} },
       orderBy: { id: 'asc' },
     });
   }
@@ -46,41 +46,48 @@ export class PPDuesOfPayBusiness extends ResponseClass {
     return this.ppDuesOfPayRepository.db.findUnique({ where: { id } });
   }
 
-  getPending() {
+  getPending(userId?: string) {
     return this.ppDuesOfPayRepository.db.findMany({
-      where: { paid: false },
+      where: { paid: false, DebtsToPay: userId ? { userId } : {} },
       orderBy: { expirationDate: 'asc' },
     });
   }
 
-  getOverdue() {
+  getOverdue(userId?: string) {
     return this.ppDuesOfPayRepository.db.findMany({
       where: {
         paid: false,
         expirationDate: { lt: this.startOfToday() },
+        DebtsToPay: userId ? { userId } : {},
       },
       orderBy: { expirationDate: 'asc' },
     });
   }
 
-  getPaid() {
+  getPaid(userId?: string) {
     return this.ppDuesOfPayRepository.db.findMany({
-      where: { paid: true },
+      where: { paid: true, DebtsToPay: userId ? { userId } : {} },
       orderBy: { expirationDate: 'desc' },
     });
   }
 
-  getByDebtsToPayId(debtsToPayId: number) {
+  getByDebtsToPayId(userId?: string, debtsToPayId?: number) {
     return this.ppDuesOfPayRepository.db.findMany({
-      where: { debtsToPayId },
+      where: {
+        debtsToPayId,
+        DebtsToPay: userId ? { userId } : {},
+      },
       orderBy: { expirationDate: 'asc' },
     });
   }
 
-  async getPendingBalance(debtsToPayId?: number) {
+  async getPendingBalance(userId?: string, debtsToPayId?: number) {
     const where: Prisma.PPDuesOfPayWhereInput = {
       paid: false,
-      ...(debtsToPayId != null ? { debtsToPayId } : {}),
+      DebtsToPay: {
+        ...(debtsToPayId ? { id: debtsToPayId } : {}),
+        ...(userId ? { userId } : {}),
+      },
     };
     const result = await this.ppDuesOfPayRepository.db.aggregate({
       where,
@@ -93,9 +100,12 @@ export class PPDuesOfPayBusiness extends ResponseClass {
     };
   }
 
-  async getDetail(id: number): Promise<PPDuesOfPayDetailResult> {
+  async getDetail(
+    userId?: string,
+    id?: number,
+  ): Promise<PPDuesOfPayDetailResult> {
     const due = await this.ppDuesOfPayRepository.db.findUnique({
-      where: { id },
+      where: { id, DebtsToPay: userId ? { userId } : {} },
       include: {
         DebtsToPay: true,
         PPPaymentDeuesOfPay: {
@@ -114,12 +124,10 @@ export class PPDuesOfPayBusiness extends ResponseClass {
       this.notFound('DUES_OF_PAY_NOT_FOUND');
     }
 
-    const payments = due.PPPaymentDeuesOfPay
-      .map((link) => link.payment)
-      .sort(
-        (a, b) =>
-          new Date(b.paymentDate).getTime() - new Date(a.paymentDate).getTime(),
-      );
+    const payments = due.PPPaymentDeuesOfPay.map((link) => link.payment).sort(
+      (a, b) =>
+        new Date(b.paymentDate).getTime() - new Date(a.paymentDate).getTime(),
+    );
 
     const paidAmount = calculatePaidAmountFromLinks(due.PPPaymentDeuesOfPay);
     const totalAmount = due.amount;

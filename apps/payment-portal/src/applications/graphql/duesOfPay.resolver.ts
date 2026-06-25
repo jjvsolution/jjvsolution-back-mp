@@ -20,8 +20,11 @@ export class PPDuesofPayResolver {
 
   @UseGuards(GQLInternalGuard)
   @Query(() => [DuesofPayAllObjectType])
-  async PPDuesofPay(@Context() ctx: { req: RequestWithUserInterface }): Promise<DuesofPayAllObjectType[]> {
-    return this.ppDuesOfPayBusiness.listAll(ctx.req.user.uid);
+  async PPDuesofPay(
+    @Context() ctx: { req: RequestWithUserInterface },
+  ): Promise<DuesofPayAllObjectType[]> {
+    const userId = ctx.req.user.getUserIdIsAdmin;
+    return this.ppDuesOfPayBusiness.listAll(userId);
   }
 
   @UseGuards(GQLInternalGuard)
@@ -34,45 +37,60 @@ export class PPDuesofPayResolver {
 
   @UseGuards(GQLInternalGuard)
   @Query(() => [DuesofPayAllObjectType])
-  async PPDuesofPayPending(): Promise<DuesofPayAllObjectType[]> {
-    return this.ppDuesOfPayBusiness.getPending();
+  async PPDuesofPayPending(
+    @Context() ctx: { req: RequestWithUserInterface },
+  ): Promise<DuesofPayAllObjectType[]> {
+    const userId = ctx.req.user.getUserIdIsAdmin;
+    return this.ppDuesOfPayBusiness.getPending(userId);
   }
 
   @UseGuards(GQLInternalGuard)
   @Query(() => [DuesofPayAllObjectType])
-  async PPDuesofPayOverdue(): Promise<DuesofPayAllObjectType[]> {
-    return this.ppDuesOfPayBusiness.getOverdue();
+  async PPDuesofPayOverdue(
+    @Context() ctx: { req: RequestWithUserInterface },
+  ): Promise<DuesofPayAllObjectType[]> {
+    const userId = ctx.req.user.getUserIdIsAdmin;
+    return this.ppDuesOfPayBusiness.getOverdue(userId);
   }
 
   @UseGuards(GQLInternalGuard)
   @Query(() => [DuesofPayAllObjectType])
-  async PPDuesofPayPaid(): Promise<DuesofPayAllObjectType[]> {
-    return this.ppDuesOfPayBusiness.getPaid();
+  async PPDuesofPayPaid(
+    @Context() ctx: { req: RequestWithUserInterface },
+  ): Promise<DuesofPayAllObjectType[]> {
+    const userId = ctx.req.user.getUserIdIsAdmin;
+    return this.ppDuesOfPayBusiness.getPaid(userId);
   }
 
   @UseGuards(GQLInternalGuard)
   @Query(() => [DuesofPayAllObjectType])
   async PPDuesofPayByDebtsToPayId(
+    @Context() ctx: { req: RequestWithUserInterface },
     @Args('debtsToPayId', { type: () => Int }) debtsToPayId: number,
   ): Promise<DuesofPayAllObjectType[]> {
-    return this.ppDuesOfPayBusiness.getByDebtsToPayId(debtsToPayId);
+    const userId = ctx.req.user.getUserIdIsAdmin;
+    return this.ppDuesOfPayBusiness.getByDebtsToPayId(userId, debtsToPayId);
   }
 
   @UseGuards(GQLInternalGuard)
   @Query(() => PPDuesofPayBalanceObjectType)
   async PPDuesofPayPendingBalance(
+    @Context() ctx: { req: RequestWithUserInterface },
     @Args('debtsToPayId', { type: () => Int, nullable: true })
     debtsToPayId?: number,
   ): Promise<PPDuesofPayBalanceObjectType> {
-    return this.ppDuesOfPayBusiness.getPendingBalance(debtsToPayId);
+    const userId = ctx.req.user.getUserIdIsAdmin;
+    return this.ppDuesOfPayBusiness.getPendingBalance(userId, debtsToPayId);
   }
 
   @UseGuards(GQLInternalGuard)
   @Query(() => PPDuesofPayDetailObjectType, { nullable: true })
   async PPDuesofPayDetail(
+    @Context() ctx: { req: RequestWithUserInterface },
     @Args('id') id: number,
   ): Promise<PPDuesofPayDetailObjectType | null> {
-    return this.ppDuesOfPayBusiness.getDetail(id);
+    const userId = ctx.req.user.getUserIdIsAdmin;
+    return this.ppDuesOfPayBusiness.getDetail(userId, id);
   }
 
   @UseGuards(GQLInternalGuard)

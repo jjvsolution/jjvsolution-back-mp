@@ -1,5 +1,5 @@
 import { UseGuards } from '@nestjs/common';
-import { Query, Resolver } from '@nestjs/graphql';
+import { Context, Query, Resolver } from '@nestjs/graphql';
 import { GQLInternalGuard } from '@config/cross/guards';
 import { PPDashboardBusiness } from '@business';
 import {
@@ -8,6 +8,7 @@ import {
   PPDashboardOverdueObjectType,
   PPDashboardSummaryObjectType,
 } from './models';
+import { RequestWithUserInterface } from '@interfaces';
 
 @Resolver()
 export class PPDashboardResolver {
@@ -15,25 +16,37 @@ export class PPDashboardResolver {
 
   @UseGuards(GQLInternalGuard)
   @Query(() => PPDashboardSummaryObjectType)
-  PPDashboardSummary(): Promise<PPDashboardSummaryObjectType> {
-    return this.ppDashboardBusiness.getSummary();
+  PPDashboardSummary(
+    @Context() ctx: { req: RequestWithUserInterface },
+  ): Promise<PPDashboardSummaryObjectType> {
+    const userId = ctx.req.user.getUserIdIsAdmin;
+    return this.ppDashboardBusiness.getSummary(userId);
   }
 
   @UseGuards(GQLInternalGuard)
   @Query(() => PPDashboardKpisObjectType)
-  PPDashboardKpis(): Promise<PPDashboardKpisObjectType> {
-    return this.ppDashboardBusiness.getKpis();
+  PPDashboardKpis(
+    @Context() ctx: { req: RequestWithUserInterface },
+  ): Promise<PPDashboardKpisObjectType> {
+    const userId = ctx.req.user.getUserIdIsAdmin;
+    return this.ppDashboardBusiness.getKpis(userId);
   }
 
   @UseGuards(GQLInternalGuard)
   @Query(() => [PPDashboardCollectionItemObjectType])
-  PPDashboardCollection(): Promise<PPDashboardCollectionItemObjectType[]> {
-    return this.ppDashboardBusiness.getCollection();
+  PPDashboardCollection(
+    @Context() ctx: { req: RequestWithUserInterface },
+  ): Promise<PPDashboardCollectionItemObjectType[]> {
+    const userId = ctx.req.user.getUserIdIsAdmin;
+    return this.ppDashboardBusiness.getCollection(userId);
   }
 
   @UseGuards(GQLInternalGuard)
   @Query(() => PPDashboardOverdueObjectType)
-  PPDashboardOverdue(): Promise<PPDashboardOverdueObjectType> {
-    return this.ppDashboardBusiness.getOverdue();
+  PPDashboardOverdue(
+    @Context() ctx: { req: RequestWithUserInterface },
+  ): Promise<PPDashboardOverdueObjectType> {
+    const userId = ctx.req.user.getUserIdIsAdmin;
+    return this.ppDashboardBusiness.getOverdue(userId);
   }
 }

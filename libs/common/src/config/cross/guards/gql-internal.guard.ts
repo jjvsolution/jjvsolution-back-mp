@@ -6,7 +6,10 @@ import {
 import { ExecutionContextHost } from '@nestjs/core/helpers/execution-context-host';
 import { GqlExecutionContext } from '@nestjs/graphql';
 import { AuthGuard } from '@nestjs/passport';
-import { ACUserRepository } from 'common/database/prisma';
+import {
+  ACApplicationsRepository,
+  ACUserRepository,
+} from 'common/database/prisma';
 import { PayloadJWTInterface } from 'common/interfaces';
 import { AuthService, TokenService } from 'common/services';
 
@@ -15,6 +18,7 @@ export class GQLInternalGuard extends AuthGuard('local') {
   constructor(
     private authService: AuthService,
     private readonly aCUserRepository: ACUserRepository,
+    private readonly aCApplicationsRepository: ACApplicationsRepository,
   ) {
     super();
   }
@@ -33,10 +37,11 @@ export class GQLInternalGuard extends AuthGuard('local') {
     );
 
     // Adjuntar el usuario al request
-    request.user = await this.getUser(user, token);
+    request.user = await this.getUser(appId, user, token);
     return true;
   }
   async getUser(
+    appId: string,
     payload: PayloadJWTInterface,
     token: string,
   ): Promise<PayloadJWTInterface> {
@@ -65,15 +70,35 @@ export class GQLInternalGuard extends AuthGuard('local') {
       user?.UserProfileApplications.flatMap((upa) => upa.Profiles)
         .flatMap((profile) => profile.Applications)
         .map((app) => app.id) || [];
+    const profiles =
+      user?.UserProfileApplications.flatMap((upa) => upa.Profiles).flatMap(
+        (profile) => profile.name,
+      ) || [];
     let dataFinal: PayloadJWTInterface;
     if (user && user?.Token && user.Token.length > 0) {
-      dataFinal = { uid: user.id, applications };
+      const getUserIdIsAdmin = await this.getUserIdIsAdmin(
+        appId,
+        profiles,
+        user.id,
+      );
+      dataFinal = { uid: user.id, applications, profiles, getUserIdIsAdmin };
     } else {
       throw new UnauthorizedException();
     }
     return dataFinal;
   }
-
+  async getUserIdIsAdmin(appId: string, profiles: string[], userId: string) {
+    const appName = await this.aCApplicationsRepository.db.findUnique({
+      select: { name: true },
+      where: { id: appId },
+    });
+    const getUserIdIsAdmin = profiles?.includes(
+      `ADMIN_${appName?.name.toUpperCase().replaceAll(' ', '_')}`,
+    )
+      ? undefined
+      : userId;
+    return getUserIdIsAdmin;
+  }
   handleRequest(err, user) {
     if (err || !user) {
       throw err || new UnauthorizedException();

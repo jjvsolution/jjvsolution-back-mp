@@ -34,8 +34,9 @@ export class PPDebtsToPayResolver {
   @UseGuards(GQLInternalGuard)
   @Query(() => [DebtsToPayAllObjectType])
   async PPDebtsToPay(@Context() ctx: { req: RequestWithUserInterface }): Promise<DebtsToPayAllObjectType[]> {
+    const userId = ctx.req.user.getUserIdIsAdmin;
     return this.ppDebtsToPayRepository.db.findMany({
-      where: { userId: ctx.req.user.uid as string },
+      where: userId ? {} : { userId },
     });
   }
 

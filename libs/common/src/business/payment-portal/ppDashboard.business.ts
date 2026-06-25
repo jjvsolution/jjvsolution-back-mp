@@ -43,10 +43,18 @@ export class PPDashboardBusiness extends ResponseClass {
   }
 
   private endOfMonth(date = new Date()): Date {
-    return new Date(date.getFullYear(), date.getMonth() + 1, 0, 23, 59, 59, 999);
+    return new Date(
+      date.getFullYear(),
+      date.getMonth() + 1,
+      0,
+      23,
+      59,
+      59,
+      999,
+    );
   }
 
-  async getKpis(): Promise<PPDashboardKpisResult> {
+  async getKpis(userId?: string): Promise<PPDashboardKpisResult> {
     const startOfToday = this.startOfToday();
     const startOfMonth = this.startOfMonth();
     const endOfMonth = this.endOfMonth();
@@ -63,19 +71,21 @@ export class PPDashboardBusiness extends ResponseClass {
     ] = await Promise.all([
       this.prisma.pPDuesOfPay.aggregate({
         _sum: { amount: true },
+        ...{where: userId ? { DebtsToPay: { userId } } : {}},
       }),
       this.prisma.pPDuesOfPay.aggregate({
-        where: { paid: true },
+        where: { paid: true,  ...(userId ? { DebtsToPay: { userId } } : {})},
         _sum: { amount: true },
       }),
       this.prisma.pPDuesOfPay.aggregate({
-        where: { paid: false },
+        where: { paid: false,  ...(userId ? { DebtsToPay: { userId } } : {}) },
         _sum: { amount: true },
       }),
       this.prisma.pPDuesOfPay.aggregate({
         where: {
           paid: false,
           expirationDate: { lt: startOfToday },
+          ...(userId ? { DebtsToPay: { userId } } : {}),
         },
         _sum: { amount: true },
       }),
@@ -86,15 +96,21 @@ export class PPDashboardBusiness extends ResponseClass {
             gte: startOfMonth,
             lte: endOfMonth,
           },
+          ...(userId ? { PPPaymentDeuesOfPay: { every: { duesOfPay: { DebtsToPay: { userId } } } } } : {}),
         },
         _sum: { amount: true },
       }),
-      this.prisma.pPDebtsToPay.count(),
-      this.prisma.pPDuesOfPay.count(),
+      this.prisma.pPDebtsToPay.count({
+        where: userId ? { userId } : {},
+      }),
+      this.prisma.pPDuesOfPay.count({
+        where: userId ? { DebtsToPay: { userId } } : {},
+      }),
       this.prisma.pPDuesOfPay.count({
         where: {
           paid: false,
           expirationDate: { lt: startOfToday },
+          ...(userId ? { DebtsToPay: { userId } } : {}),
         },
       }),
     ]);
@@ -111,11 +127,11 @@ export class PPDashboardBusiness extends ResponseClass {
     };
   }
 
-  async getSummary() {
+  async getSummary(userId?: string) {
     const [kpis, collection, overdue] = await Promise.all([
-      this.getKpis(),
-      this.getCollection(),
-      this.getOverdue(),
+      this.getKpis(userId),
+      this.getCollection(userId),
+      this.getOverdue(userId),
     ]);
 
     return {
@@ -127,7 +143,7 @@ export class PPDashboardBusiness extends ResponseClass {
     };
   }
 
-  async getCollection(): Promise<PPDashboardCollectionItem[]> {
+  async getCollection(userId?: string): Promise<PPDashboardCollectionItem[]> {
     const fromDate = this.startOfMonth(
       new Date(new Date().getFullYear(), new Date().getMonth() - 11, 1),
     );
@@ -136,6 +152,13 @@ export class PPDashboardBusiness extends ResponseClass {
       where: {
         status: PPStatusPayment.COMPLETED,
         paymentDate: { gte: fromDate },
+        ...(userId
+          ? {
+              PPPaymentDeuesOfPay: {
+                every: { duesOfPay: { DebtsToPay: { userId } } },
+              },
+            }
+          : {}),
       },
       select: { paymentDate: true, amount: true },
       orderBy: { paymentDate: 'desc' },
@@ -163,22 +186,36 @@ export class PPDashboardBusiness extends ResponseClass {
       .slice(0, 12);
   }
 
-  getOverdueItems() {
+  getOverdueItems(userId?: string) {
     return this.prisma.pPDuesOfPay.findMany({
       where: {
         paid: false,
         expirationDate: { lt: this.startOfToday() },
+        ...(userId
+          ? {
+              DebtsToPay: {
+                userId,
+              },
+            }
+          : {}),
       },
       orderBy: { expirationDate: 'asc' },
     });
   }
 
-  async getOverdue(): Promise<PPDashboardOverdueResult> {
+  async getOverdue(userId?: string): Promise<PPDashboardOverdueResult> {
     const [aggregate, items] = await Promise.all([
       this.prisma.pPDuesOfPay.aggregate({
         where: {
           paid: false,
           expirationDate: { lt: this.startOfToday() },
+          ...(userId
+            ? {
+                DebtsToPay: {
+                  userId,
+                },
+              }
+            : {}),
         },
         _sum: { amount: true },
         _count: true,
