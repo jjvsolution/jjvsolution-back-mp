@@ -20,15 +20,10 @@ export class AuthBusiness extends ResponseClass {
           select: {
             Profiles: {
               select: {
+                name: true,
                 Applications: { select: { id: true } },
                 RolsProfiles: {
-                  include: {
-                    Rols: {
-                      select: {
-                        name: true,
-                      },
-                    },
-                  },
+                  select: { Rols: { select: { name: true } } },
                 },
               },
             },
@@ -53,6 +48,9 @@ export class AuthBusiness extends ResponseClass {
     const rols = user?.UserProfileApplications.flatMap((upa) => upa.Profiles)
       .flatMap((profile) => profile.RolsProfiles)
       .map((rp) => rp.Rols.name);
+    const profiles = user?.UserProfileApplications.flatMap(
+      (upa) => upa.Profiles,
+    ).map((profile) => profile.name);
     const applications = user?.UserProfileApplications.flatMap(
       (upa) => upa.Profiles,
     )
@@ -62,10 +60,10 @@ export class AuthBusiness extends ResponseClass {
     const payload = {
       uid: user?.id,
       rols,
+      profiles,
       applications,
     };
     const token = await this.authService.signToken(appId, payload);
-    console.log(token);
     await this.aCTokenRepository.db.create({
       data: {
         token,

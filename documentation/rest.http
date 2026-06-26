@@ -6,6 +6,10 @@ X-App-ID: 54b76485-880c-409a-b25e-808f1196ffb2
     "username": "info.wede@gmail.com",
     "password": "juan"
 }
+/* {
+    "username": "arrendatario@gmail.com",
+    "password": "arrendatario"
+} */
 
 GET http://localhost:3000/v1/access-control/auth/valid
 Content-Type: application/json
