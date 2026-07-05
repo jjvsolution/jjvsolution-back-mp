@@ -6,6 +6,7 @@ import { PPDuesOfPayBusiness } from '@business';
 import {
   DuesofPayAllObjectType,
   DuesofPayObjectType,
+  DuesofPayBulkInputType,
   PPDuesofPayBalanceObjectType,
   PPDuesofPayDetailObjectType,
 } from './models';
@@ -99,6 +100,22 @@ export class PPDuesofPayResolver {
     @Args('data') data: DuesofPayObjectType,
   ): Promise<DuesofPayAllObjectType | null> {
     return this.ppDuesOfPayRepository.db.create({ data });
+  }
+
+  @UseGuards(GQLInternalGuard)
+  @Mutation(() => [DuesofPayAllObjectType])
+  async PPCreateManyDuesofPay(
+    @Args('data', { type: () => [DuesofPayObjectType] }) data: DuesofPayObjectType[],
+  ): Promise<DuesofPayAllObjectType[]> {
+    return this.ppDuesOfPayBusiness.createMany(data);
+  }
+
+  @UseGuards(GQLInternalGuard)
+  @Mutation(() => [DuesofPayAllObjectType])
+  async PPBulkUpsertDuesofPay(
+    @Args('data', { type: () => [DuesofPayBulkInputType] }) data: DuesofPayBulkInputType[],
+  ): Promise<DuesofPayAllObjectType[]> {
+    return this.ppDuesOfPayBusiness.bulkUpsert(data);
   }
 
   @UseGuards(GQLInternalGuard)

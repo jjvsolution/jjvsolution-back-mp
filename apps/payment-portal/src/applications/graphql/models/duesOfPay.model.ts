@@ -33,3 +33,9 @@ export class DuesofPayAllObjectType extends DuesofPayObjectType {
   @Field(() => Number)
   id: number;
 }
+
+@InputType('DuesofPayBulkInputType')
+export class DuesofPayBulkInputType extends DuesofPayObjectType {
+  @Field(() => Number, { nullable: true })
+  id?: number;
+}

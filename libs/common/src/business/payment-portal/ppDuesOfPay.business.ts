@@ -1,6 +1,11 @@
 import { Injectable } from '@nestjs/common';
-import { PPDuesOfPayRepository } from '@database/prisma';
-import { Prisma } from '@prisma/client';
+import { PPDuesOfPayRepository, Prisma } from '@database/prisma';
+import {
+  Prisma as PrismaTypes,
+  PPDuesOfPay,
+  PPTypePaymentType,
+  PPTypeTypeOfCurrency,
+} from '@prisma/client';
 import { ResponseClass } from 'common/config';
 import {
   calculateDueFinancialStatus,
@@ -12,20 +17,34 @@ export type PPDuesOfPayDetailStatus = PPDuesFinancialStatus;
 
 export interface PPDuesOfPayDetailResult {
   due: Omit<
-    Prisma.PPDuesOfPayGetPayload<object>,
+    PrismaTypes.PPDuesOfPayGetPayload<object>,
     'PPPaymentDeuesOfPay' | 'DebtsToPay'
   >;
-  debt: Prisma.PPDebtsToPayGetPayload<object>;
-  payments: Prisma.PPPaymentGetPayload<object>[];
+  debt: PrismaTypes.PPDebtsToPayGetPayload<object>;
+  payments: PrismaTypes.PPPaymentGetPayload<object>[];
   totalAmount: number;
   paidAmount: number;
   pendingBalance: number;
   status: PPDuesOfPayDetailStatus;
 }
 
+export interface PPDuesOfPayBulkInput {
+  id?: number;
+  expirationDate: Date;
+  description: string;
+  amount: number;
+  TypeOfCurrency: PPTypeTypeOfCurrency;
+  paid: boolean;
+  paymentType?: PPTypePaymentType | null;
+  debtsToPayId: number;
+}
+
 @Injectable()
 export class PPDuesOfPayBusiness extends ResponseClass {
-  constructor(private readonly ppDuesOfPayRepository: PPDuesOfPayRepository) {
+  constructor(
+    private readonly ppDuesOfPayRepository: PPDuesOfPayRepository,
+    private readonly prisma: Prisma,
+  ) {
     super();
   }
 
@@ -82,7 +101,7 @@ export class PPDuesOfPayBusiness extends ResponseClass {
   }
 
   async getPendingBalance(userId?: string, debtsToPayId?: number) {
-    const where: Prisma.PPDuesOfPayWhereInput = {
+    const where: PrismaTypes.PPDuesOfPayWhereInput = {
       paid: false,
       DebtsToPay: {
         ...(debtsToPayId ? { id: debtsToPayId } : {}),
@@ -145,5 +164,51 @@ export class PPDuesOfPayBusiness extends ResponseClass {
       pendingBalance,
       status,
     };
+  }
+
+  async createMany(data: PrismaTypes.PPDuesOfPayCreateManyInput[]) {
+    if (!data.length) {
+      return [];
+    }
+
+    const debtsToPayId = data[0].debtsToPayId;
+
+    await this.ppDuesOfPayRepository.db.createMany({ data });
+
+    return this.ppDuesOfPayRepository.db.findMany({
+      where: { debtsToPayId },
+      orderBy: { id: 'asc' },
+    });
+  }
+
+  async bulkUpsert(data: PPDuesOfPayBulkInput[]) {
+    if (!data.length) {
+      return [];
+    }
+
+    return this.prisma.$transaction(async (tx) => {
+      const results: PPDuesOfPay[] = [];
+
+      for (const item of data) {
+        const { id, ...dueData } = item;
+
+        if (id) {
+          results.push(
+            await tx.pPDuesOfPay.update({
+              where: { id },
+              data: dueData,
+            }),
+          );
+        } else {
+          results.push(
+            await tx.pPDuesOfPay.create({
+              data: dueData,
+            }),
+          );
+        }
+      }
+
+      return results;
+    });
   }
 }
