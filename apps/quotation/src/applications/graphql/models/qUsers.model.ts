@@ -1,5 +1,6 @@
 import { Field, ObjectType, InputType } from '@nestjs/graphql';
 import { QBusinessAllModel } from './qBusiness.model';
+import { QTemplateAllModel } from './qTemplate.model';
 
 @ObjectType('QUsersObjectType')
 @InputType('QUsersInputType')
@@ -17,7 +18,10 @@ export class QUsersAllModel extends QUsersModel {
   @Field(() => Number)
   id: number;
 
-  @Field(() => [QBusinessAllModel], {nullable: true})
+  @Field(() => [QBusinessAllModel], { nullable: true })
   business?: QBusinessAllModel[];
+
+  @Field(() => [QTemplateAllModel], { nullable: true })
+  QTemplate?: QTemplateAllModel[];
 }
 
