@@ -58,6 +58,54 @@ export class ACRolsProfilesResolver {
   }
 
   @UseGuards(GQLInternalGuard)
+  @Mutation(() => [ACRolsProfilesAllModel])
+  async ACRolsProfilesCreateMany(
+    @Args('data', { type: () => [ACRolsProfilesModel] }) data: ACRolsProfilesModel[],
+  ): Promise<ACRolsProfilesAllModel[]> {
+    const results: ACRolsProfilesAllModel[] = [];
+
+    for (const item of data) {
+      const existing = await this.ACRolsProfilesRepository.db.findFirst({
+        where: {
+          profileId: item.profileId,
+          rolsId: item.rolsId,
+        },
+      });
+
+      if (existing) {
+        results.push(existing);
+        continue;
+      }
+
+      try {
+        const created = await this.ACRolsProfilesRepository.db.create({
+          data: {
+            profileId: item.profileId,
+            rolsId: item.rolsId,
+          },
+        });
+        results.push(created);
+      } catch (error: any) {
+        if (error?.code === 'P2002') {
+          const found = await this.ACRolsProfilesRepository.db.findFirst({
+            where: {
+              profileId: item.profileId,
+              rolsId: item.rolsId,
+            },
+          });
+          if (found) {
+            results.push(found);
+          }
+        } else {
+          throw error;
+        }
+      }
+    }
+
+    return results;
+  }
+
+  @UseGuards(GQLInternalGuard)
   @Mutation(() => ACRolsProfilesAllModel, { nullable: true })
   async ACRolsProfilesDelete(
     @Args('id') id: number,
