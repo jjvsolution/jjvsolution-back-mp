@@ -7,7 +7,7 @@ async function bootstrap() {
   const app = await NestFactory.create(PaymentPortalModule);
   app.enableCors({
     origin: '*',
-    methods: ['GET', 'POST'],
+    methods: ['GET', 'POST', 'PUT', 'PATCH'],
     allowedHeaders: ['Content-Type', 'Authorization', 'x-app-id'],
   });
   app.setGlobalPrefix('payment-portal');

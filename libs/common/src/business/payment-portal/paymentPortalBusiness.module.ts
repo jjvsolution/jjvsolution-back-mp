@@ -8,6 +8,7 @@ import {
 } from '@database/prisma';
 import { PPDuesOfPayBusiness } from './ppDuesOfPay.business';
 import { PPDebtsToPayBusiness } from './ppDebtsToPay.business';
+import { PPDebtLinkAuthBusiness } from './ppDebtLinkAuth.business';
 import { PPPaymentBusiness } from './ppPayment.business';
 import { PPDashboardBusiness } from './ppDashboard.business';
 
@@ -15,6 +16,7 @@ const businessExport: Provider[] = [
   AuthService,
   PPDuesOfPayBusiness,
   PPDebtsToPayBusiness,
+  PPDebtLinkAuthBusiness,
   PPPaymentBusiness,
   PPDashboardBusiness,
 ];

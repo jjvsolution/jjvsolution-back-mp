@@ -20,8 +20,9 @@ import {
   PPDebtsToPayRepository,
   PPDuesOfPayRepository,
 } from '@database/prisma';
-import { PPDebtsToPayBusiness } from '@business';
+import { PPDebtsToPayBusiness, PPDebtLinkAuthBusiness } from '@business';
 import { RequestWithUserInterface } from '@interfaces';
+import { TokenService } from 'common/services';
 
 @Resolver(() => DebtsToPayAllObjectType)
 export class PPDebtsToPayResolver {
@@ -29,6 +30,7 @@ export class PPDebtsToPayResolver {
     private readonly ppDebtsToPayRepository: PPDebtsToPayRepository,
     private readonly ppDuesOfPayRepository: PPDuesOfPayRepository,
     private readonly ppDebtsToPayBusiness: PPDebtsToPayBusiness,
+    private readonly ppDebtLinkAuthBusiness: PPDebtLinkAuthBusiness,
   ) {}
 
   @UseGuards(GQLInternalGuard)
@@ -80,6 +82,24 @@ export class PPDebtsToPayResolver {
     @Args('id') id: number,
   ): Promise<PPDebtsToPayDetailObjectType | null> {
     return this.ppDebtsToPayBusiness.getDetail(id);
+  }
+
+  @UseGuards(GQLInternalGuard)
+  @Query(() => String, { nullable: true })
+  async PPDebtsToPayPublicLinkToken(
+    @Args('id') id: number,
+    @Context() ctx: { req: RequestWithUserInterface },
+  ): Promise<string | null> {
+    const debt = await this.ppDebtsToPayRepository.db.findUnique({
+      where: { id },
+    });
+
+    if (!debt) {
+      return null;
+    }
+
+    const appId = TokenService.appId(ctx.req);
+    return this.ppDebtLinkAuthBusiness.generateToken(appId, debt.payId);
   }
 
   @UseGuards(GQLInternalGuard)
