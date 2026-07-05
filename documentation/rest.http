@@ -15,3 +15,23 @@ GET http://localhost:3000/v1/access-control/auth/valid
 Content-Type: application/json
 X-App-ID: 54b76485-880c-409a-b25e-808f1196ffb2
 Authorization: Bearer eyJhbGciOiJFUzM4NCIsInR5cCI6IkpXVCJ9.eyJ1aWQiOiJkODQ0ZjUzMS0yMjA1LTQ4N2MtYWFlZi04ZGFhMmM0NTE5MDkiLCJpYXQiOjE3NDg4MzMyNDMsImV4cCI6MTc0ODkxOTY0M30.7SwIUSngGprhpv-RIss05yFnkhASzZ51OYgwzI4YkEYFzO3rF2OHN2_hKQt2ijHv60snMVHBvAG4i0dxGFleIaKRF0mDjWwkWMCu4Oiy5bVZKn5RmZvm2Mm6t8gVW8xm
+
+### Payment Portal - Enlace público de deuda
+
+GET http://localhost:3000/v1/payment-portal/debt-link/{{payId}}
+Content-Type: application/json
+X-App-ID: 54b76485-880c-409a-b25e-808f1196ffb2
+
+###
+
+POST http://localhost:3000/v1/payment-portal/debt-link/payment
+Content-Type: application/json
+X-App-ID: 54b76485-880c-409a-b25e-808f1196ffb2
+Authorization: Bearer {{publicDebtToken}}
+
+{
+  "paymentDate": "2026-07-05T00:00:00.000Z",
+  "paymentType": "TRANSFER",
+  "amount": 10000,
+  "duesOfPayIds": [1]
+}
