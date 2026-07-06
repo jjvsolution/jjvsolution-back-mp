@@ -30,9 +30,13 @@ export class PPDebtLinkAuthBusiness extends ResponseClass {
     super();
   }
 
-  async generateToken(appId: string, payId: string): Promise<string> {
+  async generateToken(
+    userId: string | undefined,
+    appId: string,
+    payId: string,
+  ): Promise<string> {
     const debt = await this.ppDebtsToPayRepository.db.findUnique({
-      where: { payId },
+      where: { payId, ...(userId ? { userId } : {}) },
     });
 
     if (!debt) {
@@ -58,13 +62,17 @@ export class PPDebtLinkAuthBusiness extends ResponseClass {
     return payload.payId;
   }
 
-  async getPublicAccess(appId: string, payId: string) {
+  async getPublicAccess(
+    userId: string | undefined,
+    appId: string,
+    payId: string,
+  ) {
     if (!appId) {
       this.badRequest('APP_ID_REQUIRED');
     }
 
-    const token = await this.generateToken(appId, payId);
-    const detail = await this.getPublicDetail(payId);
+    const token = await this.generateToken(userId, appId, payId);
+    const detail = await this.getPublicDetail(userId, payId);
 
     return {
       token,
@@ -72,7 +80,7 @@ export class PPDebtLinkAuthBusiness extends ResponseClass {
     };
   }
 
-  async getPublicDetail(payId: string) {
+  async getPublicDetail(userId: string | undefined, payId: string) {
     const debt = await this.ppDebtsToPayRepository.db.findUnique({
       where: { payId },
     });
@@ -81,12 +89,12 @@ export class PPDebtLinkAuthBusiness extends ResponseClass {
       this.notFound('DEBTS_TO_PAY_NOT_FOUND');
     }
 
-    const detail = await this.ppDebtsToPayBusiness.getDetail(debt.id);
+    const detail = await this.ppDebtsToPayBusiness.getDetail(userId, debt.id);
     const payments = await this.prisma.pPPayment.findMany({
       where: {
         PPPaymentDeuesOfPay: {
-          some: {
-            duesOfPay: { debtsToPayId: debt.id },
+          every: {
+            duesOfPay: { id: debt.id, ...(userId ? { userId } : {}) },
           },
         },
       },
@@ -105,9 +113,13 @@ export class PPDebtLinkAuthBusiness extends ResponseClass {
     };
   }
 
-  async upsertPublicPayment(payId: string, data: PPDebtLinkPaymentInput) {
+  async upsertPublicPayment(
+    userId: string | undefined,
+    payId: string,
+    data: PPDebtLinkPaymentInput,
+  ) {
     const debt = await this.ppDebtsToPayRepository.db.findUnique({
-      where: { payId },
+      where: { payId, ...(userId ? { userId } : {}) },
       include: { DuesofPay: true },
     });
 
@@ -140,7 +152,7 @@ export class PPDebtLinkAuthBusiness extends ResponseClass {
 
     if (isUpdate) {
       const existing = await this.prisma.pPPayment.findUnique({
-        where: { id: paymentId },
+        where: { id: paymentId, ...(userId ? { userId } : {}) },
       });
 
       if (!existing) {
@@ -163,9 +175,9 @@ export class PPDebtLinkAuthBusiness extends ResponseClass {
         this.badRequest('PAYMENT_NOT_IN_DEBT');
       }
 
-      return this.ppPaymentBusiness.updatePayment(paymentId, paymentData);
+      return this.ppPaymentBusiness.updatePayment(userId, paymentId, paymentData);
     }
 
-    return this.ppPaymentBusiness.createPayment(paymentData);
+    return this.ppPaymentBusiness.createPayment(userId, paymentData);
   }
 }

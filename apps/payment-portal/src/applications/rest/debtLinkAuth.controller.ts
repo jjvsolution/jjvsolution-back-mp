@@ -7,7 +7,7 @@ import {
   DebtLinkPaymentDto,
   DebtLinkPaymentInputDto,
 } from 'common/dto/payment-portal';
-import { RequestWithPublicDebtLinkInterface } from '@interfaces';
+import { RequestWithPublicDebtLinkInterface, RequestWithUserInterface } from '@interfaces';
 import { TokenService } from 'common/services';
 import { Request } from 'express';
 
@@ -22,10 +22,11 @@ export class DebtLinkAuthController {
   @ApiOkResponse({ type: DebtLinkAccessDto })
   getDetail(
     @Param('payId') payId: string,
-    @Req() req: Request,
+    @Req() req: RequestWithUserInterface,
   ): Promise<DebtLinkAccessDto> {
+    const userId = req.user.getUserIdIsAdmin;
     const appId = TokenService.appId(req);
-    return this.ppDebtLinkAuthBusiness.getPublicAccess(appId, payId);
+    return this.ppDebtLinkAuthBusiness.getPublicAccess(userId, appId, payId);
   }
 
   @Post('payment')
@@ -33,10 +34,12 @@ export class DebtLinkAuthController {
   @ApiBearerAuth()
   @ApiOkResponse({ type: DebtLinkPaymentDto })
   upsertPayment(
-    @Req() req: Request & RequestWithPublicDebtLinkInterface,
+    @Req() req: RequestWithUserInterface & RequestWithPublicDebtLinkInterface,
     @Body() data: DebtLinkPaymentInputDto,
   ) {
+    const userId = req.user.getUserIdIsAdmin;
     return this.ppDebtLinkAuthBusiness.upsertPublicPayment(
+      userId,
       req.publicDebtLink.payId,
       data,
     );

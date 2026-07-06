@@ -1,6 +1,10 @@
 import { Injectable } from '@nestjs/common';
 import { Prisma } from '@database/prisma';
-import { PPStatusPayment, PPTypePaymentType, Prisma as PrismaTypes } from '@prisma/client';
+import {
+  PPStatusPayment,
+  PPTypePaymentType,
+  Prisma as PrismaTypes,
+} from '@prisma/client';
 import { ResponseClass } from 'common/config';
 
 export interface PPPaymentCreateInput {
@@ -25,28 +29,48 @@ export class PPPaymentBusiness extends ResponseClass {
     super();
   }
 
-  listAll() {
+  listAll(userId: string | undefined) {
     return this.prisma.pPPayment.findMany({
+      ...(userId
+        ? {
+            where: {
+              PPPaymentDeuesOfPay: {
+                every: { duesOfPay: { DebtsToPay: { userId } } },
+              },
+            },
+          }
+        : {}),
       orderBy: { id: 'desc' },
     });
   }
 
-  getById(id: number) {
-    return this.prisma.pPPayment.findUnique({ where: { id } });
+  getById(userId: string | undefined, id: number) {
+    return this.prisma.pPPayment.findUnique({
+      where: {
+        id,
+        ...(userId
+          ? {
+              PPPaymentDeuesOfPay: {
+                every: { duesOfPay: { DebtsToPay: { userId } } },
+              },
+            }
+          : {}),
+      },
+    });
   }
 
-  getDuesByPaymentId(paymentId: number) {
+  getDuesByPaymentId(userId: string | undefined, paymentId: number) {
     return this.prisma.pPDuesOfPay.findMany({
       where: {
         PPPaymentDeuesOfPay: {
-          some: { paymentId },
+          some: { paymentId, ...(userId ? { DebtsToPay: { userId } } : {}) },
         },
       },
       orderBy: { id: 'asc' },
     });
   }
 
-  async createPayment(data: PPPaymentCreateInput) {
+  async createPayment(userId: string | undefined, data: PPPaymentCreateInput) {
     const { duesOfPayIds, ...paymentData } = data;
 
     if (!duesOfPayIds?.length) {
@@ -74,14 +98,18 @@ export class PPPaymentBusiness extends ResponseClass {
       });
 
       for (const duesOfPayId of duesOfPayIds) {
-        await this.syncDuePaidStatus(tx, duesOfPayId);
+        await this.syncDuePaidStatus(userId, tx, duesOfPayId);
       }
 
       return payment;
     });
   }
 
-  async updatePayment(id: number, data: PPPaymentUpdateInput) {
+  async updatePayment(
+    userId: string | undefined,
+    id: number,
+    data: PPPaymentUpdateInput,
+  ) {
     const { duesOfPayIds, ...paymentData } = data;
     const existing = await this.prisma.pPPayment.findUnique({ where: { id } });
 
@@ -90,7 +118,10 @@ export class PPPaymentBusiness extends ResponseClass {
     }
 
     const previousLinks = await this.prisma.pPPaymentDeuesOfPay.findMany({
-      where: { paymentId: id },
+      where: {
+        paymentId: id,
+        ...(userId ? { duesOfPay: { DebtsToPay: { userId } } } : {}),
+      },
     });
     const previousDuesIds = previousLinks.map((link) => link.duesOfPayId);
 
@@ -123,14 +154,14 @@ export class PPPaymentBusiness extends ResponseClass {
       );
 
       for (const duesOfPayId of affectedDuesIds) {
-        await this.syncDuePaidStatus(tx, duesOfPayId);
+        await this.syncDuePaidStatus(userId, tx, duesOfPayId);
       }
 
       return payment;
     });
   }
 
-  async deletePayment(id: number) {
+  async deletePayment(userId: string | undefined, id: number) {
     const existing = await this.prisma.pPPayment.findUnique({ where: { id } });
 
     if (!existing) {
@@ -147,7 +178,7 @@ export class PPPaymentBusiness extends ResponseClass {
       const payment = await tx.pPPayment.delete({ where: { id } });
 
       for (const duesOfPayId of affectedDuesIds) {
-        await this.syncDuePaidStatus(tx, duesOfPayId);
+        await this.syncDuePaidStatus(userId, tx, duesOfPayId);
       }
 
       return payment;
@@ -155,6 +186,7 @@ export class PPPaymentBusiness extends ResponseClass {
   }
 
   private async syncDuePaidStatus(
+    userId: string | undefined,
     tx: PrismaTypes.TransactionClient,
     duesOfPayId: number,
   ): Promise<void> {
@@ -164,7 +196,11 @@ export class PPPaymentBusiness extends ResponseClass {
       return;
     }
 
-    const coveredAmount = await this.getCoveredAmountForDue(tx, duesOfPayId);
+    const coveredAmount = await this.getCoveredAmountForDue(
+      userId,
+      tx,
+      duesOfPayId,
+    );
 
     await tx.pPDuesOfPay.update({
       where: { id: duesOfPayId },
@@ -173,11 +209,16 @@ export class PPPaymentBusiness extends ResponseClass {
   }
 
   private async getCoveredAmountForDue(
+    userId: string | undefined,
     tx: PrismaTypes.TransactionClient,
     duesOfPayId: number,
   ): Promise<number> {
     const links = await tx.pPPaymentDeuesOfPay.findMany({
-      where: { duesOfPayId },
+      where: {
+        ...(userId
+          ? { duesOfPay: { DebtsToPay: { userId } } }
+          : { duesOfPayId }),
+      },
       include: {
         payment: {
           include: {

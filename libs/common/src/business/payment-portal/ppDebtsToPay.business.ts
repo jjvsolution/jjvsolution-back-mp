@@ -33,9 +33,12 @@ export class PPDebtsToPayBusiness extends ResponseClass {
     super();
   }
 
-  async getDetail(id: number): Promise<PPDebtsToPayDetailResult> {
+  async getDetail(
+    userId: string | undefined,
+    id: number,
+  ): Promise<PPDebtsToPayDetailResult> {
     const debt = await this.ppDebtsToPayRepository.db.findUnique({
-      where: { id },
+      where: { id, ...(userId ? { userId } : {}) },
       include: {
         DuesofPay: {
           include: {

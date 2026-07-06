@@ -54,15 +54,17 @@ export class PPDuesOfPayBusiness extends ResponseClass {
     return today;
   }
 
-  listAll(userId?: string) {
+  listAll(userId: string | undefined) {
     return this.ppDuesOfPayRepository.db.findMany({
       where: { DebtsToPay: userId ? { userId } : {} },
       orderBy: { id: 'asc' },
     });
   }
 
-  getById(id: number) {
-    return this.ppDuesOfPayRepository.db.findUnique({ where: { id } });
+  getById(userId: string | undefined, id: number) {
+    return this.ppDuesOfPayRepository.db.findUnique({
+      where: { id, DebtsToPay: userId ? { userId } : {} },
+    });
   }
 
   getPending(userId?: string) {
@@ -166,7 +168,10 @@ export class PPDuesOfPayBusiness extends ResponseClass {
     };
   }
 
-  async createMany(data: PrismaTypes.PPDuesOfPayCreateManyInput[]) {
+  async createMany(
+    userId: string | undefined,
+    data: PrismaTypes.PPDuesOfPayCreateManyInput[],
+  ) {
     if (!data.length) {
       return [];
     }
@@ -176,7 +181,7 @@ export class PPDuesOfPayBusiness extends ResponseClass {
     await this.ppDuesOfPayRepository.db.createMany({ data });
 
     return this.ppDuesOfPayRepository.db.findMany({
-      where: { debtsToPayId },
+      where: { debtsToPayId, DebtsToPay: { ...(userId ? { userId } : {}) } },
       orderBy: { id: 'asc' },
     });
   }

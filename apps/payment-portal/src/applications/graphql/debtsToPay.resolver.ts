@@ -35,27 +35,37 @@ export class PPDebtsToPayResolver {
 
   @UseGuards(GQLInternalGuard)
   @Query(() => [DebtsToPayAllObjectType])
-  async PPDebtsToPay(@Context() ctx: { req: RequestWithUserInterface }): Promise<DebtsToPayAllObjectType[]> {
+  async PPDebtsToPay(
+    @Context() ctx: { req: RequestWithUserInterface },
+  ): Promise<DebtsToPayAllObjectType[]> {
     const userId = ctx.req.user.getUserIdIsAdmin;
     return this.ppDebtsToPayRepository.db.findMany({
-      where: userId ? {} : { userId },
+      where: userId ? { userId } : {},
     });
   }
 
   @UseGuards(GQLInternalGuard)
   @Query(() => DebtsToPayAllObjectType, { nullable: true })
   async PPDebtsToPayById(
+    @Context() ctx: { req: RequestWithUserInterface },
     @Args('id') id: number,
   ): Promise<DebtsToPayAllObjectType | null> {
-    return this.ppDebtsToPayRepository.db.findUnique({ where: { id } });
+    const userId = ctx.req.user.getUserIdIsAdmin;
+    return this.ppDebtsToPayRepository.db.findUnique({
+      where: { id, ...(userId ? { userId } : {}) },
+    });
   }
 
   @UseGuards(GQLInternalGuard)
   @Query(() => DebtsToPayAllObjectType, { nullable: true })
   async PPDebtsToPayPayId(
+    @Context() ctx: { req: RequestWithUserInterface },
     @Args('payId') payId: string,
   ): Promise<DebtsToPayAllObjectType | null> {
-    return this.ppDebtsToPayRepository.db.findUnique({ where: { payId } });
+    const userId = ctx.req.user.getUserIdIsAdmin;
+    return this.ppDebtsToPayRepository.db.findUnique({
+      where: { payId, ...(userId ? { userId } : {}) },
+    });
   }
 
   @UseGuards(GQLInternalGuard)
@@ -69,29 +79,34 @@ export class PPDebtsToPayResolver {
   @UseGuards(GQLInternalGuard)
   @Query(() => [DebtsToPayAllObjectType])
   async PPDebtsToPayCompanyId(
+    @Context() ctx: { req: RequestWithUserInterface },
     @Args('companyId') companyId: string,
   ): Promise<DebtsToPayAllObjectType[]> {
+    const userId = ctx.req.user.getUserIdIsAdmin;
     return this.ppDebtsToPayRepository.db.findMany({
-      where: { companyId: Number(companyId) },
+      where: { companyId: Number(companyId), ...(userId ? { userId } : {}) },
     });
   }
 
   @UseGuards(GQLInternalGuard)
   @Query(() => PPDebtsToPayDetailObjectType, { nullable: true })
   async PPDebtsToPayDetail(
+    @Context() ctx: { req: RequestWithUserInterface },
     @Args('id') id: number,
   ): Promise<PPDebtsToPayDetailObjectType | null> {
-    return this.ppDebtsToPayBusiness.getDetail(id);
+    const userId = ctx.req.user.getUserIdIsAdmin;
+    return this.ppDebtsToPayBusiness.getDetail(userId, id);
   }
 
   @UseGuards(GQLInternalGuard)
   @Query(() => String, { nullable: true })
   async PPDebtsToPayPublicLinkToken(
-    @Args('id') id: number,
     @Context() ctx: { req: RequestWithUserInterface },
+    @Args('id') id: number,
   ): Promise<string | null> {
+    const userId = ctx.req.user.getUserIdIsAdmin;
     const debt = await this.ppDebtsToPayRepository.db.findUnique({
-      where: { id },
+      where: { id, ...(userId ? { userId } : {}) },
     });
 
     if (!debt) {
@@ -99,7 +114,7 @@ export class PPDebtsToPayResolver {
     }
 
     const appId = TokenService.appId(ctx.req);
-    return this.ppDebtLinkAuthBusiness.generateToken(appId, debt.payId);
+    return this.ppDebtLinkAuthBusiness.generateToken(userId, appId, debt.payId);
   }
 
   @UseGuards(GQLInternalGuard)
@@ -126,7 +141,10 @@ export class PPDebtsToPayResolver {
     @Args('data') data: DebtsToPayObjectType,
   ): Promise<DebtsToPayAllObjectType | null> {
     try {
-      return await this.ppDebtsToPayRepository.db.update({ data, where: { id } });
+      return await this.ppDebtsToPayRepository.db.update({
+        data,
+        where: { id },
+      });
     } catch (error: any) {
       if (error?.code === 'P2002') {
         throw new ConflictException('PAY_ID_ALREADY_EXISTS');
@@ -149,11 +167,13 @@ export class PPDebtsToPayResolver {
   @UseGuards(GQLInternalGuard)
   @ResolveField(() => [DuesofPayAllObjectType])
   async PPDuesofPay(
+    @Context() ctx: { req: RequestWithUserInterface },
     @Parent() debtsToPay: DebtsToPayAllObjectType,
   ): Promise<DuesofPayAllObjectType[]> {
+    const userId = ctx.req.user.getUserIdIsAdmin;
     const { id } = debtsToPay;
     return this.ppDuesOfPayRepository.db.findMany({
-      where: { debtsToPayId: id },
+      where: { debtsToPayId: id, ...(userId ? { userId } : {}) },
     });
   }
 }

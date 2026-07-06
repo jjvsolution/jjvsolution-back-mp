@@ -31,9 +31,11 @@ export class PPDuesofPayResolver {
   @UseGuards(GQLInternalGuard)
   @Query(() => DuesofPayAllObjectType, { nullable: true })
   async PPDuesofPayById(
+    @Context() ctx: { req: RequestWithUserInterface },
     @Args('id') id: number,
   ): Promise<DuesofPayAllObjectType | null> {
-    return this.ppDuesOfPayBusiness.getById(id);
+    const userId = ctx.req.user.getUserIdIsAdmin;
+    return this.ppDuesOfPayBusiness.getById(userId, id);
   }
 
   @UseGuards(GQLInternalGuard)
@@ -105,9 +107,11 @@ export class PPDuesofPayResolver {
   @UseGuards(GQLInternalGuard)
   @Mutation(() => [DuesofPayAllObjectType])
   async PPCreateManyDuesofPay(
+    @Context() ctx: { req: RequestWithUserInterface },
     @Args('data', { type: () => [DuesofPayObjectType] }) data: DuesofPayObjectType[],
   ): Promise<DuesofPayAllObjectType[]> {
-    return this.ppDuesOfPayBusiness.createMany(data);
+    const userId = ctx.req.user.getUserIdIsAdmin;
+    return this.ppDuesOfPayBusiness.createMany(userId, data);
   }
 
   @UseGuards(GQLInternalGuard)
