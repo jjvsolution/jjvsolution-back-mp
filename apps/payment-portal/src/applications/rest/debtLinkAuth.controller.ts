@@ -24,9 +24,9 @@ export class DebtLinkAuthController {
     @Param('payId') payId: string,
     @Req() req: RequestWithUserInterface,
   ): Promise<DebtLinkAccessDto> {
-    const userId = req.user.getUserIdIsAdmin;
+    //const userId = req.user.getUserIdIsAdmin;
     const appId = TokenService.appId(req);
-    return this.ppDebtLinkAuthBusiness.getPublicAccess(userId, appId, payId);
+    return this.ppDebtLinkAuthBusiness.getPublicAccess(undefined, appId, payId);
   }
 
   @Post('payment')

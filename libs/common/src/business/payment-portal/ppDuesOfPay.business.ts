@@ -57,7 +57,7 @@ export class PPDuesOfPayBusiness extends ResponseClass {
   listAll(userId: string | undefined) {
     return this.ppDuesOfPayRepository.db.findMany({
       where: { DebtsToPay: userId ? { userId } : {} },
-      orderBy: { id: 'asc' },
+      orderBy: { expirationDate: 'asc' },
     });
   }
 
@@ -88,7 +88,7 @@ export class PPDuesOfPayBusiness extends ResponseClass {
   getPaid(userId?: string) {
     return this.ppDuesOfPayRepository.db.findMany({
       where: { paid: true, DebtsToPay: userId ? { userId } : {} },
-      orderBy: { expirationDate: 'desc' },
+      orderBy: { expirationDate: 'asc' },
     });
   }
 
@@ -182,7 +182,7 @@ export class PPDuesOfPayBusiness extends ResponseClass {
 
     return this.ppDuesOfPayRepository.db.findMany({
       where: { debtsToPayId, DebtsToPay: { ...(userId ? { userId } : {}) } },
-      orderBy: { id: 'asc' },
+      orderBy: { expirationDate: 'asc' },
     });
   }
 
