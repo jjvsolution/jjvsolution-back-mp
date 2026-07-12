@@ -1,4 +1,5 @@
 export * from './aCApplications.repository';
+export * from './aCApplicationsCompanies.repository';
 export * from './aCCompanies.repository';
 export * from './ACConfigAuthApplication.repository';
 export * from './aCLoginType.repository';

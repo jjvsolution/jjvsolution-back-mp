@@ -17,6 +17,7 @@ import { TokenService } from 'common/services';
 import { AccessControlBusinessModule } from '@business';
 import {
   ACApplicationsResolver,
+  ACApplicationsCompaniesResolver,
   ACConfigAuthApplicationResolver,
   ACCompaniesResolver,
   ACLoginTypeResolver,
@@ -31,6 +32,7 @@ import { IResolvers } from '@graphql-tools/utils';
 
 export const resolver: Provider[] = [
   ACApplicationsResolver,
+  ACApplicationsCompaniesResolver,
   ACConfigAuthApplicationResolver,
   ACCompaniesResolver,
   ACLoginTypeResolver,

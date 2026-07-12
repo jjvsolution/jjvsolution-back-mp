@@ -1,4 +1,5 @@
 export * from './aCApplications.resolver';
+export * from './aCApplicationsCompanies.resolver';
 export * from './aCCompanies.resolver';
 export * from './aCConfigAuthApplication.resolver';
 export * from './aCLoginType.resolver';

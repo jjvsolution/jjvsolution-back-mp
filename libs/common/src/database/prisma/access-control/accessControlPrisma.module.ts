@@ -2,6 +2,7 @@ import { Module } from '@nestjs/common';
 import { Prisma } from '../prisma';
 import {
   ACApplicationsRepository,
+  ACApplicationsCompaniesRepository,
   ACCompaniesRepository,
   ACConfigAuthApplicationRepository,
   ACLoginTypeRepository,
@@ -16,6 +17,7 @@ import {
 const provider = [
   Prisma,
   ACApplicationsRepository,
+  ACApplicationsCompaniesRepository,
   ACCompaniesRepository,
   ACConfigAuthApplicationRepository,
   ACLoginTypeRepository,
