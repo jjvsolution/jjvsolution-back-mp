@@ -94,7 +94,7 @@ export class PPDebtLinkAuthBusiness extends ResponseClass {
       where: {
         PPPaymentDeuesOfPay: {
           every: {
-            duesOfPay: { id: debt.id, ...(userId ? { userId } : {}) },
+            duesOfPay: { debtsToPayId: debt.id, ...(userId ? { userId } : {}) },
           },
         },
       },
@@ -103,7 +103,6 @@ export class PPDebtLinkAuthBusiness extends ResponseClass {
       },
       orderBy: { paymentDate: 'desc' },
     });
-
     return {
       ...detail,
       payments: payments.map(({ PPPaymentDeuesOfPay, ...payment }) => ({

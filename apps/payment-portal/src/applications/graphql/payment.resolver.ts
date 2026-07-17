@@ -79,6 +79,8 @@ export class PPPaymentResolver {
     @Parent() payment: PaymentAllObjectType,
   ): Promise<DuesofPayAllObjectType[]> {
     const userId = ctx.req.user.getUserIdIsAdmin;
-    return this.ppPaymentBusiness.getDuesByPaymentId(userId, payment.id);
+    const a = await this.ppPaymentBusiness.getDuesByPaymentId(userId, payment.id);
+    console.log(payment.id, JSON.stringify(a));
+    return a;
   }
 }

@@ -35,6 +35,7 @@ import { PaymentPortalModule } from 'apps/payment-portal/src/payment-portal.modu
             formattedError: GraphQLFormattedError,
             error: Error,
           ) => {
+            console.log(formattedError)
             let newError: { message?: string } | string | { payload?: string };
             try {
               newError = JSON.parse(error.message) as object;

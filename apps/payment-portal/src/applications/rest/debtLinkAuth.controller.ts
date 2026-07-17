@@ -37,9 +37,9 @@ export class DebtLinkAuthController {
     @Req() req: RequestWithUserInterface & RequestWithPublicDebtLinkInterface,
     @Body() data: DebtLinkPaymentInputDto,
   ) {
-    const userId = req.user.getUserIdIsAdmin;
+    //const userId = req.user.getUserIdIsAdmin;
     return this.ppDebtLinkAuthBusiness.upsertPublicPayment(
-      userId,
+      undefined,
       req.publicDebtLink.payId,
       data,
     );

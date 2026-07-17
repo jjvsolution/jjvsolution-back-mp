@@ -63,8 +63,15 @@ export class PPPaymentBusiness extends ResponseClass {
     return this.prisma.pPDuesOfPay.findMany({
       where: {
         PPPaymentDeuesOfPay: {
-          some: { paymentId, ...(userId ? { DebtsToPay: { userId } } : {}) },
+          some: { paymentId },
         },
+        ...(userId
+          ? {
+              DebtsToPay: {
+                userId,
+              },
+            }
+          : {}),
       },
       orderBy: { id: 'asc' },
     });
