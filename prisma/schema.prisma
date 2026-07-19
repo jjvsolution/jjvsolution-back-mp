@@ -90,6 +90,7 @@ model ACLoginType {
   isDeleted Boolean   @default(false)
   User      ACUser?   @relation(fields: [userId], references: [id])
   userId    String    @db.Uuid
+
   @@unique([type, username])
 }
 
@@ -212,12 +213,13 @@ enum PPStatusPayment {
 }
 
 model PPDebtsToPay {
-  id          Int           @id @default(autoincrement())
-  userId      String
-  companyId   Int
-  payId       String        @unique
-  description String
-  DuesofPay   PPDuesOfPay[]
+  id                    Int           @id @default(autoincrement())
+  userId                String
+  companyId             Int
+  payId                 String        @unique
+  description           String
+  additionalInformation Json?
+  DuesofPay             PPDuesOfPay[]
 }
 
 model PPDuesOfPay {

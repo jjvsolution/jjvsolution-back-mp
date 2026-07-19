@@ -1,5 +1,6 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { PPTypePaymentType } from '@prisma/client';
+import { JsonValue } from '@prisma/client/runtime/library';
 
 export class DebtLinkDueDto {
   @ApiProperty()
@@ -33,6 +34,9 @@ export class DebtLinkDebtDto {
 
   @ApiProperty()
   description: string;
+
+  @ApiProperty()
+  additionalInformation?: JsonValue;
 }
 
 export class DebtLinkPaymentDto {
