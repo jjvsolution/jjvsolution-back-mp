@@ -64,6 +64,15 @@
         "tsConfigPath": "apps/payment-portal/tsconfig.app.json"
       }
     },
+    "project-control": {
+      "type": "application",
+      "root": "apps/project-control",
+      "entryFile": "main",
+      "sourceRoot": "apps/project-control/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/project-control/tsconfig.app.json"
+      }
+    },
     "quotation": {
       "type": "application",
       "root": "apps/quotation",

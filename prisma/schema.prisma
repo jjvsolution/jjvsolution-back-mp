@@ -442,3 +442,303 @@ model GtemplateContact {
   Contacts        GContacts?      @relation(fields: [contactsId], references: [id])
   contactsId      Int
 }
+
+// Project Control / Proyexa — prefijo PC
+enum PCProjectStatus {
+  BORRADOR
+  ACTIVO
+  PAUSADO
+  FINALIZADO
+  CANCELADO
+}
+
+enum PCSprintStatus {
+  PLANIFICADO
+  ACTIVO
+  FINALIZADO
+  CANCELADO
+}
+
+enum PCBacklogType {
+  EPICA
+  HISTORIA
+  TAREA
+  SUBTAREA
+  BUG
+}
+
+enum PCBacklogStatus {
+  PENDIENTE
+  EN_PROGRESO
+  EN_REVISION
+  QA
+  BLOQUEADA
+  TERMINADA
+}
+
+enum PCPriority {
+  BAJA
+  MEDIA
+  ALTA
+  CRITICA
+}
+
+enum PCDependencyType {
+  FIN_A_INICIO
+  INICIO_A_INICIO
+  FIN_A_FIN
+  INICIO_A_FIN
+}
+
+enum PCQaCalcType {
+  HORAS_FIJAS
+  PORCENTAJE_HORAS_DESARROLLO
+  HORAS_POR_TAREA
+  HORAS_POR_ACTOR
+}
+
+enum PCQaActorScope {
+  TODOS_LOS_ACTORES
+  SOLO_DESARROLLADORES
+  ACTORES_SELECCIONADOS
+  CANTIDAD_MANUAL
+}
+
+enum PCProjectMemberRole {
+  PRODUCT_OWNER
+  SCRUM_MASTER
+  DEVELOPER
+  QA
+  STAKEHOLDER
+  OTHER
+}
+
+model PCActors {
+  id                         Int                 @id @default(autoincrement())
+  createdAt                  DateTime            @default(now())
+  updatedAt                  DateTime            @updatedAt
+  companyId                  Int
+  userId                     String
+  name                       String
+  position                   String
+  email                      String?
+  defaultHourlyCost          Float               @default(0)
+  defaultDailyHours          Float               @default(8)
+  active                     Boolean             @default(true)
+  isDeleted                  Boolean             @default(false)
+  Members                    PCProjectMembers[]
+  TimeEntries                PCTimeEntries[]
+  QaRulesAsActor             PCQaRules[]         @relation("PCQaActor")
+  QaRuleSelections           PCQaRuleActors[]
+  ProductOwnerProjects       PCProjects[]        @relation("PCProductOwner")
+  ScrumMasterProjects        PCProjects[]        @relation("PCScrumMaster")
+  ResponsibleBacklogItems    PCBacklogItems[]    @relation("PCBacklogResponsible")
+}
+
+model PCProjects {
+  id                   Int                 @id @default(autoincrement())
+  createdAt            DateTime            @default(now())
+  updatedAt            DateTime            @updatedAt
+  companyId            Int
+  userId               String
+  code                 String
+  name                 String
+  clientName           String?
+  description          String?             @db.Text
+  startDate            DateTime
+  targetEndDate        DateTime?
+  currency             String              @default("CLP")
+  workingHoursPerDay   Float               @default(8)
+  workingDays          String              @default("1,2,3,4,5")
+  budget               Float?
+  contingencyPercent   Float               @default(0)
+  status               PCProjectStatus     @default(BORRADOR)
+  productOwnerId       Int?
+  scrumMasterId        Int?
+  isDeleted            Boolean             @default(false)
+  ProductOwner         PCActors?           @relation("PCProductOwner", fields: [productOwnerId], references: [id])
+  ScrumMaster          PCActors?           @relation("PCScrumMaster", fields: [scrumMasterId], references: [id])
+  Members              PCProjectMembers[]
+  Sprints              PCSprints[]
+  BacklogItems         PCBacklogItems[]
+  Dependencies         PCTaskDependencies[]
+  TimeEntries          PCTimeEntries[]
+  QaRules              PCQaRules[]
+  Baselines            PCBaselines[]
+  History              PCHistory[]
+
+  @@unique([companyId, code])
+}
+
+model PCProjectMembers {
+  id                 Int                  @id @default(autoincrement())
+  createdAt          DateTime             @default(now())
+  updatedAt          DateTime             @updatedAt
+  companyId          Int
+  userId             String
+  projectId          Int
+  actorId            Int
+  projectRole        PCProjectMemberRole  @default(DEVELOPER)
+  projectHourlyCost  Float
+  dailyHours         Float                @default(8)
+  dedicationPercent  Float                @default(100)
+  startDate          DateTime
+  endDate            DateTime?
+  active             Boolean              @default(true)
+  isDeleted          Boolean              @default(false)
+  Project            PCProjects           @relation(fields: [projectId], references: [id])
+  Actor              PCActors             @relation(fields: [actorId], references: [id])
+
+  @@index([projectId, actorId])
+}
+
+model PCSprints {
+  id          Int            @id @default(autoincrement())
+  createdAt   DateTime       @default(now())
+  updatedAt   DateTime       @updatedAt
+  companyId   Int
+  userId      String
+  projectId   Int
+  name        String
+  goal        String?        @db.Text
+  startDate   DateTime
+  endDate     DateTime
+  status      PCSprintStatus @default(PLANIFICADO)
+  isDeleted   Boolean        @default(false)
+  Project     PCProjects     @relation(fields: [projectId], references: [id])
+  BacklogItems PCBacklogItems[]
+}
+
+model PCBacklogItems {
+  id                    Int              @id @default(autoincrement())
+  createdAt             DateTime         @default(now())
+  updatedAt             DateTime         @updatedAt
+  companyId             Int
+  userId                String
+  projectId             Int
+  sprintId              Int?
+  parentId              Int?
+  code                  String
+  type                  PCBacklogType
+  title                 String
+  description           String?          @db.Text
+  acceptanceCriteria    String?          @db.Text
+  priority              PCPriority       @default(MEDIA)
+  status                PCBacklogStatus  @default(PENDIENTE)
+  storyPoints           Float?
+  estimatedHours        Float            @default(0)
+  remainingHours        Float?
+  responsibleId         Int?
+  sortOrder             Int              @default(0)
+  calculatedStartDate   DateTime?
+  calculatedEndDate     DateTime?
+  isDeleted             Boolean          @default(false)
+  Project               PCProjects       @relation(fields: [projectId], references: [id])
+  Sprint                PCSprints?       @relation(fields: [sprintId], references: [id])
+  Parent                PCBacklogItems?  @relation("PCBacklogHierarchy", fields: [parentId], references: [id])
+  Children              PCBacklogItems[] @relation("PCBacklogHierarchy")
+  Responsible           PCActors?        @relation("PCBacklogResponsible", fields: [responsibleId], references: [id])
+  PredecessorDeps       PCTaskDependencies[] @relation("PCDepPredecessor")
+  SuccessorDeps         PCTaskDependencies[] @relation("PCDepSuccessor")
+  TimeEntries           PCTimeEntries[]
+
+  @@unique([projectId, code])
+}
+
+model PCTaskDependencies {
+  id               Int               @id @default(autoincrement())
+  createdAt        DateTime          @default(now())
+  companyId        Int
+  userId           String
+  projectId        Int
+  predecessorId    Int
+  successorId      Int
+  dependencyType   PCDependencyType  @default(FIN_A_INICIO)
+  lagHours         Float             @default(0)
+  isDeleted        Boolean           @default(false)
+  Project          PCProjects        @relation(fields: [projectId], references: [id])
+  Predecessor      PCBacklogItems    @relation("PCDepPredecessor", fields: [predecessorId], references: [id])
+  Successor        PCBacklogItems    @relation("PCDepSuccessor", fields: [successorId], references: [id])
+
+  @@unique([projectId, predecessorId, successorId, dependencyType])
+}
+
+model PCTimeEntries {
+  id              Int            @id @default(autoincrement())
+  createdAt       DateTime       @default(now())
+  updatedAt       DateTime       @updatedAt
+  companyId       Int
+  userId          String
+  projectId       Int
+  backlogItemId   Int
+  actorId         Int
+  date            DateTime
+  hours           Float
+  description     String?        @db.Text
+  billable        Boolean        @default(true)
+  appliedHourlyCost Float
+  calculatedCost  Float
+  isDeleted       Boolean        @default(false)
+  Project         PCProjects     @relation(fields: [projectId], references: [id])
+  BacklogItem     PCBacklogItems @relation(fields: [backlogItemId], references: [id])
+  Actor           PCActors       @relation(fields: [actorId], references: [id])
+}
+
+model PCQaRules {
+  id            Int             @id @default(autoincrement())
+  createdAt     DateTime        @default(now())
+  updatedAt     DateTime        @updatedAt
+  companyId     Int
+  userId        String
+  projectId     Int
+  active        Boolean         @default(true)
+  calcType      PCQaCalcType
+  value         Float
+  actorScope    PCQaActorScope  @default(TODOS_LOS_ACTORES)
+  qaActorId     Int?
+  isDeleted     Boolean         @default(false)
+  Project       PCProjects      @relation(fields: [projectId], references: [id])
+  QaActor       PCActors?       @relation("PCQaActor", fields: [qaActorId], references: [id])
+  SelectedActors PCQaRuleActors[]
+}
+
+model PCQaRuleActors {
+  id        Int       @id @default(autoincrement())
+  qaRuleId  Int
+  actorId   Int
+  QaRule    PCQaRules @relation(fields: [qaRuleId], references: [id])
+  Actor     PCActors  @relation(fields: [actorId], references: [id])
+
+  @@unique([qaRuleId, actorId])
+}
+
+model PCBaselines {
+  id                   Int      @id @default(autoincrement())
+  createdAt            DateTime @default(now())
+  companyId            Int
+  userId               String
+  projectId            Int
+  name                 String
+  date                 DateTime @default(now())
+  estimatedHours       Float
+  estimatedCost        Float
+  estimatedEndDate     DateTime?
+  backlogItemsCount    Int
+  snapshotData         String   @db.Text
+  Project              PCProjects @relation(fields: [projectId], references: [id])
+}
+
+model PCHistory {
+  id          Int      @id @default(autoincrement())
+  createdAt   DateTime @default(now())
+  companyId   Int
+  userId      String
+  projectId   Int
+  entityType  String
+  entityId    Int
+  action      String
+  fieldName   String?
+  oldValue    String?  @db.Text
+  newValue    String?  @db.Text
+  Project     PCProjects @relation(fields: [projectId], references: [id])
+}
