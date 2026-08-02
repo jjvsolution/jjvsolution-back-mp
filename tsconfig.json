@@ -133,6 +133,12 @@
       "@quotation/*": [
         "apps/quotation/src/*"
       ],
+      "@project-control": [
+        "apps/project-control/src"
+      ],
+      "@project-control/*": [
+        "apps/project-control/src/*"
+      ],
       "@services": [
         "libs/common/src/services"
       ],
