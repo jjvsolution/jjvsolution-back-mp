@@ -4,7 +4,8 @@ FROM node:22 AS builder
 WORKDIR /app
 
 # Copiar archivos esenciales
-COPY package*.json prisma ./
+COPY package*.json ./
+COPY prisma ./prisma
 
 # Instalar dependencias
 RUN rm -rf node_modules package-lock.json
@@ -25,7 +26,7 @@ FROM node:22-slim
 
 WORKDIR /app
 
-# 🔥 Dependencias necesarias para Chromium
+# Dependencias necesarias para Chromium y Prisma
 RUN apt-get update && apt-get install -y \
     chromium \
     fonts-liberation \
@@ -44,6 +45,7 @@ RUN apt-get update && apt-get install -y \
     libxext6 \
     libxfixes3 \
     libxrandr2 \
+    openssl \
     xdg-utils \
     && rm -rf /var/lib/apt/lists/*
 
@@ -55,7 +57,10 @@ COPY --from=builder /app/node_modules ./node_modules
 COPY --from=builder /app/dist ./dist
 COPY --from=builder /app/package*.json ./
 COPY --from=builder /app/prisma ./prisma
+COPY docker-entrypoint.sh ./
+RUN chmod +x docker-entrypoint.sh
 
 EXPOSE 3000
 
+ENTRYPOINT ["./docker-entrypoint.sh"]
 CMD ["node", "dist/apps/jjvsolution-back-mp/main"]
