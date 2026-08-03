@@ -16,6 +16,7 @@ import {
   PCDependenciesResolver,
   PCHistoryResolver,
   PCImportResolver,
+  PCJiraImportResolver,
   PCProjectsResolver,
   PCSprintsResolver,
   PCTimeEntriesResolver,
@@ -40,6 +41,7 @@ const resolver: Provider[] = [
   PCTimeEntriesResolver,
   PCCostsResolver,
   PCImportResolver,
+  PCJiraImportResolver,
   PCHistoryResolver,
 ];
 

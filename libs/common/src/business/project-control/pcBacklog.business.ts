@@ -30,6 +30,7 @@ export type PCBacklogCreateInput = {
   remainingHours?: number | null;
   responsibleId?: number | null;
   sortOrder?: number;
+  jiraIssueId?: string | null;
 };
 
 @Injectable()
@@ -224,6 +225,7 @@ export class PCBacklogBusiness extends ResponseClass {
         remainingHours: data.remainingHours ?? data.estimatedHours ?? 0,
         responsibleId: data.responsibleId ?? null,
         sortOrder: data.sortOrder ?? 0,
+        jiraIssueId: data.jiraIssueId ?? null,
       },
     });
 
@@ -289,6 +291,9 @@ export class PCBacklogBusiness extends ResponseClass {
           : {}),
         ...(data.sortOrder !== undefined ? { sortOrder: data.sortOrder } : {}),
         ...(data.type !== undefined ? { type: data.type } : {}),
+        ...(data.jiraIssueId !== undefined
+          ? { jiraIssueId: data.jiraIssueId }
+          : {}),
       } as Prisma.PCBacklogItemsUpdateInput,
     });
 

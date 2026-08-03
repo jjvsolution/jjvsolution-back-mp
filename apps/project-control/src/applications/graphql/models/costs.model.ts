@@ -199,3 +199,93 @@ export class PCImportPreviewModel {
   @Field(() => [String])
   existingCodes: string[];
 }
+
+@ObjectType('PCJiraConnectionObjectType')
+export class PCJiraConnectionModel {
+  @Field(() => String, { nullable: true })
+  jiraBaseUrl?: string | null;
+
+  @Field(() => String, { nullable: true })
+  jiraEmail?: string | null;
+
+  @Field(() => String, { nullable: true })
+  jiraProjectKey?: string | null;
+
+  @Field(() => Date, { nullable: true })
+  jiraLastPullAt?: Date | null;
+
+  @Field(() => Boolean)
+  hasApiToken: boolean;
+}
+
+@InputType('PCJiraConnectionInputType')
+export class PCJiraConnectionInputModel {
+  @Field(() => String)
+  jiraBaseUrl: string;
+
+  @Field(() => String)
+  jiraEmail: string;
+
+  @Field(() => String, { nullable: true })
+  jiraApiToken?: string | null;
+
+  @Field(() => String)
+  jiraProjectKey: string;
+}
+
+@ObjectType('PCJiraConnectionTestObjectType')
+export class PCJiraConnectionTestModel {
+  @Field(() => Boolean)
+  ok: boolean;
+
+  @Field(() => String, { nullable: true })
+  displayName?: string | null;
+
+  @Field(() => String, { nullable: true })
+  accountId?: string | null;
+
+  @Field(() => String, { nullable: true })
+  jiraProjectKey?: string | null;
+}
+
+@ObjectType('PCJiraImportPreviewObjectType')
+export class PCJiraImportPreviewModel {
+  @Field(() => GraphQLJSON)
+  validRows: unknown;
+
+  @Field(() => GraphQLJSON)
+  invalidRows: unknown;
+
+  @Field(() => [String])
+  existingCodes: string[];
+
+  @Field(() => Int)
+  willCreateCount: number;
+
+  @Field(() => Int)
+  willUpdateCount: number;
+
+  @Field(() => [String])
+  warnings: string[];
+}
+
+@ObjectType('PCJiraImportConfirmObjectType')
+export class PCJiraImportConfirmModel {
+  @Field(() => Int)
+  createdCount: number;
+
+  @Field(() => Int)
+  updatedCount: number;
+
+  @Field(() => Int)
+  worklogsCreated: number;
+
+  @Field(() => Int)
+  worklogsSkipped: number;
+
+  @Field(() => [String])
+  codes: string[];
+
+  @Field(() => [String])
+  warnings: string[];
+}

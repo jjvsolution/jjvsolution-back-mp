@@ -9,6 +9,7 @@ export * from './pcWorkCalendar.business';
 export * from './pcTimeEntries.business';
 export * from './pcCosts.business';
 export * from './pcImport.business';
+export * from './pcJiraImport.business';
 export * from './projectControlBusiness.module';
 export * from './engines/pcPlanning.engine';
 export * from './engines/pcWorkCalendar.engine';

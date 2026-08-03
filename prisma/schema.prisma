@@ -555,6 +555,11 @@ model PCProjects {
   status               PCProjectStatus     @default(BORRADOR)
   productOwnerId       Int?
   scrumMasterId        Int?
+  jiraBaseUrl          String?
+  jiraEmail            String?
+  jiraApiToken         String?
+  jiraProjectKey       String?
+  jiraLastPullAt       DateTime?
   isDeleted            Boolean             @default(false)
   ProductOwner         PCActors?           @relation("PCProductOwner", fields: [productOwnerId], references: [id])
   ScrumMaster          PCActors?           @relation("PCScrumMaster", fields: [scrumMasterId], references: [id])
@@ -632,6 +637,7 @@ model PCBacklogItems {
   sortOrder             Int              @default(0)
   calculatedStartDate   DateTime?
   calculatedEndDate     DateTime?
+  jiraIssueId           String?
   isDeleted             Boolean          @default(false)
   Project               PCProjects       @relation(fields: [projectId], references: [id])
   Sprint                PCSprints?       @relation(fields: [sprintId], references: [id])
@@ -643,6 +649,7 @@ model PCBacklogItems {
   TimeEntries           PCTimeEntries[]
 
   @@unique([projectId, code])
+  @@unique([projectId, jiraIssueId])
 }
 
 model PCTaskDependencies {
@@ -678,10 +685,13 @@ model PCTimeEntries {
   billable        Boolean        @default(true)
   appliedHourlyCost Float
   calculatedCost  Float
+  jiraWorklogId   String?
   isDeleted       Boolean        @default(false)
   Project         PCProjects     @relation(fields: [projectId], references: [id])
   BacklogItem     PCBacklogItems @relation(fields: [backlogItemId], references: [id])
   Actor           PCActors       @relation(fields: [actorId], references: [id])
+
+  @@unique([projectId, jiraWorklogId])
 }
 
 model PCQaRules {

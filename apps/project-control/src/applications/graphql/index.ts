@@ -3,6 +3,7 @@ export * from './actors.resolver';
 export * from './projects.resolver';
 export * from './backlog.resolver';
 export * from './costs.resolver';
+export * from './jira.resolver';
 export * from './capacity.resolver';
 export * from './workCalendar.resolver';
 export * from './history.resolver';

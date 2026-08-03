@@ -17,6 +17,7 @@ import { PCWorkCalendarBusiness } from './pcWorkCalendar.business';
 import { PCTimeEntriesBusiness } from './pcTimeEntries.business';
 import { PCCostsBusiness } from './pcCosts.business';
 import { PCImportBusiness } from './pcImport.business';
+import { PCJiraImportBusiness } from './pcJiraImport.business';
 
 const businessExport: Provider[] = [
   AuthService,
@@ -31,6 +32,7 @@ const businessExport: Provider[] = [
   PCTimeEntriesBusiness,
   PCCostsBusiness,
   PCImportBusiness,
+  PCJiraImportBusiness,
 ];
 
 @Module({
