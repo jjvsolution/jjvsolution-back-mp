@@ -113,6 +113,38 @@ export class PCProjectMembersAllModel extends PCProjectMembersModel {
   active: boolean;
 }
 
+@ObjectType('PCProjectResourcesObjectType')
+@InputType('PCProjectResourcesInputType')
+export class PCProjectResourcesModel {
+  @Field(() => String)
+  name: string;
+
+  @Field(() => String)
+  url: string;
+}
+
+@ObjectType('PCProjectResourcesAllObjectType')
+@InputType('PCProjectResourcesAllInputType')
+export class PCProjectResourcesAllModel extends PCProjectResourcesModel {
+  @Field(() => Int)
+  id: number;
+
+  @Field(() => Int)
+  companyId: number;
+
+  @Field(() => Int)
+  projectId: number;
+
+  @Field(() => String)
+  userId: string;
+
+  @Field(() => Date)
+  createdAt: Date;
+
+  @Field(() => Date)
+  updatedAt: Date;
+}
+
 @ObjectType('PCProjectSummaryObjectType')
 export class PCProjectSummaryModel {
   @Field(() => PCProjectsAllModel)

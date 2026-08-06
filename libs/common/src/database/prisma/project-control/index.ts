@@ -1,6 +1,7 @@
 export * from './pcActors.repository';
 export * from './pcProjects.repository';
 export * from './pcProjectMembers.repository';
+export * from './pcProjectResources.repository';
 export * from './pcSprints.repository';
 export * from './pcBacklogItems.repository';
 export * from './pcTaskDependencies.repository';

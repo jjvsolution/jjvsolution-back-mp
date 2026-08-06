@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import {
   PCActorsRepository,
   PCProjectMembersRepository,
+  PCProjectResourcesRepository,
   PCProjectsRepository,
   PCBacklogItemsRepository,
   PCSprintsRepository,
@@ -45,11 +46,17 @@ export type PCMemberCreateInput = {
   endDate?: Date | string | null;
 };
 
+export type PCResourceCreateInput = {
+  name: string;
+  url: string;
+};
+
 @Injectable()
 export class PCProjectsBusiness extends ResponseClass {
   constructor(
     private readonly pcProjectsRepository: PCProjectsRepository,
     private readonly pcProjectMembersRepository: PCProjectMembersRepository,
+    private readonly pcProjectResourcesRepository: PCProjectResourcesRepository,
     private readonly pcActorsRepository: PCActorsRepository,
     private readonly pcBacklogItemsRepository: PCBacklogItemsRepository,
     private readonly pcSprintsRepository: PCSprintsRepository,
@@ -395,6 +402,128 @@ export class PCProjectsBusiness extends ResponseClass {
       projectId,
       entityType: 'PCProjectMembers',
       entityId: memberId,
+      action: 'REMOVE',
+    });
+
+    return updated;
+  }
+
+  private normalizeResourceUrl(url: string): string {
+    const trimmed = (url ?? '').trim();
+    if (!trimmed) this.badRequest('PC_RESOURCE_URL_REQUIRED');
+    let parsed: URL;
+    try {
+      parsed = new URL(trimmed);
+    } catch {
+      this.badRequest('PC_RESOURCE_URL_INVALID');
+      return trimmed;
+    }
+    if (!['http:', 'https:'].includes(parsed.protocol)) {
+      this.badRequest('PC_RESOURCE_URL_INVALID');
+    }
+    return parsed.toString();
+  }
+
+  private normalizeResourceName(name: string): string {
+    const trimmed = (name ?? '').trim();
+    if (!trimmed) this.badRequest('PC_RESOURCE_NAME_REQUIRED');
+    return trimmed;
+  }
+
+  async listResources(
+    companyId: number,
+    userId: string | undefined,
+    projectId: number,
+  ) {
+    await this.assertProjectAccess(companyId, userId, projectId);
+    return this.pcProjectResourcesRepository.db.findMany({
+      where: { projectId, companyId, isDeleted: false },
+      orderBy: { id: 'asc' },
+    });
+  }
+
+  async addResource(
+    companyId: number,
+    ownerUserId: string,
+    scopeUserId: string | undefined,
+    projectId: number,
+    data: PCResourceCreateInput,
+  ) {
+    await this.assertProjectAccess(companyId, scopeUserId, projectId);
+    const name = this.normalizeResourceName(data.name);
+    const url = this.normalizeResourceUrl(data.url);
+
+    const resource = await this.pcProjectResourcesRepository.db.create({
+      data: {
+        companyId,
+        userId: ownerUserId,
+        projectId,
+        name,
+        url,
+      },
+    });
+
+    await this.pcHistoryBusiness.log({
+      companyId,
+      userId: ownerUserId,
+      projectId,
+      entityType: 'PCProjectResources',
+      entityId: resource.id,
+      action: 'CREATE',
+    });
+
+    return resource;
+  }
+
+  async updateResource(
+    companyId: number,
+    userId: string | undefined,
+    projectId: number,
+    resourceId: number,
+    data: Partial<PCResourceCreateInput>,
+  ) {
+    await this.assertProjectAccess(companyId, userId, projectId);
+    const resource = await this.pcProjectResourcesRepository.db.findFirst({
+      where: { id: resourceId, projectId, companyId, isDeleted: false },
+    });
+    if (!resource) this.notFound('PC_RESOURCE_NOT_FOUND');
+
+    return this.pcProjectResourcesRepository.db.update({
+      where: { id: resourceId },
+      data: {
+        ...(data.name !== undefined
+          ? { name: this.normalizeResourceName(data.name) }
+          : {}),
+        ...(data.url !== undefined
+          ? { url: this.normalizeResourceUrl(data.url) }
+          : {}),
+      },
+    });
+  }
+
+  async removeResource(
+    companyId: number,
+    userId: string | undefined,
+    projectId: number,
+    resourceId: number,
+  ) {
+    await this.assertProjectAccess(companyId, userId, projectId);
+    const resource = await this.pcProjectResourcesRepository.db.findFirst({
+      where: { id: resourceId, projectId, companyId, isDeleted: false },
+    });
+    if (!resource) this.notFound('PC_RESOURCE_NOT_FOUND');
+
+    const updated = await this.pcProjectResourcesRepository.db.update({
+      where: { id: resourceId },
+      data: { isDeleted: true },
+    });
+
+    await this.pcHistoryBusiness.log({
+      companyId,
+      userId: userId ?? resource.userId,
+      projectId,
+      entityType: 'PCProjectResources',
+      entityId: resourceId,
       action: 'REMOVE',
     });
 

@@ -564,6 +564,7 @@ model PCProjects {
   ProductOwner         PCActors?           @relation("PCProductOwner", fields: [productOwnerId], references: [id])
   ScrumMaster          PCActors?           @relation("PCScrumMaster", fields: [scrumMasterId], references: [id])
   Members              PCProjectMembers[]
+  Resources            PCProjectResources[]
   Sprints              PCSprints[]
   BacklogItems         PCBacklogItems[]
   Dependencies         PCTaskDependencies[]
@@ -573,6 +574,21 @@ model PCProjects {
   History              PCHistory[]
 
   @@unique([companyId, code])
+}
+
+model PCProjectResources {
+  id          Int        @id @default(autoincrement())
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+  companyId   Int
+  userId      String
+  projectId   Int
+  name        String
+  url         String
+  isDeleted   Boolean    @default(false)
+  Project     PCProjects @relation(fields: [projectId], references: [id])
+
+  @@index([projectId])
 }
 
 model PCProjectMembers {
