@@ -8,6 +8,7 @@ export * from './pcCapacity.business';
 export * from './pcWorkCalendar.business';
 export * from './pcTimeEntries.business';
 export * from './pcCosts.business';
+export * from './pcPortfolio.business';
 export * from './pcImport.business';
 export * from './pcJiraImport.business';
 export * from './projectControlBusiness.module';

@@ -18,6 +18,7 @@ import { PCTimeEntriesBusiness } from './pcTimeEntries.business';
 import { PCCostsBusiness } from './pcCosts.business';
 import { PCImportBusiness } from './pcImport.business';
 import { PCJiraImportBusiness } from './pcJiraImport.business';
+import { PCPortfolioBusiness } from './pcPortfolio.business';
 
 const businessExport: Provider[] = [
   AuthService,
@@ -31,6 +32,7 @@ const businessExport: Provider[] = [
   PCWorkCalendarBusiness,
   PCTimeEntriesBusiness,
   PCCostsBusiness,
+  PCPortfolioBusiness,
   PCImportBusiness,
   PCJiraImportBusiness,
 ];

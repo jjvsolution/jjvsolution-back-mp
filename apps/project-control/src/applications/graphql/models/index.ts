@@ -6,3 +6,4 @@ export * from './costs.model';
 export * from './capacity.model';
 export * from './workCalendar.model';
 export * from './history.model';
+export * from './portfolio.model';

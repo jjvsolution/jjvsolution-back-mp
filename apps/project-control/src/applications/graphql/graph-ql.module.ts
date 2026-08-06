@@ -21,6 +21,7 @@ import {
   PCSprintsResolver,
   PCTimeEntriesResolver,
   PCWorkCalendarResolver,
+  PCPortfolioResolver,
 } from '.';
 import { GraphQLFormattedError } from 'graphql';
 import { join } from 'path';
@@ -43,6 +44,7 @@ const resolver: Provider[] = [
   PCImportResolver,
   PCJiraImportResolver,
   PCHistoryResolver,
+  PCPortfolioResolver,
 ];
 
 const onlyServer = `${process?.env?.ONLY_SERVER}` == 'true';

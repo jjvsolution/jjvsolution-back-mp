@@ -7,4 +7,5 @@ export * from './jira.resolver';
 export * from './capacity.resolver';
 export * from './workCalendar.resolver';
 export * from './history.resolver';
+export * from './portfolio.resolver';
 export * from './graph-ql.module';
